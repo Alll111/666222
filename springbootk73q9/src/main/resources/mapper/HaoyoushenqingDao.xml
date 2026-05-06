@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.HaoyoushenqingDao">
+
+    <resultMap type="com.entity.HaoyoushenqingEntity" id="haoyoushenqingMap">
+        <result property="fromUserid" column="from_userid"/>
+        <result property="fromZhanghao" column="from_zhanghao"/>
+        <result property="fromXingming" column="from_xingming"/>
+        <result property="toUserid" column="to_userid"/>
+        <result property="toZhanghao" column="to_zhanghao"/>
+        <result property="toXingming" column="to_xingming"/>
+        <result property="status" column="status"/>
+        <result property="reply" column="reply"/>
+        <result property="refJiaoyouxinxiId" column="ref_jiaoyouxinxi_id"/>
+    </resultMap>
+
+    <select id="selectListView"
+            resultType="com.entity.view.HaoyoushenqingView">
+        SELECT haoyoushenqing.* FROM haoyoushenqing haoyoushenqing
+        <where>1=1 ${ew.sqlSegment}</where>
+    </select>
+
+    <select id="selectView"
+            resultType="com.entity.view.HaoyoushenqingView">
+        SELECT * FROM haoyoushenqing haoyoushenqing
+        <where>1=1 ${ew.sqlSegment}</where>
+    </select>
+
+</mapper>
+
