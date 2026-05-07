@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -274,8 +274,9 @@ export default {
         }
       }
       // 获取用户信息
+      const sessionTable = this.$storage.get('sessionTable') || 'users'
       this.$http({
-        url: `${this.$storage.get('sessionTable')}/session`,
+        url: `${sessionTable}/session`,
         method: "get"
       }).then(({ data }) => {
         if (data && data.code === 0) {

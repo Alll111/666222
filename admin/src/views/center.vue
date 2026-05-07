@@ -78,10 +78,10 @@ export default {
     };
   },
   mounted() {
-    var table = this.$storage.get("sessionTable");
+    var table = this.$storage.get("sessionTable") || 'users';
     this.flag = table;
     this.$http({
-      url: `${this.$storage.get("sessionTable")}/session`,
+      url: `${table}/session`,
       method: "get"
     }).then(({ data }) => {
       if (data && data.code === 0) {
@@ -124,8 +124,9 @@ export default {
 	this.$message.error(`用户名不能为空`);
         return
       }
+      const table = this.$storage.get("sessionTable") || 'users'
       this.$http({
-        url: `${this.$storage.get("sessionTable")}/update`,
+        url: `${table}/update`,
         method: "post",
         data: this.ruleForm
       }).then(({ data }) => {

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-dialog title="私聊" :visible.sync="visible" width="900px" :modal="false">
     <div class="siliao-wrap">
       <div class="siliao-left">

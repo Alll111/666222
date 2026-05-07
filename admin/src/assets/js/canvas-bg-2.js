@@ -1,19 +1,20 @@
 export default function canvasBg(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
-	var ctx = document.getElementById('canvas');
+	var canvas = document.getElementById('canvas');
+	if (!canvas) return;
 	
 	window.addEventListener('load', resize);
 	window.addEventListener('resize', resize, false);
 	
 	function resize() {
-		ctx.width = w = window.innerWidth;
-		ctx.height = h = window.innerHeight;
+		canvas.width = w = window.innerWidth;
+		canvas.height = h = window.innerHeight;
 	}
 	
 	resize();
 	
-	let ctxfr = ctx.getContext('2d');
+	let ctxfr = canvas.getContext('2d');
 	
 	// min and max radius, radius threshold and percentage of filled circles
 	var radMin = 5,

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <el-form
       class="detail-form-content"
@@ -55,8 +55,9 @@ export default {
     };
   },
   mounted() {
+    const sessionTable = this.$storage.get("sessionTable") || 'users'
     this.$http({
-      url: `${this.$storage.get("sessionTable")}/session`,
+      url: `${sessionTable}/session`,
       method: "get"
     }).then(({ data }) => {
       if (data && data.code === 0) {
@@ -90,8 +91,9 @@ export default {
           }
           this.user.password = this.ruleForm.newpassword;
           this.user.mima = this.ruleForm.newpassword;
+          const sessionTable = this.$storage.get("sessionTable") || 'users'
           this.$http({
-            url: `${this.$storage.get("sessionTable")}/update`,
+            url: `${sessionTable}/update`,
             method: "post",
             data: this.user
           }).then(({ data }) => {

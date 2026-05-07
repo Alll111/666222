@@ -137,9 +137,12 @@ export default {
 	},
     menuHandler(name) {
       let router = this.$router
-      name = '/'+name
-      if (router.currentRoute.path !== name) {
-        router.push(name)
+      let targetPath = '/index'
+      if (name) {
+        targetPath = name.startsWith('/') ? name : `/index/${name}`
+      }
+      if (router.currentRoute.path !== targetPath) {
+        router.push(targetPath).catch(() => {})
       }
     },
     // 菜单

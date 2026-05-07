@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -125,7 +125,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号�?));
+        callback(new Error("请输入正确的身份证号"));
       } else {
         callback();
       }
@@ -170,7 +170,7 @@ export default {
       if(!value){
         callback();
       } else if (!isNumber(value)) {
-        callback(new Error("请输入数�?));
+        callback(new Error("请输入数字"));
       } else {
         callback();
       }
@@ -179,7 +179,7 @@ export default {
       if(!value){
         callback();
       } else if (!isIntNumer(value)) {
-        callback(new Error("请输入整�?));
+        callback(new Error("请输入整数"));
       } else {
         callback();
       }
@@ -297,8 +297,9 @@ export default {
         }
       }
       // 获取用户信息
+      const sessionTable = this.$storage.get('sessionTable') || 'users'
       this.$http({
-        url: `${this.$storage.get('sessionTable')}/session`,
+        url: `${sessionTable}/session`,
         method: "get"
       }).then(({ data }) => {
         if (data && data.code === 0) {

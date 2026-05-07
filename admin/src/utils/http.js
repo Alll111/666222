@@ -5,7 +5,7 @@ import storage from '@/utils/storage'
 const http = axios.create({
     timeout: 1000 * 86400,
     withCredentials: true,
-    baseURL: '/springbootk73q9',
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json; charset=utf-8'
     }
@@ -20,7 +20,10 @@ http.interceptors.request.use(config => {
 // 响应拦截
 http.interceptors.response.use(response => {
     if (response.data && response.data.code === 401) { // 401, token失效
-        router.push({ name: 'login' })
+        const currentRoute = router.currentRoute || {}
+        if (currentRoute.name !== 'login') {
+            router.push({ name: 'login' }).catch(() => {})
+        }
     }
     return response
 }, error => {

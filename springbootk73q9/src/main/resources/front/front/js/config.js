@@ -65,7 +65,8 @@ var indexNav = [
 },
 ]
 
-var adminurl =  "http://localhost:8080/springbootk73q9/admin/dist/index.html";
+var adminBaseUrl = "http://localhost:8080/springbootk73q9/admin/dist/index.html";
+var adminurl = localStorage.getItem('Token') ? adminBaseUrl : (adminBaseUrl + "#/login");
 
 var cartFlag = false
 

@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +41,14 @@ import com.utils.R;
 public class FileController{
 	@Autowired
     private ConfigService configService;
+
+	private File getUploadDirectory() {
+		File upload = new File("src/main/resources/static/upload").getAbsoluteFile();
+		if(!upload.exists()) {
+			upload.mkdirs();
+		}
+		return upload;
+	}
 	/**
 	 * 上传文件
 	 */
@@ -51,23 +58,10 @@ public class FileController{
 			throw new EIException("上传文件不能为空");
 		}
 		String fileExt = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-		File path = new File(ResourceUtils.getURL("classpath:static").getPath());
-		if(!path.exists()) {
-		    path = new File("");
-		}
-		File upload = new File(path.getAbsolutePath(),"/upload/");
-		if(!upload.exists()) {
-		    upload.mkdirs();
-		}
+		File upload = getUploadDirectory();
 		String fileName = new Date().getTime()+"."+fileExt;
-		File dest = new File(upload.getAbsolutePath()+"/"+fileName);
+		File dest = new File(upload, fileName);
 		file.transferTo(dest);
-		/**
-  		 * 如果使用idea或者eclipse重启项目，发现之前上传的图片或者文件丢失，将下面一行代码注释打开
-   		 * 请将以下的"D:\\springbootq33sd\\src\\main\\resources\\static\\upload"替换成你本地项目的upload路径，
- 		 * 并且项目路径不能存在中文、空格等特殊字符
- 		 */
-//		FileUtils.copyFile(dest, new File("D:\\springbootq33sd\\src\\main\\resources\\static\\upload"+"/"+fileName)); /**修改了路径以后请将该行最前面的//注释去掉**/
 		if(StringUtils.isNotBlank(type) && type.equals("1")) {
 			ConfigEntity configEntity = configService.selectOne(new EntityWrapper<ConfigEntity>().eq("name", "faceFile"));
 			if(configEntity==null) {
@@ -89,15 +83,8 @@ public class FileController{
 	@RequestMapping("/download")
 	public ResponseEntity<byte[]> download(@RequestParam String fileName) {
 		try {
-			File path = new File(ResourceUtils.getURL("classpath:static").getPath());
-			if(!path.exists()) {
-			    path = new File("");
-			}
-			File upload = new File(path.getAbsolutePath(),"/upload/");
-			if(!upload.exists()) {
-			    upload.mkdirs();
-			}
-			File file = new File(upload.getAbsolutePath()+"/"+fileName);
+			File upload = getUploadDirectory();
+			File file = new File(upload, fileName);
 			if(file.exists()){
 				/*if(!fileService.canRead(file, SessionManager.getSessionUser())){
 					getResponse().sendError(403);

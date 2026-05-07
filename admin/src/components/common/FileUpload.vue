@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <!-- 上传文件组件 -->
     <el-upload
@@ -19,7 +19,7 @@
       <i class="el-icon-plus"></i>
       <div slot="tip" class="el-upload__tip" style="color:#838fa1;">{{tip}}</div>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible" size="tiny" append-to-body>
+    <el-dialog :visible.sync="dialogVisible" width="800px" append-to-body>
       <img width="100%" :src="dialogImageUrl" alt>
     </el-dialog>
   </div>

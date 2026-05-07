@@ -75,7 +75,7 @@
 			window.addEventListener('refresh-message-count', this.loadMessageCount)
 		},
 		mounted() {
-			let sessionTable = this.$storage.get("sessionTable")
+			let sessionTable = this.$storage.get("sessionTable") || 'users'
 			this.$http({
 				url: sessionTable + '/session',
 				method: "get"

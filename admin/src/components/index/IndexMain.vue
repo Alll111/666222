@@ -49,9 +49,9 @@
 				this.itemMenu = [];
 				this.title = ""
 				this.currentIndex = index
-				if (this.$router.currentRoute.name !== 'home') {
+				if (this.$router.currentRoute.name !== 'index') {
 					this.$router.push({
-						name: 'home'
+						name: 'index'
 					});
 				}
 			},
@@ -67,9 +67,9 @@
 				}];
 				this.title = ""
 				this.currentIndex = index
-				if (this.$router.currentRoute.name !== 'home') {
+				if (this.$router.currentRoute.name !== 'index') {
 					this.$router.push({
-						name: 'home'
+						name: 'index'
 					});
 				}
 				

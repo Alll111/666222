@@ -1,5 +1,7 @@
 package com.config;
 
+import java.io.File;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -10,6 +12,27 @@ import com.interceptor.AuthorizationInterceptor;
 
 @Configuration
 public class InterceptorConfig extends WebMvcConfigurationSupport{
+
+    private String getUploadLocation() {
+        File uploadDir = new File("src/main/resources/static/upload").getAbsoluteFile();
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        String uploadLocation = uploadDir.toURI().toString();
+        return uploadLocation.endsWith("/") ? uploadLocation : uploadLocation + "/";
+    }
+
+    private String getAdminRootLocation() {
+        File adminDir = new File("backend/src/main/resources/admin/admin").getAbsoluteFile();
+        String adminLocation = adminDir.toURI().toString();
+        return adminLocation.endsWith("/") ? adminLocation : adminLocation + "/";
+    }
+
+    private String getAdminDistLocation() {
+        File adminDistDir = new File("backend/src/main/resources/admin/admin/dist").getAbsoluteFile();
+        String adminDistLocation = adminDistDir.toURI().toString();
+        return adminDistLocation.endsWith("/") ? adminDistLocation : adminDistLocation + "/";
+    }
 	
 	@Bean
     public AuthorizationInterceptor getAuthorizationInterceptor() {
@@ -18,7 +41,17 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
 	
 	@Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getAuthorizationInterceptor()).addPathPatterns("/**").excludePathPatterns("/static/**");
+        registry.addInterceptor(getAuthorizationInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/static/**",
+                        "/upload/**",
+                        "/front/**",
+                        "/admin/**",
+                        "/admin/dist/**",
+                        "/admin/login",
+                        "/admin/login.html"
+                );
         super.addInterceptors(registry);
 	}
 	
@@ -27,6 +60,15 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
 	 */
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/upload/**")
+        .addResourceLocations(getUploadLocation(), "classpath:/static/upload/");
+
+		registry.addResourceHandler("/admin/dist/**")
+        .addResourceLocations(getAdminDistLocation());
+
+		registry.addResourceHandler("/admin/**")
+        .addResourceLocations(getAdminRootLocation());
+
 		registry.addResourceHandler("/**")
         .addResourceLocations("classpath:/resources/")
         .addResourceLocations("classpath:/static/")

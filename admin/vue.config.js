@@ -32,11 +32,19 @@ lintOnSave: false,
         hot: true, // 开启热更新
         https: false, // 是否开启https模式
         proxy: { // 请求代理服务器
-            '/springbootk73q9': { //带上api前缀的
-                target: 'http://localhost:8080/springbootk73q9/', //代理目标地址
+            '/api': {
+                target: 'http://localhost:8080/springbootk73q9',
                 changeOrigin: true,
                 secure: false,
-                pathRewrite: { // 在发出请求后将/api替换为''空值，这样不影响接口请求
+                pathRewrite: {
+                    '^/api': ''
+                }
+            },
+            '/springbootk73q9': { // 保留旧前缀兼容上传组件
+                target: 'http://localhost:8080/springbootk73q9',
+                changeOrigin: true,
+                secure: false,
+                pathRewrite: {
                     '^/springbootk73q9': ''
                 }
             }

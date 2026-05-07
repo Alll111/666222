@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="main-content">
     <!-- 列表�?-->
     <div v-if="showFlag">
@@ -200,7 +200,8 @@ export default {
         })
       })
     },
-    // 新增、批量删�?    contentBtnAdAllStyleChange() {
+    // 新增、批量删除
+    contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
           el.style.height = this.contents.btnAdAllHeight
@@ -344,16 +345,19 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页�?    sizeChangeHandle(val) {
+    // 每页
+    sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前�?    currentChangeHandle(val) {
+    // 当前页
+    currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多�?    selectionChangeHandler(val) {
+    // 多选
+    selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
     // 添加/修改

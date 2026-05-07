@@ -25,73 +25,85 @@ import center from '@/views/center'
 //2.配置路由   注意：名字
 const routes = [{
     path: '/index',
-    name: '首页',
     component: Index,
+    redirect: '/index/home',
     children: [{
-      // 这里不设置值，是把main作为默认页面
-      path: '',
-      name: '首页',
+      path: 'home',
+      alias: '',
+      name: 'index',
       component: Home,
-      meta: {icon:'', title:'center'}
+      meta: {icon:'', title:'首页'}
     }, {
       path: 'updatePassword',
-      name: '修改密码',
+      alias: '/updatePassword',
+      name: 'updatePassword',
       component: UpdatePassword,
-      meta: {icon:'', title:'updatePassword'}
+      meta: {icon:'', title:'修改密码'}
     }, {
       path: 'pay',
-      name: '支付',
+      alias: '/pay',
+      name: 'pay',
       component: pay,
-      meta: {icon:'', title:'pay'}
+      meta: {icon:'', title:'支付'}
     }, {
       path: 'center',
-      name: '个人信息',
+      alias: '/center',
+      name: 'center',
       component: center,
-      meta: {icon:'', title:'center'}
+      meta: {icon:'', title:'个人信息'}
     }
       ,{
     path: 'forum',
-        name: '交流论坛',
+        alias: '/forum',
+        name: 'forum',
         component: forum
       }
       ,{
     path: 'news',
-        name: '公告信息',
+        alias: '/news',
+        name: 'news',
         component: news
       }
       ,{
     path: 'yonghu',
-        name: '用户',
+        alias: '/yonghu',
+        name: 'yonghu',
         component: yonghu
       }
       ,{
     path: 'discussxianxiahuodong',
-        name: '线下活动评论',
+        alias: '/discussxianxiahuodong',
+        name: 'discussxianxiahuodong',
         component: discussxianxiahuodong
       }
       ,{
     path: 'huodongbaoming',
-        name: '活动报名',
+        alias: '/huodongbaoming',
+        name: 'huodongbaoming',
         component: huodongbaoming
       }
       ,{
     path: 'xianxiahuodong',
-        name: '线下活动',
+        alias: '/xianxiahuodong',
+        name: 'xianxiahuodong',
         component: xianxiahuodong
       }
       ,{
     path: 'discussjiaoyouxinxi',
-        name: '交友信息评论',
+        alias: '/discussjiaoyouxinxi',
+        name: 'discussjiaoyouxinxi',
         component: discussjiaoyouxinxi
       }
       ,{
     path: 'jiaoyouxinxi',
-        name: '交友信息',
+        alias: '/jiaoyouxinxi',
+        name: 'jiaoyouxinxi',
         component: jiaoyouxinxi
       }
       ,{
     path: 'config',
-        name: '轮播图管理',
+        alias: '/config',
+        name: 'config',
         component: config
       }
     ]
@@ -110,11 +122,11 @@ const routes = [{
   },
   {
     path: '/',
-    name: '首页',
     redirect: '/index'
   }, /*默认跳转路由*/
   {
     path: '*',
+    name: '404',
     component: NotFound
   }
 ]

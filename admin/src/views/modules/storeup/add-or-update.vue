@@ -71,7 +71,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号�?));
+        callback(new Error("请输入正确的身份证号"));
       } else {
         callback();
       }
@@ -116,7 +116,7 @@ export default {
       if(!value){
         callback();
       } else if (!isNumber(value)) {
-        callback(new Error("请输入数�?));
+        callback(new Error("请输入数字"));
       } else {
         callback();
       }
@@ -125,7 +125,7 @@ export default {
       if(!value){
         callback();
       } else if (!isIntNumer(value)) {
-        callback(new Error("请输入整�?));
+        callback(new Error("请输入整数"));
       } else {
         callback();
       }
@@ -564,3 +564,4 @@ var objcross = this.$storage.getObj('crossObj');
   padding: 0;
 }
 </style>
+
