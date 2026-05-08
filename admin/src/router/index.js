@@ -4,7 +4,7 @@ import storage from '@/utils/storage'
 const whiteList = ['/login', '/register']
 
 router.beforeEach((to, from, next) => {
-  const token = storage.get('Token') || localStorage.getItem('token')
+  const token = localStorage.getItem('token') || storage.get('Token')
   if (token) {
     if (to.path === '/login') {
       next('/admin/index')

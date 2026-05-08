@@ -4,12 +4,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.interceptor.AuthorizationInterceptor;
 
 @Configuration
-public class InterceptorConfig extends WebMvcConfigurationSupport{
+public class InterceptorConfig implements WebMvcConfigurer{
 
 	@Bean
     public AuthorizationInterceptor getAuthorizationInterceptor() {
@@ -21,6 +21,8 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
         registry.addInterceptor(getAuthorizationInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                        "/login",
+                        "/error",
                         "/static/**",
                         "/upload/**",
                         "/front/**",
@@ -29,7 +31,6 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
                         "/admin/login",
                         "/admin/login.html"
                 );
-        super.addInterceptors(registry);
 	}
 	
 	/**
@@ -37,6 +38,7 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
 	 */
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		super.addResourceHandlers(registry);
+        registry.addResourceHandler("/upload/**")
+                .addResourceLocations("classpath:/static/upload/", "file:./static/upload/");
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class ApiController {
 
     @Autowired
@@ -36,7 +36,7 @@ public class ApiController {
 
     @IgnoreAuth
     @PostMapping("/login")
-    public Map<String, Object> login(String username, String password) {
+    public Map<String, Object> login(String username, String password, String role, String tableName) {
         Map<String, Object> res = new HashMap<String, Object>();
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             res.put("code", 500);
@@ -44,13 +44,25 @@ public class ApiController {
             return res;
         }
         String token = null;
-        UserEntity user = userService.selectOne(new EntityWrapper<UserEntity>().eq("username", username));
-        if (user != null && StringUtils.equals(user.getPassword(), password)) {
-            token = tokenService.generateToken(user.getId(), user.getUsername(), "users", user.getRole());
-        } else {
+        if ("users".equals(tableName) || "管理员".equals(role)) {
+            UserEntity user = userService.selectOne(new EntityWrapper<UserEntity>().eq("username", username));
+            if (user != null && StringUtils.equals(user.getPassword(), password)) {
+                token = tokenService.generateToken(user.getId(), user.getUsername(), "users", user.getRole());
+            }
+        } else if ("yonghu".equals(tableName) || "用户".equals(role)) {
             YonghuEntity yonghu = yonghuService.selectOne(new EntityWrapper<YonghuEntity>().eq("zhanghao", username));
             if (yonghu != null && StringUtils.equals(yonghu.getMima(), password)) {
                 token = tokenService.generateToken(yonghu.getId(), yonghu.getZhanghao(), "yonghu", "用户");
+            }
+        } else {
+            UserEntity user = userService.selectOne(new EntityWrapper<UserEntity>().eq("username", username));
+            if (user != null && StringUtils.equals(user.getPassword(), password)) {
+                token = tokenService.generateToken(user.getId(), user.getUsername(), "users", user.getRole());
+            } else {
+                YonghuEntity yonghu = yonghuService.selectOne(new EntityWrapper<YonghuEntity>().eq("zhanghao", username));
+                if (yonghu != null && StringUtils.equals(yonghu.getMima(), password)) {
+                    token = tokenService.generateToken(yonghu.getId(), yonghu.getZhanghao(), "yonghu", "用户");
+                }
             }
         }
         if (StringUtils.isBlank(token)) {

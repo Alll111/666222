@@ -82,31 +82,8 @@ export default {
     }
   },
   mounted() {
-    const menus = menu.list()
-    if(menus) {
-        this.menuList = menus
-    } else {
-        let params = {
-            page: 1,
-            limit: 1,
-            sort: 'id',
-        }
-        this.$http({
-            url: "menu/list",
-            method: "get",
-            params: params
-        }).then(({
-            data
-        }) => {
-            if (data && data.code === 0) {
-                this.menuList = JSON.parse(data.data.list[0].menujson);
-                this.$storage.set("menus", this.menuList);
-            }
-        }).catch(() => {
-            this.menuList = []
-        })
-    }
     this.role = this.$storage.get('role')
+    this.loadMenu()
   },
   created(){
     setTimeout(()=>{
@@ -118,6 +95,41 @@ export default {
 	this.lineBorder()
   },
   methods: {
+	loadMenu() {
+		this.$http({
+			url: '/menu/list',
+			method: 'get'
+		}).then(({ data }) => {
+			if (data && data.code === 200 && Array.isArray(data.data)) {
+				this.menuList = [{
+					roleName: this.role || '管理员',
+					backMenu: data.data.map(item => ({
+						menu: item.name,
+						child: [{
+							menu: item.name,
+							tableName: this.getTableName(item.path)
+						}]
+					}))
+				}]
+				this.$storage.set('menus', this.menuList)
+				return
+			}
+			this.useLocalMenu()
+		}).catch(() => {
+			this.useLocalMenu()
+		})
+	},
+	useLocalMenu() {
+		const menus = menu.list()
+		this.menuList = menus || []
+	},
+	getTableName(path) {
+		if (!path) {
+			return ''
+		}
+		const parts = path.split('/').filter(Boolean)
+		return parts.length ? parts[parts.length - 1] : ''
+	},
 	lineBorder() {
 		let style = '${template.back.menulist.menulistStyle}'
 		let w = '${template.back.menulist.menulistLineWidth}'

@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     getActionUrl: function() {
-      return `/${this.$base.name}/` + this.action;
+      return `/api/${this.action}`;
     }
   },
   methods: {

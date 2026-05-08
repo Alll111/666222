@@ -1,53 +1,46 @@
-// var webpack = require('webpack');
 const path = require('path')
+
 function resolve(dir) {
-    return path.join(__dirname, dir)
+  return path.join(__dirname, dir)
 }
-function publicPath(){
-    if (process.env.NODE_ENV == 'production') {
-        return "././";
-    } else {
-        return "/";
-    }
+
+function publicPath() {
+  return process.env.NODE_ENV === 'production' ? '././' : '/'
 }
-// vue.config.js
+
 module.exports = {
-    // publicPath:"././",
-    publicPath: publicPath(),
-    // 国际化配置 使用其它语言，默认情况下中文语言包依旧是被引入的
-    configureWebpack: {
-        // plugins: [
-        //     new webpack.NormalModuleReplacementPlugin(/element-ui[\/\\]lib[\/\\]locale[\/\\]lang[\/\\]zh-CN/, 'element-ui/lib/locale/lang/en')
-        // ]
-        resolve: {
-            alias: {
-                '@': resolve('src')
-            }
+  publicPath: publicPath(),
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': resolve('src')
+      }
+    }
+  },
+  lintOnSave: false,
+  devServer: {
+    host: '0.0.0.0',
+    port: 8081,
+    open: true,
+    hot: true,
+    https: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/api',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': '/'
         }
-    },
-lintOnSave: false,
-    devServer: {
-        host: "0.0.0.0", //指定使用一个 host。默认是 localhost，这里默认值即可
-        port: 8081, //指定端口
-        open: true,
-        hot: true, // 开启热更新
-        https: false, // 是否开启https模式
-        proxy: { // 请求代理服务器
-            '/api': {
-                target: 'http://localhost:8080',
-                changeOrigin: true,
-                secure: false,
-                pathRewrite: {
-                    '^/api': '/'
-                }
-            }
-        }
-    },
-chainWebpack(config) {
+      }
+    }
+  },
+  chainWebpack(config) {
     config.module
       .rule('svg')
       .exclude.add(resolve('src/icons'))
       .end()
+
     config.module
       .rule('icons')
       .test(/\.svg$/)
@@ -59,5 +52,5 @@ chainWebpack(config) {
         symbolId: 'icon-[name]'
       })
       .end()
-}
+  }
 }

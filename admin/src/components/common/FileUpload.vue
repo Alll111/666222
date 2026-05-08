@@ -26,7 +26,6 @@
 </template>
 <script>
 import storage from "@/utils/storage";
-import base from "@/utils/base";
 export default {
   data() {
     return {
@@ -56,8 +55,7 @@ export default {
   computed: {
     // 计算属性的 getter
     getActionUrl: function() {
-      // return base.url + this.action + "?token=" + storage.get("token");
-      return `/${this.$base.name}/` + this.action;
+      return `/api/${this.action}`;
     }
   },
   methods: {

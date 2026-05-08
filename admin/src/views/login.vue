@@ -145,22 +145,25 @@ export default {
       }
 
       this.$http({
-        url: `${this.tableName}/login`,
+        url: '/login',
         method: "post",
         params: {
           username: this.rulesForm.username,
-          password: this.rulesForm.password
+          password: this.rulesForm.password,
+          role: this.rulesForm.role,
+          tableName: this.tableName
         }
       }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$storage.set("Token", data.token);
-          localStorage.setItem("token", data.token);
+        const token = data && data.data ? data.data.token : ''
+        if (data && data.code === 200 && token) {
+          this.$storage.set("Token", token);
+          localStorage.setItem("token", token);
           this.$storage.set("role", this.rulesForm.role);
           this.$storage.set("sessionTable", this.tableName);
           this.$storage.set("adminName", this.rulesForm.username);
           this.$router.replace({ path: "/admin/index" });
         } else {
-          this.$message.error((data && data.msg) || "登录失败");
+          this.$message.error((data && (data.message || data.msg)) || "登录失败");
         }
       }).catch((error) => {
         this.$message.error((error && error.message) || "登录请求失败");

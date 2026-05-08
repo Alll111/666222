@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -404,7 +404,7 @@ export default {
         this.ruleForm = data.data;
 	//解决前台上传图片后台不显示的问题
 	let reg=new RegExp('../../../upload','g')//g代表全部
-	this.ruleForm.gerenjianjie = this.ruleForm.gerenjianjie.replace(reg,'../../../springbootk73q9/upload');
+	this.ruleForm.gerenjianjie = this.ruleForm.gerenjianjie.replace(reg,`${this.$base.url}upload`);
         } else {
           this.$message.error(data.msg);
         }

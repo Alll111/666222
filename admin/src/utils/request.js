@@ -10,7 +10,7 @@ const request = axios.create({
 
 request.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('Token') || localStorage.getItem('token')
+    const token = localStorage.getItem('token') || localStorage.getItem('Token')
     if (token) {
       const cleanToken = token.replace(/^"(.*)"$/, '$1')
       config.headers.Authorization = `Bearer ${cleanToken}`
@@ -25,12 +25,12 @@ request.interceptors.response.use(
   response => {
     const data = response.data || {}
     if (data.code === 401) {
-      localStorage.removeItem('Token')
       localStorage.removeItem('token')
+      localStorage.removeItem('Token')
       if (router.currentRoute.name !== 'login') {
         router.replace({ path: '/login' }).catch(() => {})
       }
-      Message.error(data.msg || '登录已过期，请重新登录')
+      Message.error(data.message || data.msg || '登录已过期，请重新登录')
     }
     return response
   },
@@ -41,8 +41,8 @@ request.interceptors.response.use(
       error.message ||
       '请求失败'
     if (status === 401) {
-      localStorage.removeItem('Token')
       localStorage.removeItem('token')
+      localStorage.removeItem('Token')
       if (router.currentRoute.name !== 'login') {
         router.replace({ path: '/login' }).catch(() => {})
       }
