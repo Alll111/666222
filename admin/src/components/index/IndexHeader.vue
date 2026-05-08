@@ -10,7 +10,7 @@
 			</el-badge>
 			<i v-else-if="this.$storage.get('adminName')!='admin'" class="el-icon-bell message-icon" @click="openMessageDialog"></i>
 			<div class="user-info" :style="{color:heads.headUserInfoFontColor,fontSize:heads.headUserInfoFontSize}">{{this.$storage.get('role')}} {{this.$storage.get('adminName')}}</div>
-			<div v-if="this.$storage.get('role')!='管理员'" class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="onIndexTap">退出到前台</div>
+			<div v-if="this.$storage.get('role')!='管理员'" class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="goToFront">退出到前台</div>
 			<div class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="onLogout">退出登录</div>
 		</div>
 		<el-dialog title="消息" :visible.sync="messageDialogVisible" width="900px" :modal="false">
@@ -97,8 +97,8 @@
 				storage.clear()
 				router.replace({ name: "login" });
 			},
-			onIndexTap(){
-				window.location.href = `${this.$base.indexUrl}`
+			goToFront() {
+				window.open('http://localhost:8081/front', '_blank')
 			},
 			loadMessageCount() {
 				if (this.$storage.get('adminName')=='admin') {
