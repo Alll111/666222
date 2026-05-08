@@ -97,7 +97,7 @@ export default {
   methods: {
 	loadMenu() {
 		this.$http({
-			url: '/menu/list',
+			url: '/api/menu/list',
 			method: 'get'
 		}).then(({ data }) => {
 			if (data && data.code === 200 && Array.isArray(data.data)) {
