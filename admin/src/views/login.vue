@@ -1,6 +1,6 @@
 <template>
   <div>
-        <canvas id="canvas"  style="background:linear-gradient(rgba(255,255,255, 1),rgba(56,182,230, 1) ,rgba(214,238,247, 1))"></canvas>
+        <canvas id="canvas"  style="background:linear-gradient(135deg, #081f4d 0%, #1357c5 45%, #5fb3ff 100%)"></canvas>
         <div class="container loginIn">
 
       <div :class="2 == 1 ? 'left' : 2 == 2 ? 'left center' : 'left right'">
@@ -49,6 +49,12 @@
           <el-form-item v-if="roles.length==1" label=" " prop="loginInRole" class="role" style="display: flex;align-items: center;">
           </el-form-item>
           <el-button type="primary" @click="login()" class="loginInBt">{{'1' == '1' ? '登录' : 'login'}}</el-button>
+          <div class="register-action">
+            <span class="register-text">没有账号？</span>
+            <button type="button" class="register-link" @click="register()">
+              立即注册
+            </button>
+          </div>
           <el-form-item class="setting">
           </el-form-item>
         </el-form>
@@ -115,7 +121,12 @@ export default {
 
   },
   methods: {
-    register(tableName){
+    getRedirectPath(role, tableName) {
+      const roleName = role || this.rulesForm.role
+      const table = tableName || this.tableName
+      return table === 'users' || roleName === '管理员' || roleName === 'admin' ? '/index' : '/front'
+    },
+    register(tableName = 'yonghu'){
       this.$storage.set("loginTable", tableName);
       this.$router.push({path:'/register'})
     },
@@ -156,12 +167,22 @@ export default {
       }).then(({ data }) => {
         const token = data && data.data ? data.data.token : ''
         if (data && data.code === 200 && token) {
+          const role = this.rulesForm.role
+          const sessionTable = this.tableName
           this.$storage.set("Token", token);
           localStorage.setItem("token", token);
-          this.$storage.set("role", this.rulesForm.role);
-          this.$storage.set("sessionTable", this.tableName);
+          localStorage.setItem("Token", token);
+          this.$storage.set("role", role);
+          localStorage.setItem("role", role);
+          this.$storage.set("sessionTable", sessionTable);
+          localStorage.setItem("sessionTable", sessionTable);
           this.$storage.set("adminName", this.rulesForm.username);
-          this.$router.replace({ path: "/index" });
+          localStorage.setItem("adminName", this.rulesForm.username);
+          this.$storage.set("loginRole", role);
+          localStorage.setItem("loginRole", role);
+          this.$storage.set("loginTable", sessionTable);
+          localStorage.setItem("loginTable", sessionTable);
+          this.$router.replace({ path: this.getRedirectPath(role, sessionTable) });
         } else {
           this.$message.error((data && (data.message || data.msg)) || "登录失败");
         }
@@ -212,22 +233,39 @@ export default {
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+  overflow: hidden;
 
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.32), transparent 24%),
+      radial-gradient(circle at 82% 18%, rgba(163, 214, 255, 0.28), transparent 18%),
+      linear-gradient(135deg, rgba(4, 24, 70, 0.12), rgba(17, 93, 211, 0.08));
+    pointer-events: none;
+  }
 
   .loginInBt {
-    width: 250px;
-    height: 36px;
-    line-height: 36px;
-    margin: 0px 0px 0px 115px;
-    padding: 0px 0px 0px 0px;
-    color: rgba(0, 0, 0, 1);
-    font-size: 20px;
-    border-radius: 5px;
-    border-width: 0;
-    border-style: solid;
-    border-color: rgba(64, 158, 255, 1);
-    background-color: rgba(56, 182, 230, 1);
-    box-shadow: 0 0 6px rgba(64, 158, 255, 1);
+    width: 100% !important;
+    height: 46px !important;
+    line-height: 46px !important;
+    margin: 12px 0 0 !important;
+    padding: 0 !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 600;
+    border-radius: 12px !important;
+    border: 0 !important;
+    background: linear-gradient(135deg, #2c7dff 0%, #1f6fff 100%) !important;
+    box-shadow: 0 16px 28px rgba(31, 111, 255, 0.28) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.02);
+      box-shadow: 0 20px 34px rgba(31, 111, 255, 0.32) !important;
+    }
   }
   .register {
     width: 90px;
@@ -244,6 +282,35 @@ export default {
     background-color: rgba(144, 238, 144, 0);
     box-shadow: 0 0 6px rgba(255,0,0,0);
 	cursor: pointer;
+  }
+  .register-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 0 4px;
+    font-size: 14px;
+    line-height: 1;
+    gap: 4px;
+  }
+
+  .register-text {
+    color: #6c82aa;
+  }
+
+  .register-link {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #3f8cff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+
+    &:hover {
+      color: #1f6fff;
+      text-shadow: 0 0 12px rgba(31, 111, 255, 0.2);
+    }
   }
   .reset {
     width: auto;
@@ -267,16 +334,15 @@ export default {
     left: 0;
     top: 0;
 	box-sizing: border-box;
-	width: 550px;
-	height: 540px;
-	margin: 10px 0px 0px -5px;
-	padding: 0px 0px 0px 0px;
-	border-radius: 100%;
-	border-width: 32px;
-	border-style: dashed;
-	border-color: rgba(255, 255, 255, 1);
-	background-color: rgba(214, 238, 247, 1);
-	box-shadow: 0px 0px 0px 20px rgba(255, 255, 255, 1);
+	width: 480px;
+	min-height: 520px;
+	margin: 0;
+	padding: 44px 42px 38px;
+	border-radius: 28px;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	background: rgba(255, 255, 255, 0.88);
+	box-shadow: 0 28px 80px rgba(4, 22, 66, 0.28);
+	backdrop-filter: blur(12px);
 
     .login-form {
       background-color: transparent;
@@ -293,25 +359,31 @@ export default {
     .title-container {
       text-align: center;
       font-size: 24px;
+      margin-bottom: 26px;
 
       .title {
-        width: 400px;
-        line-height: 0;
-        margin: 5px 0px 20px 40px;
-        padding: 10px;
-        color: rgba(0, 0, 0, 1);
-        font-size: 20px;
-        border-radius: 0;
-        border-width: 0;
-        border-style: solid;
-        border-color: rgba(0,0,0,.3);
-        background-color: rgba(0, 206, 209, 0);
-        box-shadow: 0px 0px 0px 0px rgba(214,238,247, 1);
+        width: 100%;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
+        color: #0f2f6c;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
       }
     }
 
     .el-form-item {
       position: relative;
+      width: 100% !important;
+      margin: 0 0 18px !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
 
       & ::v-deep .el-form-item__content {
         line-height: initial;
@@ -375,17 +447,21 @@ export default {
 	  }
 
       .svg-container {
-        padding: 6px 5px 6px 15px;
-        color: #889aa4;
+        color: #5b7ab8 !important;
         vertical-align: middle;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         position: absolute;
-        left: 0;
-        top: 0;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 1;
-        padding: 0;
-        line-height: 40px;
-        width: 30px;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        width: 18px !important;
+        height: 18px;
         text-align: center;
       }
 
@@ -394,26 +470,28 @@ export default {
         width: 100%;
 
         & ::v-deep input {
-          background: transparent;
-          border: 0px;
           -webkit-appearance: none;
-          padding: 0 15px 0 30px;
-          color: #fff;
-          height: 40px;
+          width: 100% !important;
+          height: 46px !important;
+          line-height: 46px !important;
+          margin: 0 !important;
+          padding: 0 16px 0 46px !important;
+          color: #102a56 !important;
+          font-size: 15px !important;
+          border-radius: 12px !important;
+          border: 1px solid rgba(174, 198, 245, 0.9) !important;
+          background: linear-gradient(180deg, #f9fbff 0%, #f3f8ff 100%) !important;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
 
-		  width: 260px;
-		  height: 36px;
-		  line-height: 36px;
-		  margin: 0px 0px 5px 95px;
-		  padding: 0 70px;
-		  color: rgba(0, 0, 0, 1);
-		  font-size: 16px;
-		  border-radius: 0;
-		  border-width: 0px 0px 3px 0px;
-		  border-style: solid;
-		  border-color: rgba(255, 215, 0, 1);
-		  background-color: rgba(144, 238, 144, 0);
-		  box-shadow: 0 0 6px rgba(255,0,0,0);
+          &::placeholder {
+            color: #8aa0c6;
+          }
+
+          &:focus {
+            border-color: #1f6fff !important;
+            box-shadow: 0 0 0 4px rgba(31, 111, 255, 0.12) !important;
+            background: #fff !important;
+          }
         }
       }
 
@@ -482,6 +560,8 @@ export default {
   }
 
   .setting {
+    margin-bottom: 0 !important;
+
     & ::v-deep .el-form-item__content {
       box-sizing: border-box;
       line-height: 32px;
@@ -542,7 +622,7 @@ export default {
 	width: 30px;
 	height: 30px;
 	line-height: 30px;
-	margin: 12px 0px 0px 40px;
+	margin: 0;
 	padding: 0;
 	color: rgba(30, 25, 0, 1);
 	font-size: 14px;
@@ -555,25 +635,43 @@ export default {
   }
 
   .role {
+    margin: 2px 0 8px !important;
+
     & ::v-deep .el-form-item__label {
       width: 56px !important;
       height: 38px;
       line-height: 38px;
-      margin: 0px 0px 0px 60px;
+      margin: 0;
       padding: 0;
-      color: rgba(0, 0, 0, 1);
+      color: #1f2d3d;
       font-size: 15px;
-      border-radius: 0;
-      border-width: 0;
-      border-style: solid;
-      border-color: rgba(64, 158, 255, 1);
-      background-color: rgba(255, 255, 255, 0);
-      box-shadow: 0 0 6px rgba(255,0,0,0);
+      font-weight: 600;
+      border: 0;
+      background-color: transparent;
+      box-shadow: none;
       text-align: left;
     }
 
     & ::v-deep .el-radio {
-      margin-right: 12px;
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .loginIn {
+    padding: 20px;
+
+    .left {
+      width: 100%;
+      max-width: 420px;
+      min-height: auto;
+      padding: 34px 24px 28px;
+    }
+
+    .title-container .title {
+      font-size: 24px;
     }
   }
 }

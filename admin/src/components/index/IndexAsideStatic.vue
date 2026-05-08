@@ -1,5 +1,5 @@
 <template>
-  <el-aside class="index-aside" width="200px">
+  <el-aside class="index-aside" width="220px">
     <div class="index-aside-inner menulist">
       <div v-for="item in menuList" :key="item.roleName" v-if="role==item.roleName" class="menulist-item">
         <div class="menulistImg" v-if="false && 2 == 2">
@@ -96,6 +96,13 @@ export default {
   },
   methods: {
 	loadMenu() {
+		const localMenus = menu.list() || []
+		const localRoleMenu = localMenus.find(item => item.roleName === (this.role || '管理员'))
+		if (localRoleMenu && Array.isArray(localRoleMenu.backMenu) && localRoleMenu.backMenu.length) {
+			this.menuList = localMenus
+			this.$storage.set('menus', localMenus)
+			return
+		}
 		this.$http({
 			url: '/menu/list',
 			method: 'get'
@@ -263,6 +270,9 @@ export default {
     overflow: hidden;
 	display: flex;
 	flex-wrap: wrap;
+    background: #ffffff;
+    border-right: 1px solid rgba(223, 232, 247, 0.95);
+    box-shadow: 8px 0 22px rgba(15, 23, 42, 0.04);
 
     .menulistImg {
 		font-size: 0;
@@ -283,7 +293,7 @@ export default {
       margin-bottom: -17px;
       overflow: scroll;
       overflow-x: hidden !important;
-      padding-top: 62px;
+      padding: 80px 0 18px;
       box-sizing: border-box;
 
       &:focus {
@@ -296,51 +306,51 @@ export default {
       }
     }
 		
-			.index-aside .index-aside-inner.menulist {
+	.index-aside .index-aside-inner.menulist {
 		height: 100% !important;
 	}
 	.menulist-item {
-		width: 200px;
+		width: 220px;
 		padding: 0;
 		margin: 0;
 		border-radius: 0;
 		border-width: 0 !important;
 		border-style: solid !important;
 		border-color: rgba(0,0,0,.3) !important;
-		background: rgba(214,238,247, 1) !important;
-		box-shadow: 0 0 0px rgba(30, 144, 255, .2);
+		background: transparent !important;
+		box-shadow: none;
 		box-sizing: border-box;
 	}
-			.el-menu-demo {
+	.el-menu-demo {
 		box-sizing: border-box;
 		min-height: calc(100vh - 62px);
+		padding: 0 14px 12px;
 			
 		&>.el-menu-item {
-			width: 190px;
-			height: auto !important;
-			line-height: 58px !important;
-			padding: 0px 0px 0px 15px;
-			margin: 5px 0px 10px  0px;
-			color: rgba(0, 0, 0, 1);
+			width: 100%;
+			height: 44px !important;
+			line-height: 44px !important;
+			padding: 0 16px !important;
+			margin: 0 0 8px;
+			color: #284369 !important;
 			font-size: 14px;
-			border-radius: 40px 0px 0px 40px;
-			border-width: 8px 0px 8px 8px;
-			border-style: double;
-			border-color: rgba(214, 238, 247, 1) !important;
-			background-color: rgba(255, 255, 255, 1) !important;
-			box-shadow: 0 0 0px rgba(255,255,255,0);
-			box-sizing: initial;
+			font-weight: 600;
+			border-radius: 12px;
+			border: 1px solid transparent !important;
+			background-color: transparent !important;
+			box-shadow: none;
 			display: flex;
 			align-items: center;
 			justify-content: flex-start;
 			box-sizing: border-box;
+			transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
             
             .el-icon-menu {
-            	margin: 0px 5px 0px  0px;
+            	margin: 0 12px 0 0;
             	padding: 0;
-            	width: 24px;
-            	line-height: 24px;
-            	color: rgba(0, 0, 0, 1);
+            	width: 18px;
+            	line-height: 18px;
+            	color: #7b93ba;
             	font-size: 16px;
             	border-radius: 0;
             	border-width: 0;
@@ -349,37 +359,49 @@ export default {
             	background-color: rgba(255,255,255,0);
             	box-shadow: 0 0 0px rgba(255,255,255,0);
             }
+
+            &:hover,
+            &.is-active {
+              background: #eef5ff !important;
+              color: #1f6fff !important;
+              border-color: #dce8ff !important;
+              box-shadow: 0 10px 20px rgba(31, 111, 255, 0.10);
+              transform: translateX(2px);
+
+              .el-icon-menu {
+                color: #1f6fff;
+              }
+            }
 		}
 		
 		.el-submenu {
-			margin: 5px 0px 10px  0px;
+			margin: 0 0 10px;
 		}
 		
 		& ::v-deep .el-submenu__title {
-			width: 190px;
-			height: auto !important;
-			line-height: 58px !important;
-			padding: 0px 0px 0px 15px;
-			color: rgba(0, 0, 0, 1);
+			width: 100%;
+			height: 44px !important;
+			line-height: 44px !important;
+			padding: 0 16px !important;
+			color: #284369 !important;
 			font-size: 14px;
-			border-radius: 40px 0px 0px 40px;
-			border-width: 8px 0px 8px 8px;
-			border-style: double;
-			border-color: rgba(214, 238, 247, 1) !important;
-			background-color: rgba(255, 255, 255, 1) !important;
-			box-shadow: 0 0 0px rgba(255,255,255,0);
-			box-sizing: initial;
+			font-weight: 600;
+			border-radius: 12px;
+			border: 1px solid transparent !important;
+			background-color: transparent !important;
+			box-shadow: none;
 			display: flex;
 			align-items: center;
 			justify-content: flex-start;
 			box-sizing: border-box;
+			transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 			
 			.el-icon-menu {
-				margin: 0px 5px 0px  0px;
+				margin: 0 12px 0 0;
 				padding: 0;
-				width: 24px;
-				line-height: 24px;
-				color: rgba(0, 0, 0, 1);
+				width: 18px;
+				line-height: 18px;
+				color: #7b93ba;
 				font-size: 16px;
 				border-radius: 0;
 				border-width: 0;
@@ -390,31 +412,37 @@ export default {
 			}
 			
 			.el-submenu__icon-arrow {
-				margin: 0 10px 0 0;
+				margin: 0 4px 0 0;
 				padding: 0;
 				width: 12px;
 				line-height: 12px;
-				color: rgba(0, 0, 0, 1) !important;
+				color: #6b87b4 !important;
 				font-size: 12px;
-				border-radius: 0;
-				border-width: 0;
-				border-style: solid;
-				border-color: #fff;
-				background-color: rgba(255,255,255,0);
-				box-shadow: 0 0 6px rgba(255,255,255,0);
 				position: absolute;
 				top: 50%;
 				right: 0;
 				transform: translateY(-50%);
 				text-align: center;
-								display: block;
-											}
+				display: block;
+			}
+
+      &:hover {
+        background: rgba(31, 111, 255, 0.06) !important;
+        color: #1f6fff !important;
+        border-color: #dce8ff !important;
+        transform: translateX(2px);
+
+        .el-icon-menu,
+        .el-submenu__icon-arrow {
+          color: #1f6fff !important;
+        }
+      }
 		}
 		
 		& ::v-deep .el-menu.el-menu--inline {
 			width: 100%;
 			height: auto;
-			padding: 0;
+			padding: 8px 0 0;
 			margin: 0;
 			border-radius: 0;
 			border-width: 0;
@@ -424,54 +452,45 @@ export default {
 			box-shadow: 0 0 0px rgba(0, 0, 0, .3);
 			
 			.el-menu-item {
-				width: 180px;
-				height: 50px;
-				line-height: 50px;
-				padding: 0px 20px 0px 0px !important;
-				margin: 5px 0px 0px 10px;
-				color: rgba(255, 255, 255, 1) !important;
-				font-size: 14px;
-				border-radius: 30px 0px 0px 30px;
+				width: auto;
+				height: 38px;
+				line-height: 38px;
+				padding: 0 14px 0 46px !important;
+				margin: 0 0 6px;
+				color: #5a729a !important;
+				font-size: 13px;
+				border-radius: 10px;
 				border-width: 0;
 				border-style: double;
 				border-color: rgba(255, 255, 255, 1);
-				background-color: rgba(119, 197, 227, 1) !important;
-				box-shadow: 0 0 6px rgba(30, 144, 255, 0);
-				text-align: center;
+				background-color: transparent !important;
+				box-shadow: none;
+				text-align: left;
 				min-width: auto;
+        transition: all 0.2s ease;
                 
                 &.is-active {
-                    width: 180px;
-                    height: 50px;
-                    line-height: 50px;
-                    padding: 0px 20px 0px 0px !important;
-                    margin: 5px 0px 0px 10px;
-                    color: rgba(0, 0, 0, 1) !important;
-                    font-size: 14px;
-                    border-radius: 30px 0px 0px 30px;
+                    color: #1f6fff !important;
+                    font-size: 13px;
+                    font-weight: 600;
+                    border-radius: 10px;
                     border-width: 0;
                     border-style: solid;
                     border-color: rgba(0, 0, 0, 0);
-                    background-color: rgba(255, 255, 255, 1) !important;
-                    box-shadow: 0 0 6px rgba(30, 144, 255, 0);
-                    text-align: center;
+                    background-color: rgba(31, 111, 255, 0.10) !important;
+                    box-shadow: none;
+                    text-align: left;
                 }
 				 
 				&:hover {
-					width: 180px;
-					height: 50px;
-					line-height: 50px;
-					padding: 0px 20px 0px 0px !important;
-					margin: 5px 0px 0px 10px;
-					color: rgba(255, 255, 255, 1) !important;
-					font-size: 14px;
-					border-radius: 30px 0px 0px 30px;
+					color: #1f6fff !important;
+					border-radius: 10px;
 					border-width: 0;
 					border-style: solid;
 					border-color: rgba(0, 0, 0, 0);
-					background-color: rgba(56, 182, 230, 1) !important;
-					box-shadow: 0 0 6px rgba(30, 144, 255, 0);
-					text-align: center;
+					background-color: rgba(31, 111, 255, 0.07) !important;
+					box-shadow: none;
+					text-align: left;
 				}
 			}
 		}
@@ -483,47 +502,39 @@ export default {
 .el-menu--horizontal .el-menu--popup {
 		width: 100%;
 		height: auto;
-		padding: 0;
+		padding: 8px;
 		margin: 0;
-		border-radius: 0;
-		border-width: 0;
-		border-style: solid;
-		border-color: rgba(0,0,0,.3);
-		background-color: rgba(255, 215, 0, 0);
-		box-shadow: 0 0 0px rgba(0, 0, 0, .3);
+		border-radius: 12px;
+		border: 1px solid rgba(219, 231, 255, 0.95);
+		background-color: #fff;
+		box-shadow: 0 16px 28px rgba(15, 23, 42, 0.12);
 		min-width: auto;
 		}
 .el-menu--horizontal .el-menu--popup .el-menu-item {
-			width: 180px;
-			height: 50px;
-			line-height: 50px;
-			padding: 0px 20px 0px 0px;
-			margin: 5px 0px 0px 10px;
-			color: rgba(255, 255, 255, 1) !important;
-			font-size: 14px;
-			border-radius: 30px 0px 0px 30px;
+			width: 100%;
+			height: 40px;
+			line-height: 40px;
+			padding: 0 14px;
+			margin: 0 0 8px;
+			color: #5a729a !important;
+			font-size: 13px;
+			border-radius: 10px;
 			border-width: 0;
 			border-style: double;
 			border-color: rgba(255, 255, 255, 1);
-			background-color: rgba(119, 197, 227, 1) !important;
-			box-shadow: 0 0 6px rgba(30, 144, 255, 0);
-			text-align: center;
+			background-color: transparent !important;
+			box-shadow: none;
+			text-align: left;
 			min-width: auto;
 			} 
 	.el-menu--horizontal .el-menu--popup .el-menu-item:hover {
-				width: 180px;
-				height: 50px;
-				line-height: 50px;
-				padding: 0px 20px 0px 0px;
-				margin: 5px 0px 0px 10px;
-				color: rgba(255, 255, 255, 1) !important;
-				font-size: 14px;
-				border-radius: 30px 0px 0px 30px;
+				color: #1f6fff !important;
+				border-radius: 10px;
 				border-width: 0;
 				border-style: solid;
 				border-color: rgba(0, 0, 0, 0);
-				background-color: rgba(56, 182, 230, 1) !important;
-				box-shadow: 0 0 6px rgba(30, 144, 255, 0);
-				text-align: center;
+				background-color: rgba(31, 111, 255, 0.08) !important;
+				box-shadow: none;
+				text-align: left;
 			}
 </style>

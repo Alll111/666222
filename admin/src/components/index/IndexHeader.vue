@@ -9,9 +9,18 @@
 				<i class="el-icon-bell message-icon" @click="openMessageDialog"></i>
 			</el-badge>
 			<i v-else-if="this.$storage.get('adminName')!='admin'" class="el-icon-bell message-icon" @click="openMessageDialog"></i>
-			<div class="user-info" :style="{color:heads.headUserInfoFontColor,fontSize:heads.headUserInfoFontSize}">{{this.$storage.get('role')}} {{this.$storage.get('adminName')}}</div>
-			<div v-if="this.$storage.get('role')!='管理员'" class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="goToFront">退出到前台</div>
-			<div class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="onLogout">退出登录</div>
+			<div class="user-info" :style="{color:heads.headUserInfoFontColor,fontSize:heads.headUserInfoFontSize}">
+				<i class="el-icon-user-solid action-icon"></i>
+				<span>{{this.$storage.get('role')}} {{this.$storage.get('adminName')}}</span>
+			</div>
+			<div v-if="this.$storage.get('role')!='管理员'" class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="goToFront">
+				<i class="el-icon-monitor action-icon"></i>
+				<span>退出到前台</span>
+			</div>
+			<div class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="onLogout">
+				<i class="el-icon-switch-button action-icon"></i>
+				<span>退出登录</span>
+			</div>
 		</div>
 		<el-dialog title="消息" :visible.sync="messageDialogVisible" width="900px" :modal="false">
 			<el-tabs v-model="activeMsgTab">
@@ -66,7 +75,7 @@
 				page: 1,
 				limit: 10,
 				total: 0,
-				heads: {"headLogoutFontHoverColor":"rgba(255, 255, 255, 1)","headFontSize":"20px","headUserInfoFontColor":"#333","headBoxShadow":"0 1px 0px rgba(255,255,255, 1)","headTitleImgHeight":"44px","headLogoutFontHoverBgColor":"rgba(214, 238, 247, 1)","headFontColor":"#000","headTitleImg":false,"headHeight":"62px","headTitleImgBorderRadius":"22px","headTitleImgUrl":"http://codegen.caihongy.cn/20201021/cc7d45d9c8164b58b18351764eba9be1.jpg","headBgColor":"linear-gradient(rgba(255,255,255, 1), rgba(214,238,247, 1),rgba(56,182,230, 1))","headTitleImgBoxShadow":"0 1px 6px #444","headLogoutFontColor":"#333","headUserInfoFontSize":"18px","headTitleImgWidth":"44px","headTitleStyle":"1","headLogoutFontSize":"18px"},
+				heads: {"headLogoutFontHoverColor":"#1f6fff","headFontSize":"20px","headUserInfoFontColor":"#35507a","headBoxShadow":"0 10px 28px rgba(15, 23, 42, 0.08)","headTitleImgHeight":"40px","headLogoutFontHoverBgColor":"rgba(31, 111, 255, 0.08)","headFontColor":"#1f2d3d","headTitleImg":false,"headHeight":"64px","headTitleImgBorderRadius":"20px","headTitleImgUrl":"http://codegen.caihongy.cn/20201021/cc7d45d9c8164b58b18351764eba9be1.jpg","headBgColor":"rgba(255,255,255,0.96)","headTitleImgBoxShadow":"0 8px 20px rgba(15, 23, 42, 0.10)","headLogoutFontColor":"#35507a","headUserInfoFontSize":"14px","headTitleImgWidth":"40px","headTitleStyle":"1","headLogoutFontSize":"14px"},
 			};
 		},
 		created() {
@@ -98,10 +107,7 @@
 				router.replace({ name: "login" });
 			},
 			goToFront() {
-				this.$storage.remove('Token')
-				localStorage.removeItem('token')
-				localStorage.removeItem('Token')
-				this.$router.push('/')
+				this.$router.push('/front/home')
 			},
 			loadMessageCount() {
 				if (this.$storage.get('adminName')=='admin') {
@@ -222,50 +228,107 @@
 
 <style lang="scss" scoped>
 	.navbar {
-		height: 60px;
-		line-height: 60px;
+		height: 64px;
+		line-height: 64px;
 		width: 100%;
-		padding: 0 34px;
+		padding: 0 24px 0 28px;
 		box-sizing: border-box;
-		background-color: #ff00ff;
+		background: #ffffff !important;
 		position: relative;
 		z-index: 111;
+		border-bottom: 1px solid rgba(223, 232, 247, 0.9);
+		box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08) !important;
+		backdrop-filter: blur(12px);
 
 		.right-menu {
 			position: absolute;
-			right: 34px;
+			right: 28px;
 			top: 0;
 			height: 100%;
 			display: flex;
 			justify-content: flex-end;
 			align-items: center;
+			gap: 10px;
 			z-index: 111;
 
+			.action-icon {
+				font-size: 15px;
+				line-height: 1;
+			}
+
 			.user-info {
-				font-size: 16px;
-				color: red;
-				padding: 0 12px;
+				font-size: 14px;
+				color: #35507a;
+				padding: 0 14px;
+				height: 38px;
+				line-height: 38px;
+				border-radius: 999px;
+				background: #f6f9ff;
+				border: 1px solid #dbe7ff;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				font-weight: 600;
 			}
 
 			.logout {
-				font-size: 16px;
-				color: red;
-				padding: 0 12px;
+				font-size: 14px;
+				color: #35507a;
+				padding: 0 14px;
+				height: 38px;
+				line-height: 38px;
+				border-radius: 999px;
+				background: #ffffff;
+				border: 1px solid #dbe7ff;
 				cursor: pointer;
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				font-weight: 600;
+				transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+				&:hover {
+					transform: translateY(-1px);
+					color: #1f6fff;
+					border-color: #c5d8ff;
+					background: #f5f9ff;
+					box-shadow: 0 10px 18px rgba(31, 111, 255, 0.12);
+				}
 			}
 
 			.message-icon {
 				cursor: pointer;
-				padding: 0 12px;
+				width: 38px;
+				height: 38px;
+				line-height: 38px;
+				text-align: center;
+				padding: 0;
+				font-size: 18px;
+				color: #35507a;
+				border-radius: 50%;
+				background: #f6f9ff;
+				border: 1px solid #dbe7ff;
+				transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+				&:hover {
+					transform: translateY(-1px);
+					color: #1f6fff;
+					background: #eef5ff;
+					box-shadow: 0 10px 18px rgba(31, 111, 255, 0.10);
+				}
 			}
 
 			.message-badge {
-				margin-right: -6px;
+				margin-right: -2px;
 			}
 
 			::v-deep .message-badge .el-badge__content {
-				top: 12px;
-				right: 14px;
+				top: 6px;
+				right: 4px;
+				border: 0;
+				background: linear-gradient(135deg, #ff7a6c, #ff4d4f);
+				box-shadow: 0 6px 14px rgba(255, 77, 79, 0.32);
 			}
 		}
 
@@ -275,19 +338,22 @@
 			align-items: center;
 			width: 100%;
 			height: 100%;
+			padding-right: 320px;
 
 			.title-img {
 				width: 44px;
 				height: 44px;
-				border-radius: 22px;
-				box-shadow: 0 1px 6px #444;
-				margin-right: 16px;
+				border-radius: 50%;
+				box-shadow: 0 10px 22px rgba(9, 24, 56, 0.20);
+				margin-right: 14px;
 			}
 
 			.title-name {
 				font-size: 24px;
-				color: #fff;
+				color: #1f2d3d;
 				font-weight: 700;
+				letter-spacing: 1px;
+				text-shadow: none;
 			}
 		}
 	}

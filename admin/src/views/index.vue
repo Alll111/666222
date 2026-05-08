@@ -1,7 +1,7 @@
-﻿<template>
-	<el-container>
+<template>
+	<el-container class="index-layout">
 		<index-header></index-header>
-		<el-container>
+		<el-container class="index-body">
 			<index-aside></index-aside>
 			<index-main></index-main>
 		</el-container>
@@ -21,10 +21,18 @@
 </script>
 
 <style lang="scss" scoped>
-	.el-container {
+	.index-layout {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		width: 100%;
+	}
+
+	.index-body {
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+		min-height: 0;
 		width: 100%;
 	}
 </style>

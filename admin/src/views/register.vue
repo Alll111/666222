@@ -1,140 +1,150 @@
-﻿<template>
+<template>
   <div>
-        <canvas id="canvas" style="background:linear-gradient(rgba(255,255,255, 1),rgba(56,182,230, 1) ,rgba(214,238,247, 1))"></canvas>
-        <div class="container">
-      <div class="login-form">
-        <h1 class="h1">校友社交系统注册</h1>
-		<el-form ref="rgsForm" class="rgs-form" :model="rgsForm">
-			<!-- <div v-if="tableName=='yonghu'" class="input-group">
-			   <div class="label">账号</div>
-			   <div class="input-container">
-			     <input v-model="ruleForm.zhanghao" class="input" type="text" placeholder="账号">
-			   </div>
-			 </div> -->
-			<el-form-item label="账号" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.zhanghao" autocomplete="off" placeholder="账号"  />
-			</el-form-item>
-			<!-- <div v-if="tableName=='yonghu'" class="input-group">
-			   <div class="label">密码</div>
-			   <div class="input-container">
-			     <input v-model="ruleForm.mima" class="input" type="text" placeholder="密码">
-			   </div>
-			 </div> -->
-			<el-form-item label="密码" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.mima" autocomplete="off" placeholder="密码" type="password"#elsetype="text" />
-			</el-form-item>
-			<el-form-item label="确认密码" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.mima2" autocomplete="off" placeholder="确认密码" type="password"/>
-			</el-form-item>
-
-			<!-- <div v-if="tableName=='yonghu'" class="input-group">
-			   <div class="label">姓名</div>
-			   <div class="input-container">
-			     <input v-model="ruleForm.xingming" class="input" type="text" placeholder="姓名">
-			   </div>
-			 </div> -->
-			<el-form-item label="姓名" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.xingming" autocomplete="off" placeholder="姓名"  />
-			</el-form-item>
-			<!-- <div v-if="tableName=='yonghu'" class="input-group">
-			   <div class="label">年龄</div>
-			   <div class="input-container">
-			     <input v-model="ruleForm.nianling" class="input" type="text" placeholder="年龄">
-			   </div>
-			 </div> -->
-			<el-form-item label="年龄" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.nianling" autocomplete="off" placeholder="年龄"  />
-			</el-form-item>
-			<!-- <div v-if="tableName=='yonghu'" class="input-group">
-			   <div class="label">手机</div>
-			   <div class="input-container">
-			     <input v-model="ruleForm.shouji" class="input" type="text" placeholder="手机">
-			   </div>
-			 </div> -->
-			<el-form-item label="手机" class="input" v-if="tableName=='yonghu'">
-			  <el-input v-model="ruleForm.shouji" autocomplete="off" placeholder="手机"  />
-			</el-form-item>
-			<div style="display: flex;flex-wrap: wrap;width: 100%;justify-content: center;">
-				<el-button class="btn" type="primary" @click="login()">注册</el-button>
-				<el-button class="btn close" type="primary" @click="close()">取消</el-button>
-			</div>
-		</el-form>
+    <canvas
+      id="canvas"
+      style="background:linear-gradient(135deg, #081f4d 0%, #1357c5 45%, #5fb3ff 100%)"
+    ></canvas>
+    <div class="register-page">
+      <div class="register-card">
+        <div class="title-container">
+          <h1 class="title">校友社交系统注册</h1>
+          <p class="subtitle">填写以下信息即可创建普通用户账号</p>
+        </div>
+        <el-form
+          ref="registerForm"
+          class="register-form"
+          :model="ruleForm"
+          @submit.native.prevent
+        >
+          <el-form-item v-if="tableName === 'yonghu'" label="账号" class="form-item">
+            <el-input
+              v-model="ruleForm.zhanghao"
+              autocomplete="off"
+              placeholder="请输入账号"
+            />
+          </el-form-item>
+          <el-form-item v-if="tableName === 'yonghu'" label="密码" class="form-item">
+            <el-input
+              v-model="ruleForm.mima"
+              autocomplete="off"
+              placeholder="请输入密码"
+              show-password
+              type="password"
+            />
+          </el-form-item>
+          <el-form-item v-if="tableName === 'yonghu'" label="确认密码" class="form-item">
+            <el-input
+              v-model="ruleForm.mima2"
+              autocomplete="off"
+              placeholder="请再次输入密码"
+              show-password
+              type="password"
+            />
+          </el-form-item>
+          <el-form-item v-if="tableName === 'yonghu'" label="姓名" class="form-item">
+            <el-input
+              v-model="ruleForm.xingming"
+              autocomplete="off"
+              placeholder="请输入姓名"
+            />
+          </el-form-item>
+          <el-form-item v-if="tableName === 'yonghu'" label="年龄" class="form-item">
+            <el-input
+              v-model="ruleForm.nianling"
+              autocomplete="off"
+              placeholder="请输入年龄"
+            />
+          </el-form-item>
+          <el-form-item v-if="tableName === 'yonghu'" label="手机" class="form-item">
+            <el-input
+              v-model="ruleForm.shouji"
+              autocomplete="off"
+              placeholder="请输入手机号"
+            />
+          </el-form-item>
+          <div class="action-row">
+            <el-button class="primary-btn" type="primary" @click="submitRegister">
+              注册
+            </el-button>
+            <el-button class="secondary-btn" @click="goLogin">
+              返回登录
+            </el-button>
+          </div>
+          <div class="login-link-row">
+            <span class="login-tip">已有账号？</span>
+            <button type="button" class="login-link" @click="goLogin">
+              立即登录
+            </button>
+          </div>
+        </el-form>
       </div>
-      <!-- <div class="nk-navigation">
-        <a href="#">
-          <div @click="login()">注册</div>
-        </a>
-      </div> -->
     </div>
   </div>
 </template>
 <script>
-
 import canvasBg from "@/assets/js/canvas-bg-2.js";
-import "@/assets/css/canvas-bg-2.css"
+import "@/assets/css/canvas-bg-2.css";
 
 export default {
   data() {
     return {
       ruleForm: {
+        zhanghao: "",
+        mima: "",
+        mima2: "",
+        xingming: "",
+        nianling: "",
+        shouji: ""
       },
-      tableName:"",
-      rules: {},
+      tableName: "yonghu"
     };
   },
-  mounted(){
-    let table = this.$storage.get("loginTable");
+  mounted() {
+    const table = this.$storage.get("loginTable") || "yonghu";
     this.tableName = table;
-        this.$nextTick(() => {
-      canvasBg()
-    })
-      },
-  created() {
-    
+    this.$storage.set("loginTable", table);
+    this.$nextTick(() => {
+      canvasBg();
+    });
   },
   methods: {
-    // 获取uuid
-    getUUID () {
-      return new Date().getTime();
+    goLogin() {
+      this.$router.push({ path: "/login" });
     },
-    close(){
-	this.$router.push({ path: "/login" });
-    },
-    // 注册
-    login() {
-	var url=this.tableName+"/register";
-      if((!this.ruleForm.zhanghao) && `yonghu` == this.tableName){
-        this.$message.error(`账号不能为空`);
-        return
+    submitRegister() {
+      const url = this.tableName + "/register";
+      if ((!this.ruleForm.zhanghao) && this.tableName === "yonghu") {
+        this.$message.error("账号不能为空");
+        return;
       }
-      if((!this.ruleForm.mima) && `yonghu` == this.tableName){
-        this.$message.error(`密码不能为空`);
-        return
+      if ((!this.ruleForm.mima) && this.tableName === "yonghu") {
+        this.$message.error("密码不能为空");
+        return;
       }
-      if((this.ruleForm.mima!=this.ruleForm.mima2) && `yonghu` == this.tableName){
-	    this.$message.error(`两次密码输入不一致`);
-	    return
+      if ((this.ruleForm.mima !== this.ruleForm.mima2) && this.tableName === "yonghu") {
+        this.$message.error("两次密码输入不一致");
+        return;
       }
-      if((!this.ruleForm.xingming) && `yonghu` == this.tableName){
-        this.$message.error(`姓名不能为空`);
-        return
+      if ((!this.ruleForm.xingming) && this.tableName === "yonghu") {
+        this.$message.error("姓名不能为空");
+        return;
       }
-      if(`yonghu` == this.tableName && this.ruleForm.nianling&&(!this.$validate.isNumber(this.ruleForm.nianling))){
-        this.$message.error(`年龄应输入数字`);
-        return
+      if (this.tableName === "yonghu" && this.ruleForm.nianling && (!this.$validate.isNumber(this.ruleForm.nianling))) {
+        this.$message.error("年龄应输入数字");
+        return;
       }
-      if(`yonghu` == this.tableName && this.ruleForm.shouji&&(!this.$validate.isMobile(this.ruleForm.shouji))){
-        this.$message.error(`手机应输入手机格式`);
-        return
+      if (this.tableName === "yonghu" && this.ruleForm.shouji && (!this.$validate.isMobile(this.ruleForm.shouji))) {
+        this.$message.error("手机应输入手机格式");
+        return;
       }
       this.$http({
         url: url,
         method: "post",
-        data:this.ruleForm
+        data: this.ruleForm
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$message({
-            message: "注册成功",
+            message: "注册成功，请登录",
             type: "success",
             duration: 1500,
             onClose: () => {
@@ -142,344 +152,202 @@ export default {
             }
           });
         } else {
-          this.$message.error(data.msg);
+          this.$message.error((data && data.msg) || "注册失败");
         }
+      }).catch((error) => {
+        this.$message.error((error && error.message) || "注册请求失败");
       });
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
-	}
+.register-page {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 
-	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
-	}
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.32), transparent 24%),
+      radial-gradient(circle at 82% 18%, rgba(163, 214, 255, 0.28), transparent 18%),
+      linear-gradient(135deg, rgba(4, 24, 70, 0.12), rgba(17, 93, 211, 0.08));
+    pointer-events: none;
+  }
+}
 
-	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
-	}
+.register-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  padding: 40px 40px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 28px 80px rgba(4, 22, 66, 0.28);
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
 
-	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
-	}
+.title-container {
+  margin-bottom: 24px;
+  text-align: center;
+}
 
-	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
-	}
+.title {
+  margin: 0;
+  color: #0f2f6c;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.4;
+}
 
-	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
-	}
+.subtitle {
+  margin: 10px 0 0;
+  color: #6f83a8;
+  font-size: 14px;
+}
 
-	.h1 {
-		margin-top: 10px;
-	}
+.register-form {
+  width: 100%;
+}
 
-	body {
-		padding: 0;
-		margin: 0;
-	}
+.form-item {
+  width: 100%;
+  margin-bottom: 18px;
 
-	// .container {
- //    min-height: 100vh;
- //    text-align: center;
- //    // background-color: #00c292;
- //    padding-top: 20vh;
- //    background-image: url(../assets/img/bg.jpg);
- //    background-size: 100% 100%;
- //    opacity: 0.9;
- //  }
+  & ::v-deep .el-form-item__label {
+    width: 92px;
+    padding-right: 14px;
+    color: #1f2d3d;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 46px;
+  }
 
-	// .login-form:before {
-	// 	vertical-align: middle;
-	// 	display: inline-block;
-	// }
+  & ::v-deep .el-form-item__content {
+    display: flex;
+  }
 
-	// .login-form {
-	// 	max-width: 500px;
-	// 	padding: 20px 0;
-	// 	width: 80%;
-	// 	position: relative;
-	// 	margin: 0 auto;
+  & ::v-deep .el-input__inner {
+    height: 46px;
+    line-height: 46px;
+    border-radius: 12px;
+    border: 1px solid rgba(174, 198, 245, 0.9);
+    background: linear-gradient(180deg, #f9fbff 0%, #f3f8ff 100%);
+    color: #102a56;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
 
-	// 	.label {
-	// 		min-width: 60px;
-	// 	}
+  & ::v-deep .el-input__inner:focus {
+    border-color: #1f6fff;
+    box-shadow: 0 0 0 4px rgba(31, 111, 255, 0.12);
+    background: #fff;
+  }
+}
 
-	// 	.input-group {
-	// 		max-width: 500px;
-	// 		padding: 20px 0;
-	// 		width: 80%;
-	// 		position: relative;
-	// 		margin: 0 auto;
-	// 		display: flex;
-	// 		align-items: center;
+.action-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+}
 
-	// 		.input-container {
-	// 			display: inline-block;
-	// 			width: 100%;
-	// 			text-align: left;
-	// 			margin-left: 10px;
-	// 		}
+.primary-btn,
+.secondary-btn {
+  min-width: 120px;
+  height: 46px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
 
-	// 		.icon {
-	// 			width: 30px;
-	// 			height: 30px;
-	// 		}
+.primary-btn {
+  border: 0;
+  background: linear-gradient(135deg, #2c7dff 0%, #1f6fff 100%);
+  box-shadow: 0 16px 28px rgba(31, 111, 255, 0.28);
 
-	// 		.input {
-	// 			position: relative;
-	// 			z-index: 2;
-	// 			float: left;
-	// 			width: 100%;
-	// 			margin-bottom: 0;
-	// 			box-shadow: none;
-	// 			border-top: 0px solid #ccc;
-	// 			border-left: 0px solid #ccc;
-	// 			border-right: 0px solid #ccc;
-	// 			border-bottom: 1px solid #ccc;
-	// 			padding: 0px;
-	// 			resize: none;
-	// 			border-radius: 0px;
-	// 			display: block;
-	// 			width: 100%;
-	// 			height: 34px;
-	// 			padding: 6px 12px;
-	// 			font-size: 14px;
-	// 			line-height: 1.42857143;
-	// 			color: #555;
-	// 			background-color: #fff;
-	// 		}
+  &:hover,
+  &:focus {
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+    box-shadow: 0 20px 34px rgba(31, 111, 255, 0.32);
+  }
+}
 
-	// 	}
-	// }
+.secondary-btn {
+  border: 1px solid rgba(174, 198, 245, 0.9);
+  background: rgba(244, 248, 255, 0.92);
+  color: #2d5ca8;
 
-	.nk-navigation {
-		margin-top: 15px;
+  &:hover,
+  &:focus {
+    transform: translateY(-2px);
+    border-color: #8db7ff;
+    box-shadow: 0 12px 24px rgba(78, 123, 206, 0.16);
+  }
+}
 
-		a {
-			display: inline-block;
-			color: #fff;
-			background: rgba(255, 255, 255, .2);
-			width: 100px;
-			height: 50px;
-			border-radius: 30px;
-			text-align: center;
-			display: flex;
-			align-items: center;
-			margin: 0 auto;
-			justify-content: center;
-			padding: 0 20px;
-		}
+.login-link-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 18px;
+  font-size: 14px;
+}
 
-		.icon {
-			margin-left: 10px;
-			width: 30px;
-			height: 30px;
-		}
-	}
+.login-tip {
+  color: #6c82aa;
+}
 
-	.register-container {
-		margin-top: 10px;
+.login-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #3f8cff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 
-		a {
-			display: inline-block;
-			color: #fff;
-			max-width: 500px;
-			height: 50px;
-			border-radius: 30px;
-			text-align: center;
-			display: flex;
-			align-items: center;
-			margin: 0 auto;
-			justify-content: center;
-			padding: 0 20px;
+  &:hover {
+    color: #1f6fff;
+    text-shadow: 0 0 12px rgba(31, 111, 255, 0.2);
+  }
+}
 
-			div {
-				margin-left: 10px;
-			}
-		}
-	}
+@media (max-width: 768px) {
+  .register-card {
+    padding: 32px 22px 26px;
+  }
 
-	.container {
-		height: 100vh;
-		background-position: center center;
-		background-size: cover;
-		background-repeat: no-repeat;
-    
-		.login-form {
-			right: 50%;
-			top: 50%;
-			transform: translate3d(50%, -50%, 0);
-			border-radius: 10px;
-			background-color: rgba(255,255,255,.5);
-			font-size: 14px;
-			font-weight: 500;
-      box-sizing: border-box;
+  .form-item {
+    & ::v-deep .el-form-item__label {
+      width: 78px;
+      padding-right: 10px;
+    }
+  }
 
-			width: 480px;
-			height: auto;
-			padding: 10px;
-			margin: 0px 0px 0px 0px;
-			border-radius: 10px;
-			border-width: 0;
-			border-style: solid;
-			border-color: rgba(255,0,0,0);
-			background-color: rgba(255, 255, 255, 0.5);
-			box-shadow: 0 0 0px rgba(255,0,0,.1);
+  .action-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-			.h1 {
-				width: 460px;
-				height: 40px;
-				line-height:40px;
-				color: #000;
-				font-size: 23px;
-				padding: 0;
-				margin: 0px 0px 0px 0px;
-				border-radius: 0;
-				border-width: 0;
-				border-style: solid;
-				border-color: rgba(255,0,0,0);
-				background-color: rgba(144, 238, 144, 0);
-				box-shadow: 0 0 6px rgba(255,0,0,0);
-				text-align: center;
-			}
-
-			.rgs-form {
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-
-        .el-form-item {
-          width: 100%;
-          display: flex;
-
-          & ::v-deep .el-form-item__content {
-            flex: 1;
-            display: flex;
-          }
-        }
-
-				.input {
-          width: 400px;
-          height:auto;
-          padding: 0;
-          margin: 0 0 10px 0;
-          border-radius: 0;
-          border-width: 0;
-          border-style: solid;
-          border-color: rgba(255,0,0,0);
-          background-color: rgba(255, 69, 0, 0);
-          box-shadow: 0 0 6px rgba(255,0,0,0);
-
-					& ::v-deep .el-form-item__label {
-            width: 110px;
-            line-height:40px;
-            color: rgba(0, 3, 9, 1);
-            font-size: 14px;
-            padding: 0px 0px 0px 0px;
-            margin: 0px 12px 0px 0px;
-            border-radius: 0;
-            border-width: 0;
-            border-style: solid;
-            border-color: rgba(255,0,0,0);
-            background-color: rgba(255,0,0,0);
-            box-shadow: 0 0 6px rgba(255,0,0,0);
-					}
-
-					& ::v-deep .el-input__inner {
-            width: 220px;
-            height: 40px;
-            line-height:40px;
-            color: rgba(0, 0, 0, 1);
-            font-size: 14px;
-            padding: 0 12px;
-            margin: 0;
-            border-radius: 4px;
-            border-width: 1px;
-            border-style: solid;
-            border-color: #606266;
-            background-color: #fff;
-            box-shadow: 0 0 6px rgba(255,0,0,0);
-            text-align: left;
-					}
-				}
-
-        .send-code {
-          & ::v-deep .el-input__inner {
-            width: 140px;
-            height: 40px;
-            line-height:40px;
-            color: rgba(0, 0, 0, 1);
-            font-size: 14px;
-            padding: 0 12px;
-            margin: 0;
-            border-radius: 4px 0px 0px 4px;
-            border-width: 1;
-            border-style: solid;
-            border-color: #606266;
-            background-color: #fff;
-            box-shadow: 0 0 6px rgba(255,0,0,0);
-            text-align: left;
-          }
-
-          .register-code {
-            margin: 0;
-            padding: 0;
-            width: 80px;
-            height: 40px;
-            line-height:40px;
-            color: #fff;
-            font-size: 14px;
-            border-width: 0;
-            border-style: solid;
-            border-color: rgba(255,0,0,0);
-            border-radius: 0;
-            background-color: rgb(64, 158, 255);
-            box-shadow: 0 0 6px rgba(255,0,0,0);
-          }
-        }
-
-				.btn {
-					margin: 0 10px;
-          padding: 0;
-					width: 88px;
-					height: 44px;
-          line-height:44px;
-					color: rgba(0, 0, 0, 1);
-					font-size: 14px;
-					border-width: 0;
-					border-style: solid;
-					border-color: rgba(64, 158, 255, 1);
-					border-radius: 4px;
-					background-color: rgba(64, 158, 255, 1);
-          box-shadow: 0 0 0px rgba(255,0,0,0);
-				}
-
-				.close {
-          margin: 0 10px;
-          padding: 0;
-          width: 88px;
-          height: 44px;
-          line-height:44px;
-          color: rgba(0, 0, 0, 1);
-          font-size: 14px;
-          border-width: 0;
-          border-style: solid;
-          border-color: rgba(64, 158, 255, 1);
-          border-radius: 4px;
-          background-color: rgba(64, 158, 255, 1);
-          box-shadow: 0 0 0px rgba(255,0,0,0);
-				}
-
-			}
-		}
-	}
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+}
 </style>

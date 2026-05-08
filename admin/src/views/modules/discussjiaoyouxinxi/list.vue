@@ -198,6 +198,12 @@ export default {
       return val.replace(/<[^>]*>/g).replace(/undefined/g,'');
     }
   },
+  watch: {
+    '$route.query.refid'() {
+      this.pageIndex = 1;
+      this.getDataList();
+    }
+  },
   components: {
     AddOrUpdate,
   },

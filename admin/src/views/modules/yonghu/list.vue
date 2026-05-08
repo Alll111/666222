@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="main-content">
     <!-- 列表页 -->
     <div v-if="showFlag">

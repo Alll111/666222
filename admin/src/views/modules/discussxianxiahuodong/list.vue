@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="main-content">
     <!-- 列表页 -->
     <div v-if="showFlag">
@@ -196,6 +196,12 @@ export default {
   filters: {
     htmlfilter: function (val) {
       return val.replace(/<[^>]*>/g).replace(/undefined/g,'');
+    }
+  },
+  watch: {
+    '$route.query.refid'() {
+      this.pageIndex = 1;
+      this.getDataList();
     }
   },
   components: {

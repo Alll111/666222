@@ -54,7 +54,7 @@ export default {
   .main-text{
     font-size: 38px;
     font-weight: bold;
-    margin-top: 15%;
+    margin-top: 12%;
   }
   .text {
     font-size: 24px;

@@ -1,7 +1,7 @@
 <template>
-			<el-main style="padding: 10px 20px; boxShadow: 0 0 6px rgba(0,0,0,0);">
+			<el-main class="index-main">
     		<bread-crumbs :title="title" class="bread-crumbs"></bread-crumbs>
-		<router-view class="router-view" style="height:auto;background: transparent;"></router-view>
+		<router-view class="router-view"></router-view>
 	</el-main>
 </template>
 
@@ -84,7 +84,7 @@
 	}
 
 	a:hover {
-		background: #00c292;
+		color: #1f6fff;
 	}
 
 	.nav-list {
@@ -118,26 +118,33 @@
 		}
 	}
 
+	.index-main,
 	.el-main {
-		// background-color: #F6F8FA;
-		padding: 0 24px;
-		min-height: 100vh;
-		// padding-top: 60px;
+		padding: 14px 28px 28px;
+		min-height: 0;
+		height: 100%;
+		background: #f5f7fb;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		box-sizing: border-box;
 	}
 
 	.router-view {
-		padding: 10px;
-		margin-top: 10px;
-		background: #FFFFFF;
+		padding: 0;
+		margin-top: 0;
+		background: transparent;
 		box-sizing: border-box;
+		flex: 1;
+		min-height: 0;
 	}
 
 	.bread-crumbs {
 		width: 100%;
-		// border-bottom: 1px solid #e9eef3;
-		// border-top: 1px solid #e9eef3;
-		margin-top: 10px;
+		margin-top: 0;
+		margin-bottom: 14px;
 		box-sizing: border-box;
+		flex-shrink: 0;
 	}
 	
 	.detail-form-content {

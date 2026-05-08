@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="main-content">
     <!-- 列表页 -->
     <div v-if="showFlag">
@@ -179,6 +179,7 @@ export default {
       },
       form:{},
       forumChild: false,
+      currentParentId: 0,
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -393,28 +394,23 @@ export default {
     init () {
     },
     search(id,flag) {
-      if(id!='' && id!=undefined) {
-          this.forumChild = true;
-      } else {
-          this.forumChild = false;
-      }
+      this.currentParentId = id !== '' && id !== undefined ? Number(id) : 0;
+      this.forumChild = !!this.currentParentId;
       this.pageIndex = 1;
       this.getDataList(id,flag);
     },
 
     getDataList(id,flag) {
       this.dataListLoading = true;
+      const activeParentId = id !== '' && id !== undefined ? Number(id) : this.currentParentId;
       let params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        parentid : 0,
+        parentid : activeParentId || 0,
         sort: 'id',
       }
           if(this.searchForm.title!='' && this.searchForm.title!=undefined){
             params['title'] = '%' + this.searchForm.title + '%'
-          }
-          if(id!='' && id!=undefined){
-            params['parentid'] = id;
           }
       this.$http({
         url: "forum/page",
@@ -435,12 +431,12 @@ export default {
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.getDataList();
+      this.getDataList(this.currentParentId);
     },
     // 当前页
     currentChangeHandle(val) {
       this.pageIndex = val;
-      this.getDataList();
+      this.getDataList(this.currentParentId);
     },
     // 多选
     selectionChangeHandler(val) {

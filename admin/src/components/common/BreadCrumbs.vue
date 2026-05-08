@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-breadcrumb class="app-breadcrumb" separator="//" style="height:50px;backgroundColor:rgba(255, 0, 0, 0);borderRadius:4px;padding:0px 20px 0px 20px;boxShadow:0px 0px 0px #f903d4;borderWidth:0;borderStyle: solid ;borderColor:rgba(255, 215, 0, 1);">
     <transition-group name="breadcrumb" class="box" :style="2==1?'justifyContent:flex-start;':2==2?'justifyContent:center;':'justifyContent:flex-end;'">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
@@ -71,16 +71,6 @@ export default {
         document.querySelectorAll('.app-breadcrumb .el-breadcrumb__inner .no-redirect').forEach(el=>{
           el.style.color = "rgba(0, 0, 0, 1)"
         })
-
-        let str = "2"
-        if(2 == str) {
-          let headHeight = "62px"
-          headHeight = parseInt(headHeight) + 10 + 'px'
-          document.querySelectorAll('.app-breadcrumb').forEach(el=>{
-            el.style.marginTop = headHeight
-          })
-        }
-
       })
     },
   }
@@ -92,6 +82,12 @@ export default {
   display: block;
   font-size: 14px;
   line-height: 50px;
+  padding: 0 18px !important;
+  margin-top: 0 !important;
+  border: 1px solid rgba(219, 231, 255, 0.95);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 
   .box {
     display: flex;
@@ -102,8 +98,23 @@ export default {
   }
 
   .no-redirect {
-    color: #97a8be;
+    color: #1f2d3d;
     cursor: text;
+  }
+
+  ::v-deep .el-breadcrumb__separator {
+    margin: 0 10px;
+    color: #9ab1d8 !important;
+  }
+
+  ::v-deep .el-breadcrumb__inner,
+  ::v-deep .el-breadcrumb__inner a {
+    color: #3f5f93 !important;
+    font-weight: 600;
+  }
+
+  ::v-deep .el-breadcrumb__item:last-child .el-breadcrumb__inner {
+    color: #1f6fff !important;
   }
 }
 </style>
