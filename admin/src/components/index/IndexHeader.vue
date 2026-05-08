@@ -98,7 +98,10 @@
 				router.replace({ name: "login" });
 			},
 			goToFront() {
-				window.open('http://localhost:8081/front', '_blank')
+				this.$storage.remove('Token')
+				localStorage.removeItem('token')
+				localStorage.removeItem('Token')
+				this.$router.push('/')
 			},
 			loadMessageCount() {
 				if (this.$storage.get('adminName')=='admin') {

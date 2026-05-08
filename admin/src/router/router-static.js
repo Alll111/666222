@@ -6,7 +6,6 @@ Vue.use(VueRouter);
 import Index from '@/views/index'
 import Home from '@/views/home'
 import Login from '@/views/login'
-import FrontIndex from '@/views/front/index'
 import NotFound from '@/views/404'
 import UpdatePassword from '@/views/update-password'
 import pay from '@/views/pay'
@@ -27,7 +26,6 @@ import center from '@/views/center'
 const routes = [{
     path: '/index',
     component: Index,
-    redirect: '/index/home',
     children: [{
       path: 'home',
       alias: '',
@@ -122,18 +120,12 @@ const routes = [{
     meta: {icon:'', title:'register'}
   },
   {
-    path: '/front',
-    name: 'Front',
-    component: FrontIndex,
-    meta: { title:'前台首页', noAuth: true }
-  },
-  {
     path: '/',
     redirect: '/admin/index'
   },
   {
     path: '/admin/index',
-    redirect: '/index/home'
+    redirect: '/index'
   }, /*默认跳转路由*/
   {
     path: '*',

@@ -161,7 +161,7 @@ export default {
           this.$storage.set("role", this.rulesForm.role);
           this.$storage.set("sessionTable", this.tableName);
           this.$storage.set("adminName", this.rulesForm.username);
-          this.$router.replace({ path: "/admin/index" });
+          this.$router.replace({ path: "/index" });
         } else {
           this.$message.error((data && (data.message || data.msg)) || "登录失败");
         }
