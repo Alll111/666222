@@ -145,7 +145,7 @@ export default {
       }
 
       this.$http({
-        url: '/api/login',
+        url: '/login',
         method: "post",
         params: {
           username: this.rulesForm.username,

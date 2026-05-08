@@ -21,8 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer{
         registry.addInterceptor(getAuthorizationInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/api/login",
-                        "/api/menu/list",
+                        "/login",
                         "/error",
                         "/static/**",
                         "/upload/**",

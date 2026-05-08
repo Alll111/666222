@@ -74,7 +74,7 @@ public class ApiController {
         data.put("token", token);
         res.put("code", 200);
         res.put("data", data);
-        res.put("message", "成功");
+        res.put("message", "");
         return res;
     }
 

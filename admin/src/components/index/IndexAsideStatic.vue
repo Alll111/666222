@@ -97,19 +97,14 @@ export default {
   methods: {
 	loadMenu() {
 		this.$http({
-			url: '/api/menu/list',
+			url: '/menu/list',
 			method: 'get'
 		}).then(({ data }) => {
-			if (data && data.code === 200 && Array.isArray(data.data)) {
+			const parsedMenu = this.parseBackendMenu(data)
+			if (parsedMenu.length > 0) {
 				this.menuList = [{
 					roleName: this.role || '管理员',
-					backMenu: data.data.map(item => ({
-						menu: item.name,
-						child: [{
-							menu: item.name,
-							tableName: this.getTableName(item.path)
-						}]
-					}))
+					backMenu: parsedMenu
 				}]
 				this.$storage.set('menus', this.menuList)
 				return
@@ -118,6 +113,23 @@ export default {
 		}).catch(() => {
 			this.useLocalMenu()
 		})
+	},
+	parseBackendMenu(data) {
+		const menuArray = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : [])
+		return menuArray.map(item => {
+			if (item && Array.isArray(item.child)) {
+				return item
+			}
+			const name = item && (item.name || item.menu) ? (item.name || item.menu) : ''
+			const rawPath = item && (item.path || item.tableName) ? (item.path || item.tableName) : ''
+			return {
+				menu: name,
+				child: [{
+					menu: name,
+					tableName: this.getTableName(rawPath)
+				}]
+			}
+		}).filter(item => item.menu && Array.isArray(item.child) && item.child.length > 0 && item.child[0].tableName)
 	},
 	useLocalMenu() {
 		const menus = menu.list()
