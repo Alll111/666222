@@ -122,7 +122,11 @@ const routes = [{
   },
   {
     path: '/',
-    redirect: '/index'
+    redirect: '/admin/index'
+  },
+  {
+    path: '/admin/index',
+    redirect: '/index/home'
   }, /*默认跳转路由*/
   {
     path: '*',

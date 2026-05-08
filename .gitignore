@@ -29,6 +29,7 @@ logs/
 .cache/
 .parcel-cache/
 .eslintcache
+node_modules/.cache/
 
 # Maven
 .mvn/
@@ -37,3 +38,7 @@ logs/
 # Backend
 backend/target/
 springbootk73q9/backend/target/
+
+# Admin
+admin/dist/
+admin/node_modules/

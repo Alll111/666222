@@ -29,23 +29,16 @@ lintOnSave: false,
     devServer: {
         host: "0.0.0.0", //指定使用一个 host。默认是 localhost，这里默认值即可
         port: 8081, //指定端口
+        open: true,
         hot: true, // 开启热更新
         https: false, // 是否开启https模式
         proxy: { // 请求代理服务器
             '/api': {
-                target: 'http://localhost:8080/springbootk73q9',
+                target: 'http://localhost:8080',
                 changeOrigin: true,
                 secure: false,
                 pathRewrite: {
-                    '^/api': ''
-                }
-            },
-            '/springbootk73q9': { // 保留旧前缀兼容上传组件
-                target: 'http://localhost:8080/springbootk73q9',
-                changeOrigin: true,
-                secure: false,
-                pathRewrite: {
-                    '^/springbootk73q9': ''
+                    '^/api': '/'
                 }
             }
         }

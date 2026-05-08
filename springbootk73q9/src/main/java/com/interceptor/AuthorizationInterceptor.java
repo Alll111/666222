@@ -1,9 +1,6 @@
 package com.interceptor;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,16 +33,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-		//支持跨域请求
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,request-source,Token, Origin,imgType, Content-Type, cache-control,postman-token,Cookie, Accept,authorization");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-	// 跨域时会首先发送一个OPTIONS请求，这里我们给OPTIONS请求直接返回正常状态
+	// 预检请求直接放行，跨域由全局 CORS 配置处理
 	if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
         	response.setStatus(HttpStatus.OK.value());
-            return false;
+            return true;
         }
         
         IgnoreAuth annotation;
@@ -57,6 +48,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         //从header中获取token
         String token = request.getHeader(LOGIN_TOKEN_KEY);
+        if (StringUtils.isBlank(token)) {
+            String authorization = request.getHeader("Authorization");
+            if (StringUtils.isNotBlank(authorization) && authorization.startsWith("Bearer ")) {
+                token = authorization.substring(7);
+            }
+        }
         
         /**
          * 不需要验证权限的方法直接放过

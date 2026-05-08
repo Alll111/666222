@@ -154,10 +154,11 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$storage.set("Token", data.token);
+          localStorage.setItem("token", data.token);
           this.$storage.set("role", this.rulesForm.role);
           this.$storage.set("sessionTable", this.tableName);
           this.$storage.set("adminName", this.rulesForm.username);
-          this.$router.replace({ path: "/index/" });
+          this.$router.replace({ path: "/admin/index" });
         } else {
           this.$message.error((data && data.msg) || "登录失败");
         }
