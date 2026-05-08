@@ -59,3 +59,22 @@ export function getCurDate() {
     day = currentTime.getDate() < 10 ? '0' + currentTime.getDate() : currentTime.getDate();
     return year + "-" + month + "-" + day;
 }
+
+/**
+ * 防抖函数
+ * @param {Function} fn
+ * @param {Number} delay
+ * @returns {Function}
+ */
+export function debounce(fn, delay = 300) {
+    let timer = null;
+    return function (...args) {
+        const context = this;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            if (typeof fn === 'function') {
+                fn.apply(context, args);
+            }
+        }, delay);
+    };
+}

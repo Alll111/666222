@@ -1,13 +1,13 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表�?-->
+    <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
-                <el-form-item :label="contents.inputTitle == 1 ? '用户�? : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.nickname" placeholder="用户�? clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.nickname" placeholder="用户�? clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.nickname" placeholder="用户�? clearable></el-input>
+                <el-form-item :label="contents.inputTitle == 1 ? '用户名' : ''">
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.nickname" placeholder="用户名" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.nickname" placeholder="用户名" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.nickname" placeholder="用户名" clearable></el-input>
                 </el-form-item>
                 <el-form-item :label="contents.inputTitle == 1 ? '评论内容' : ''">
                   <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.content" placeholder="评论内容" clearable></el-input>
@@ -86,7 +86,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="nickname"
                    :header-align="contents.tableAlign"
-		    label="用户�?>
+		    label="用户名">
 		     <template slot-scope="scope">
                        {{scope.row.nickname}}
                      </template>
@@ -149,7 +149,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组�?->
+    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -265,7 +265,8 @@ export default {
         })
       })
     },
-    // 新增、批量删�?    contentBtnAdAllStyleChange() {
+    // 新增、批量删除
+    contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
           el.style.height = this.contents.btnAdAllHeight
@@ -415,16 +416,19 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页�?    sizeChangeHandle(val) {
+    // 每页数
+    sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前�?    currentChangeHandle(val) {
+    // 当前页
+    currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多�?    selectionChangeHandler(val) {
+    // 多选
+    selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
     // 添加/修改
@@ -441,7 +445,7 @@ export default {
     },
     // 查看评论
     disscussListHandler(id,type) {
-	this.$router.push({path:'/discussdiscussxianxiahuodong',query:{refid:id}});
+	this.$router.push({path:'/discussxianxiahuodong',query:{refid:id}});
     },
     // 下载
     download(file){

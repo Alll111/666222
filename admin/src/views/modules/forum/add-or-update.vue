@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -22,8 +22,8 @@
         </div>
       </el-col>
       <el-col :span="12">
-        <el-form-item class="select" v-if="type!='info'"  label="状�? prop="isdone">
-          <el-select :disabled="ro.isdone" v-model="ruleForm.isdone" placeholder="请选择状�?>
+        <el-form-item class="select" v-if="type!='info'"  label="状态" prop="isdone">
+          <el-select :disabled="ro.isdone" v-model="ruleForm.isdone" placeholder="请选择状态">
             <el-option
                 v-for="(item,index) in isdoneOptions"
                 v-bind:key="index"
@@ -33,9 +33,9 @@
           </el-select>
         </el-form-item>
         <div v-else>
-          <el-form-item class="input" label="状�? prop="isdone">
+          <el-form-item class="input" label="状态" prop="isdone">
 	      <el-input v-model="ruleForm.isdone"
-                placeholder="状�? readonly></el-input>
+                placeholder="状态" readonly></el-input>
           </el-form-item>
         </div>
       </el-col>
@@ -77,7 +77,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号�?));
+        callback(new Error("请输入正确的身份证号码"));
       } else {
         callback();
       }
@@ -122,7 +122,7 @@ export default {
       if(!value){
         callback();
       } else if (!isNumber(value)) {
-        callback(new Error("请输入数�?));
+        callback(new Error("请输入数字"));
       } else {
         callback();
       }
@@ -131,7 +131,7 @@ export default {
       if(!value){
         callback();
       } else if (!isIntNumer(value)) {
-        callback(new Error("请输入整�?));
+        callback(new Error("请输入整数"));
       } else {
         callback();
       }
@@ -190,7 +190,7 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 初始�?
+    // 初始化
     init(id,type) {
       if (id) {
         this.id = id;
@@ -236,7 +236,7 @@ export default {
           }
         }
       }
-            this.isdoneOptions = "开�?关闭".split(',')
+            this.isdoneOptions = "开放,关闭".split(',')
     },
     // 多级联动参数
     info(id) {
@@ -273,7 +273,7 @@ export default {
 
 var objcross = this.$storage.getObj('crossObj');
 
-      //更新跨表属�?
+      //更新跨表属性
        var crossuserid;
        var crossrefid;
        var crossoptnum;

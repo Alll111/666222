@@ -39,9 +39,9 @@
             </div>
           </div>
         </div>
-        <div class="siliao-input">
+        <div class="siliao-input" v-if="activePeer">
           <el-input type="textarea" :rows="3" v-model="content"></el-input>
-          <el-button type="primary" @click="send">发�?/el-button>
+          <el-button type="primary" @click="send">发送</el-button>
         </div>
       </div>
     </div>
@@ -82,6 +82,8 @@ export default {
           const s = this.sessions.find(x => x.sessionId === d.sessionId)
           if (s) this.selectSession(s)
           else this.selectSession({ sessionId: d.sessionId, peerUserId: d.peerUserId, peerZhanghao: d.peerZhanghao, peerXingming: d.peerXingming, peerTouxiang: d.peerTouxiang, unreadCount: 0 })
+        } else if (data && data.msg) {
+          this.$message.error(data.msg)
         }
       })
     },
@@ -126,7 +128,7 @@ export default {
           this.refreshSessions()
           this.$emit('refreshCount')
         } else {
-          this.$message.error((data && data.msg) || '发送失�?)
+          this.$message.error((data && data.msg) || '发送失败')
         }
       })
     },
@@ -193,4 +195,3 @@ export default {
 .siliao-input{border-top:1px solid #eee;padding:10px;display:flex;gap:10px;align-items:flex-end}
 .siliao-input .el-textarea{flex:1}
 </style>
-

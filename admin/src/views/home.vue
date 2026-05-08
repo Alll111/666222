@@ -30,6 +30,8 @@ export default {
             if (data && data.code != 0) {
             gotoLogin()
             }
+        }).catch(() => {
+            gotoLogin()
         });
         }else{
             gotoLogin()

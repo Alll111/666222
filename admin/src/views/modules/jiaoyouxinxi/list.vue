@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <!-- 列表�?-->
+    <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
@@ -119,7 +119,7 @@
                       <div v-if="scope.row.jiaoyoutupian">
                         <img :src="$base.url+scope.row.jiaoyoutupian.split(',')[0]" width="100" height="100">
                       </div>
-                      <div v-else>无图�?/div>
+                      <div v-else>无图片</div>
                     </template>
                   </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -130,9 +130,9 @@
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
                   prop="sfsh"
                  :header-align="contents.tableAlign"
-                  label="审核状�?>
+                  label="审核状态">
                   <template slot-scope="scope">
-                    <span style="margin-right:10px">{{scope.row.sfsh=='�??'通过':'未通过'}}</span>
+                    <span style="margin-right:10px">{{scope.row.sfsh=='是'?'通过':'未通过'}}</span>
                   </template>
               </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -184,7 +184,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组�?->
+    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
     <siliao-dialog ref="siliaoDialog" @refreshCount="refreshHeaderCount"></siliao-dialog>
@@ -195,10 +195,10 @@
       :visible.sync="sfshVisiable"
       width="50%">
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="审核状�?>
-          <el-select v-model="shForm.sfsh" placeholder="审核状�?>
-            <el-option label="通过" value="�?></el-option>
-            <el-option label="不通过" value="�?></el-option>
+        <el-form-item label="审核状态">
+          <el-select v-model="shForm.sfsh" placeholder="审核状态">
+            <el-option label="通过" value="是"></el-option>
+            <el-option label="不通过" value="否"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
@@ -206,8 +206,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="shDialog">�?�?/el-button>
-        <el-button type="primary" @click="shHandler">�?�?/el-button>
+        <el-button @click="shDialog">取 消</el-button>
+        <el-button type="primary" @click="shHandler">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -338,7 +338,8 @@ export default {
         })
       })
     },
-    // 新增、批量删�?    contentBtnAdAllStyleChange() {
+    // 新增、批量删除
+    contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
           el.style.height = this.contents.btnAdAllHeight
@@ -482,18 +483,26 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
+      }).catch((error) => {
+        this.dataList = [];
+        this.totalPage = 0;
+        this.dataListLoading = false;
+        this.$message.error((error && error.message) || '数据加载失败');
       });
     },
-    // 每页�?    sizeChangeHandle(val) {
+    // 每页数
+    sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前�?    currentChangeHandle(val) {
+    // 当前页
+    currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多�?    selectionChangeHandler(val) {
+    // 多选
+    selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
     // 添加/修改
@@ -556,10 +565,12 @@ export default {
               }
             });
           } else {
-            this.$message.error(data.msg);
+            this.$message.error((data && data.msg) || '操作失败');
           }
+        }).catch((error) => {
+          this.$message.error((error && error.message) || '操作失败');
         });
-      });
+      }).catch(() => {});
     },
     // 下载
     download(file){
@@ -592,10 +603,12 @@ export default {
               }
             });
           } else {
-            this.$message.error(data.msg);
+            this.$message.error((data && data.msg) || '删除失败');
           }
+        }).catch((error) => {
+          this.$message.error((error && error.message) || '删除失败');
         });
-      });
+      }).catch(() => {});
     },
 
 

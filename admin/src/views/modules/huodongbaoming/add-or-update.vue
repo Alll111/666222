@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -107,7 +107,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号"));
+        callback(new Error("请输入正确的身份证号码"));
       } else {
         callback();
       }
@@ -226,7 +226,7 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 初始�?
+    // 初始化
     init(id,type) {
       if (id) {
         this.id = id;
@@ -273,9 +273,8 @@ export default {
         }
       }
       // 获取用户信息
-      const sessionTable = this.$storage.get('sessionTable') || 'users'
       this.$http({
-        url: `${sessionTable}/session`,
+        url: `${this.$storage.get('sessionTable')}/session`,
         method: "get"
       }).then(({ data }) => {
         if (data && data.code === 0) {
@@ -331,7 +330,7 @@ export default {
 
 var objcross = this.$storage.getObj('crossObj');
 
-      //更新跨表属�?
+      //更新跨表属性
        var crossuserid;
        var crossrefid;
        var crossoptnum;
@@ -613,4 +612,3 @@ var objcross = this.$storage.getObj('crossObj');
   padding: 0;
 }
 </style>
-

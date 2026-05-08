@@ -145,8 +145,12 @@ export default {
       }
 
       this.$http({
-        url: `${this.tableName}/login?username=${this.rulesForm.username}&password=${this.rulesForm.password}`,
-        method: "post"
+        url: `${this.tableName}/login`,
+        method: "post",
+        params: {
+          username: this.rulesForm.username,
+          password: this.rulesForm.password
+        }
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$storage.set("Token", data.token);
@@ -155,8 +159,10 @@ export default {
           this.$storage.set("adminName", this.rulesForm.username);
           this.$router.replace({ path: "/index/" });
         } else {
-          this.$message.error(data.msg);
+          this.$message.error((data && data.msg) || "登录失败");
         }
+      }).catch((error) => {
+        this.$message.error((error && error.message) || "登录请求失败");
       });
     },
     getRandCode(len = 4){

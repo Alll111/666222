@@ -87,8 +87,11 @@ export default {
       if (data && data.code === 0) {
         this.ruleForm = data.data;
       } else {
-        this.$message.error(data.msg);
+        this.$message.error((data && data.msg) || '加载用户信息失败');
       }
+    }).catch((error) => {
+      this.ruleForm = {};
+      this.$message.error((error && error.message) || '加载用户信息失败');
     });
     this.yonghuxingbieOptions = "男,女".split(',')
   },
@@ -120,7 +123,7 @@ export default {
         if(this.ruleForm.touxiang!=null) {
                 this.ruleForm.touxiang = this.ruleForm.touxiang.replace(new RegExp(this.$base.url,"g"),"");
         }
-      if('users'==this.flag && this.ruleForm.username.trim().length<1) {
+      if('users'==this.flag && (!this.ruleForm.username || this.ruleForm.username.trim().length<1)) {
 	this.$message.error(`用户名不能为空`);
         return
       }
@@ -139,8 +142,10 @@ export default {
             }
           });
         } else {
-          this.$message.error(data.msg);
+          this.$message.error((data && data.msg) || '修改失败');
         }
+      }).catch((error) => {
+        this.$message.error((error && error.message) || '修改失败');
       });
     }
   }

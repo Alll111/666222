@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -22,9 +22,9 @@
         </div>
       </el-col>
       <el-col :span="24">  
-        <el-form-item class="upload" v-if="type!='info' && !ro.value" label="�? prop="value">
+        <el-form-item class="upload" v-if="type!='info' && !ro.value" label="值" prop="value">
           <file-upload
-          tip="点击上传�?
+          tip="点击上传值"
           action="file/upload"
           :limit="3"
           :multiple="true"
@@ -33,7 +33,7 @@
           ></file-upload>
         </el-form-item>
         <div v-else>
-          <el-form-item v-if="ruleForm.value" label="�? prop="value">
+          <el-form-item v-if="ruleForm.value" label="值" prop="value">
             <img style="margin-right:20px;" v-bind:key="index" v-for="(item,index) in ruleForm.value.split(',')" :src="$base.url+item" width="100" height="100">
           </el-form-item>
         </div>
@@ -59,7 +59,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号"));
+        callback(new Error("请输入正确的身份证号码"));
       } else {
         callback();
       }
@@ -154,7 +154,7 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 初始�?
+    // 初始化
     init(id,type) {
       if (id) {
         this.id = id;
@@ -210,7 +210,7 @@ export default {
 
 var objcross = this.$storage.getObj('crossObj');
 
-      //更新跨表属�?
+      //更新跨表属性
        var crossuserid;
        var crossrefid;
        var crossoptnum;
@@ -496,4 +496,3 @@ var objcross = this.$storage.getObj('crossObj');
   padding: 0;
 }
 </style>
-

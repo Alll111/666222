@@ -102,6 +102,8 @@ export default {
                 this.menuList = JSON.parse(data.data.list[0].menujson);
                 this.$storage.set("menus", this.menuList);
             }
+        }).catch(() => {
+            this.menuList = []
         })
     }
     this.role = this.$storage.get('role')

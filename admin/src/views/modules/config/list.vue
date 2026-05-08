@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表�?-->
+    <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
 
@@ -43,12 +43,12 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="value"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="�?>
+                    label="值">
                     <template slot-scope="scope">
                       <div v-if="scope.row.value">
                         <img :src="$base.url+scope.row.value.split(',')[0]" width="100" height="100">
                       </div>
-                      <div v-else>无图�?/div>
+                      <div v-else>无图片</div>
                     </template>
                   </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
@@ -84,7 +84,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组�?->
+    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -345,7 +345,7 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页
+    // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;

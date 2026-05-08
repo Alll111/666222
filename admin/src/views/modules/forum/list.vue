@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表�?-->
+    <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row v-show="!forumChild" :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
@@ -106,7 +106,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="username"
                    :header-align="contents.tableAlign"
-		    label="用户�?>
+		    label="用户名">
 		     <template slot-scope="scope">
                        {{scope.row.username}}
                      </template>
@@ -115,7 +115,7 @@
                     v-if="!forumChild"
                     prop="isdone"
                    :header-align="contents.tableAlign"
-		    label="状�?>
+		    label="状态">
 		     <template slot-scope="scope">
                        {{scope.row.isdone}}
                      </template>
@@ -159,7 +159,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组�?->
+    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -431,7 +431,7 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页
+    // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;

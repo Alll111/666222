@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -41,17 +41,17 @@
       </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item class="textarea" v-if="type!='info'" label="简�? prop="introduction">
+              <el-form-item class="textarea" v-if="type!='info'" label="简介" prop="introduction">
                 <el-input
                   style="min-width: 200px; max-width: 600px;"
                   type="textarea"
                   :rows="8"
-                  placeholder="简�?
+                  placeholder="简介"
                   v-model="ruleForm.introduction" >
                 </el-input>
               </el-form-item>
               <div v-else>
-                <el-form-item v-if="ruleForm.introduction" label="简�? prop="introduction">
+                <el-form-item v-if="ruleForm.introduction" label="简介" prop="introduction">
                     <span>{{ruleForm.introduction}}</span>
                 </el-form-item>
               </div>
@@ -94,7 +94,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号�?));
+        callback(new Error("请输入正确的身份证号码"));
       } else {
         callback();
       }
@@ -139,7 +139,7 @@ export default {
       if(!value){
         callback();
       } else if (!isNumber(value)) {
-        callback(new Error("请输入数�?));
+        callback(new Error("请输入数字"));
       } else {
         callback();
       }
@@ -148,7 +148,7 @@ export default {
       if(!value){
         callback();
       } else if (!isIntNumer(value)) {
-        callback(new Error("请输入整�?));
+        callback(new Error("请输入整数"));
       } else {
         callback();
       }
@@ -199,7 +199,7 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 初始�?
+    // 初始化
     init(id,type) {
       if (id) {
         this.id = id;
@@ -270,7 +270,7 @@ export default {
 
 var objcross = this.$storage.getObj('crossObj');
 
-      //更新跨表属�?
+      //更新跨表属性
        var crossuserid;
        var crossrefid;
        var crossoptnum;

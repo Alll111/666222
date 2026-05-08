@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表�?-->
+    <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
@@ -140,9 +140,9 @@
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
                   prop="sfsh"
                  :header-align="contents.tableAlign"
-                  label="审核状�?>
+                  label="审核状态">
                   <template slot-scope="scope">
-                    <span style="margin-right:10px">{{scope.row.sfsh=='�??'通过':'未通过'}}</span>
+                    <span style="margin-right:10px">{{scope.row.sfsh=='是'?'通过':'未通过'}}</span>
                   </template>
               </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -190,7 +190,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组�?->
+    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -199,10 +199,10 @@
       :visible.sync="sfshVisiable"
       width="50%">
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="审核状�?>
-          <el-select v-model="shForm.sfsh" placeholder="审核状�?>
-            <el-option label="通过" value="�?></el-option>
-            <el-option label="不通过" value="�?></el-option>
+        <el-form-item label="审核状态">
+          <el-select v-model="shForm.sfsh" placeholder="审核状态">
+            <el-option label="通过" value="是"></el-option>
+            <el-option label="不通过" value="否"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
@@ -210,8 +210,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="shDialog">�?�?/el-button>
-        <el-button type="primary" @click="shHandler">�?�?/el-button>
+        <el-button @click="shDialog">取 消</el-button>
+        <el-button type="primary" @click="shHandler">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -326,7 +326,8 @@ export default {
         })
       })
     },
-    // 新增、批量删�?    contentBtnAdAllStyleChange() {
+    // 新增、批量删除
+    contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
           el.style.height = this.contents.btnAdAllHeight
@@ -475,16 +476,19 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页�?    sizeChangeHandle(val) {
+    // 每页数
+    sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前�?    currentChangeHandle(val) {
+    // 当前页
+    currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多�?    selectionChangeHandler(val) {
+    // 多选
+    selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
     // 添加/修改

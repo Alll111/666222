@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -10,14 +10,14 @@
     >
       <el-row >
       <el-col :span="12">
-        <el-form-item class="input" v-if="type!='info'"  label="用户�? prop="username">
+        <el-form-item class="input" v-if="type!='info'"  label="用户名" prop="username">
           <el-input v-model="ruleForm.username" 
-              placeholder="用户�? clearable  :readonly="ro.username"></el-input>
+              placeholder="用户名" clearable  :readonly="ro.username"></el-input>
         </el-form-item>
         <div v-else>
-          <el-form-item class="input" label="用户�? prop="username">
+          <el-form-item class="input" label="用户名" prop="username">
               <el-input v-model="ruleForm.username" 
-                placeholder="用户�? readonly></el-input>
+                placeholder="用户名" readonly></el-input>
           </el-form-item>
         </div>
       </el-col>
@@ -54,7 +54,7 @@ export default {
       if(!value){
         callback();
       } else if (!checkIdCard(value)) {
-        callback(new Error("请输入正确的身份证号"));
+        callback(new Error("请输入正确的身份证号码"));
       } else {
         callback();
       }
@@ -128,7 +128,7 @@ export default {
       },
       rules: {
           username: [
-                { required: true, message: '用户名不能为�?, trigger: 'blur' },
+                { required: true, message: '用户名不能为空', trigger: 'blur' },
           ],
           password: [
                 { required: true, message: '密码不能为空', trigger: 'blur' },
@@ -153,7 +153,7 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 初始�?
+    // 初始化
     init(id,type) {
       if (id) {
         this.id = id;
@@ -213,7 +213,7 @@ export default {
 
 var objcross = this.$storage.getObj('crossObj');
 
-      //更新跨表属�?
+      //更新跨表属性
        var crossuserid;
        var crossrefid;
        var crossoptnum;
@@ -495,4 +495,3 @@ var objcross = this.$storage.getObj('crossObj');
   padding: 0;
 }
 </style>
-

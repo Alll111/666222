@@ -76,6 +76,9 @@ export default {
       return this.$http({ url: '/siliao/sessions', method: 'get', params: { page: 1, limit: 50 } })
         .then(({ data }) => {
           if (data && data.code === 0) this.sessions = data.data.list || []
+          else this.sessions = []
+        }).catch(() => {
+          this.sessions = []
         })
     },
     selectSession(s) {
@@ -85,7 +88,7 @@ export default {
       this.$http({ url: '/siliao/markRead', method: 'post', data: { sessionId: s.sessionId } }).then(() => {
         this.refreshSessions()
         this.$emit('refreshCount')
-      })
+      }).catch(() => {})
     },
     loadHistory() {
       if (!this.activeSessionId) return
@@ -94,7 +97,9 @@ export default {
           if (data && data.code === 0) {
             this.messages = data.data.list || []
             this.$nextTick(() => this.scrollBottom())
-          }
+          } else this.messages = []
+        }).catch(() => {
+          this.messages = []
         })
     },
     send() {
@@ -113,6 +118,8 @@ export default {
         } else {
           this.$message.error((data && data.msg) || '发送失败')
         }
+      }).catch((error) => {
+        this.$message.error((error && error.message) || '发送失败')
       })
     },
     scrollBottom() {

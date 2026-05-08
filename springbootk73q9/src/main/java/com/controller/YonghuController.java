@@ -15,6 +15,7 @@ import com.utils.ValidatorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,11 +59,20 @@ public class YonghuController {
 	 * 登录
 	 */
 	@IgnoreAuth
-	@RequestMapping(value = "/login")
+	@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
 	public R login(String username, String password, String captcha, HttpServletRequest request) {
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+			return R.error(1, "账号或密码不能为空");
+		}
 		YonghuEntity user = yonghuService.selectOne(new EntityWrapper<YonghuEntity>().eq("zhanghao", username));
-		if(user==null || !user.getMima().equals(password)) {
-			return R.error("账号或密码不正确");
+		if(user==null) {
+			return R.error(1, "账号或密码不正确");
+		}
+		if (StringUtils.isBlank(user.getMima()) || !StringUtils.equals(user.getMima(), password)) {
+			return R.error(1, "账号或密码不正确");
+		}
+		if (user.getId() == null) {
+			return R.error(1, "用户数据异常，请联系管理员");
 		}
 		
 		String token = tokenService.generateToken(user.getId(), username,"yonghu",  "用户" );

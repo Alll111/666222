@@ -84,8 +84,10 @@
 					this.user = data.data;
 					this.$storage.set('userid',data.data.id);
 				} else {
-					this.$message.error(data.msg);
+					this.$message.error((data && data.msg) || '加载用户信息失败');
 				}
+			}).catch((error) => {
+				this.$message.error((error && error.message) || '加载用户信息失败');
 			});
 		},
 		methods: {
@@ -114,6 +116,10 @@
 					this.friendCount = da && da.code === 0 ? (da.count || 0) : 0
 					this.chatUnreadCount = db && db.code === 0 ? (db.count || 0) : 0
 					this.messageCount = this.friendCount + this.chatUnreadCount
+				}).catch(() => {
+					this.friendCount = 0
+					this.chatUnreadCount = 0
+					this.messageCount = 0
 				})
 			},
 			loadMessageList() {
@@ -126,6 +132,9 @@
 						this.messageList = data.data.list || []
 						this.total = data.data.total || 0
 					}
+				}).catch(() => {
+					this.messageList = []
+					this.total = 0
 				})
 			},
 			openMessageDialog() {
@@ -160,6 +169,8 @@
 						} else {
 							this.$message.error(data.msg || '处理失败')
 						}
+					}).catch((error) => {
+						this.$message.error((error && error.message) || '处理失败')
 					})
 				}).catch(() => {});
 			},
@@ -181,6 +192,8 @@
 						} else {
 							this.$message.error(data.msg || '删除失败')
 						}
+					}).catch((error) => {
+						this.$message.error((error && error.message) || '删除失败')
 					})
 				}).catch(() => {});
 			},

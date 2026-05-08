@@ -19,7 +19,7 @@ import http from '@/utils/http.js'
 // 基础配置
 import base from '@/utils/base'
 // 工具类
-import { isAuth, getCurDate, getCurDateTime } from '@/utils/utils'
+import { isAuth, getCurDate, getCurDateTime, debounce } from '@/utils/utils'
 // storage 封装
 import storage from "@/utils/storage";
 // 上传组件
@@ -60,6 +60,10 @@ Vue.prototype.$api = api
 Vue.prototype.isAuth = isAuth
 Vue.prototype.getCurDateTime = getCurDateTime
 Vue.prototype.getCurDate = getCurDate
+Vue.prototype.$debounce = debounce
+if (typeof window !== 'undefined' && typeof window.debounce !== 'function') {
+  window.debounce = debounce
+}
 // Vue.prototype.$base = base
 Vue.use(ElementUI, { size: 'medium', zIndex: 3000 });
 Vue.config.productionTip = false

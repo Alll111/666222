@@ -297,6 +297,21 @@
                 }
             }
 
+      // Fallback in case utils.js is missing or fails before this inline script runs.
+      if (typeof debounce !== 'function') {
+        function debounce(fn, delay) {
+          var timer = null;
+          return function() {
+            var context = this;
+            var args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+              fn.apply(context, args);
+            }, delay);
+          };
+        }
+      }
+
       // 使用防抖优化iframe高度调整，避免频繁DOM操作
       var debouncedChangeFrameHeight = debounce(changeFrameHeight, 300);
       
