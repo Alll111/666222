@@ -23,8 +23,6 @@ spring:
       multipart:
         max-file-size: 300MB
         max-request-size: 300MB
-    resources:
-      static-locations: classpath:static/,file:static/
 
 #mybatis
 mybatis-plus:
