@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表页 -->
+    <!-- 鍒楄〃椤?-->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
 
@@ -21,7 +21,7 @@
             :fit="contents.tableFit"
             :stripe="contents.tableStripe"
             :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
-            v-if="isAuth('config','查看')"
+            v-if="isAuth('config','鏌ョ湅')"
             :data="dataList"
             v-loading="dataListLoading"
             @selection-change="selectionChangeHandler">
@@ -31,11 +31,11 @@
                 align="center"
                 width="50">
             </el-table-column>
-            <el-table-column label="索引" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
+            <el-table-column label="绱㈠紩" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="name"
                    :header-align="contents.tableAlign"
-		    label="名称">
+		    label="鍚嶇О">
 		     <template #default="scope">
                        {{ scope?.row?.name || '' }}
                      </template>
@@ -43,24 +43,24 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="value"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="值">
+                    label="鍊?">
                     <template #default="scope">
                       <div v-if="scope?.row?.value">
                         <img :src="$base.url + String(scope?.row?.value || '').split(',')[0]" width="100" height="100">
                       </div>
-                      <div v-else>无图片</div>
+                      <div v-else>鏃犲浘鐗?</div>
                     </template>
                   </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
-                label="操作">
+                label="鎿嶄綔">
                 <template #default="scope">
-                <el-button v-if="isAuth('config','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="isAuth('config','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="isAuth('config','查看') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if=" isAuth('config','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if=" isAuth('config','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('config','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if="isAuth('config','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
+                <el-button v-if="isAuth('config','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="isAuth('config','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
+                <el-button v-if=" isAuth('config','淇敼') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
+                <el-button v-if=" isAuth('config','淇敼') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if=" isAuth('config','淇敼') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
 
 
 
@@ -84,7 +84,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
+    <!-- 娣诲姞/淇敼椤甸潰  灏嗙埗缁勪欢鐨剆earch鏂规硶浼犻€掔粰瀛愮粍浠-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -156,10 +156,10 @@ export default {
           el.style.lineHeight = this.contents.inputHeight
           el.style.color = this.contents.inputFontColor
           el.style.fontSize = this.contents.inputFontSize
-          el.style.borderWidth = this.contents.inputBorderWidth
-          el.style.borderStyle = this.contents.inputBorderStyle
-          el.style.borderColor = this.contents.inputBorderColor
-          el.style.borderRadius = this.contents.inputBorderRadius
+          el.style.borderWidth = '1px'
+          el.style.borderStyle = 'solid'
+          el.style.borderColor = '#dcdfe6'
+          el.style.borderRadius = '4px'
           el.style.backgroundColor = this.contents.inputBgColor
         })
         if(this.contents.inputTitle) {
@@ -185,7 +185,7 @@ export default {
 
       })
     },
-    // 搜索按钮
+    // 鎼滅储鎸夐挳
     contentSearchBtnStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .slt .el-button--success').forEach(el=>{
@@ -200,7 +200,7 @@ export default {
         })
       })
     },
-    // 新增、批量删除
+    // 鏂板銆佹壒閲忓垹闄?
     contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
@@ -235,7 +235,7 @@ export default {
         })
       })
     },
-    // 表格
+    // 琛ㄦ牸
     // rowStyle({ row, rowIndex}) {
     //   if (rowIndex % 2 == 1) {
     //     if(this.contents.tableStripe) {
@@ -260,7 +260,7 @@ export default {
     headerCellStyle({ row, rowIndex}){
       return {backgroundColor: this.contents.tableHeaderBgColor}
     },
-    // 表格按钮
+    // 琛ㄦ牸鎸夐挳
     contentTableBtnStyleChange(){
       // this.$nextTick(()=>{
       //   setTimeout(()=>{
@@ -298,7 +298,7 @@ export default {
       //   }, 50)
       // })
     },
-    // 分页
+    // 鍒嗛〉
     contentPageStyleChange(){
       let arr = []
 
@@ -321,7 +321,7 @@ export default {
       this.getDataList();
     },
 
-    // 获取数据列表
+    // 鑾峰彇鏁版嵁鍒楄〃
     getDataList() {
       this.dataListLoading = true;
       let params = {
@@ -345,22 +345,22 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页数
+    // 姣忛〉鏁?
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前页
+    // 褰撳墠椤?
     currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多选
+    // 澶氶€?
     selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
-    // 添加/修改
+    // 娣诲姞/淇敼
     addOrUpdateHandler(id,type) {
       this.showFlag = false;
       this.addOrUpdateFlag = true;
@@ -372,21 +372,21 @@ export default {
         this.$refs.addOrUpdate.init(id,type);
       });
     },
-    // 查看评论
-    // 下载
+    // 鏌ョ湅璇勮
+    // 涓嬭浇
     download(file){
       window.open(`${file}`)
     },
-    // 删除
+    // 鍒犻櫎
     deleteHandler(id) {
       var ids = id
         ? [Number(id)]
         : this.dataListSelections.map(item => {
             return Number(item.id);
           });
-      this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(`纭畾杩涜[${id ? "鍒犻櫎" : "鎵归噺鍒犻櫎"}]鎿嶄綔?`, "鎻愮ず", {
+        confirmButtonText: "纭畾",
+        cancelButtonText: "鍙栨秷",
         type: "warning"
       }).then(() => {
         this.$http({
@@ -396,7 +396,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作成功",
+              message: "鎿嶄綔鎴愬姛",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -503,3 +503,5 @@ export default {
 	   	 }
 	 
 </style>
+
+

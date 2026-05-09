@@ -7,8 +7,8 @@
           <button v-if="!isLoggedIn" class="text-btn" @click="goFront('/login')">登录</button>
           <button v-if="!isLoggedIn" class="text-btn" @click="goFront('/register')">注册</button>
           <button v-if="isAdmin" class="text-btn" @click="goAdmin">后台管理</button>
-          <button v-if="isLoggedIn" class="icon-btn" @click="goCenter" aria-label="消息通知">
-            <el-badge :hidden="!totalUnread" :value="totalUnread" :max="99">
+          <button v-if="isLoggedIn" class="icon-btn" @click="goMessageCenter" aria-label="消息通知">
+            <el-badge :hidden="!totalUnread" :value="totalUnread" :max="99" class="front-message-badge">
               <el-icon><Bell /></el-icon>
             </el-badge>
           </button>
@@ -57,6 +57,7 @@ export default {
       projectName: '校友社交系统',
       friendCount: 0,
       chatCount: 0,
+      messagePollTimer: null,
       userInfo: null,
       navItems: [
         { name: '首页', path: '/front/home', match: '/front/home' },
@@ -82,7 +83,12 @@ export default {
   },
   created() {
     this.syncFrontUserInfo()
-    this.loadMessageCount()
+    this.startMessagePolling()
+    window.addEventListener('refresh-message-count', this.loadMessageCount)
+  },
+  beforeUnmount() {
+    this.stopMessagePolling()
+    window.removeEventListener('refresh-message-count', this.loadMessageCount)
   },
   watch: {
     '$route.fullPath'() {
@@ -103,26 +109,43 @@ export default {
         }).catch(() => {})
       }
     },
+    startMessagePolling() {
+      this.stopMessagePolling()
+      this.loadMessageCount()
+      if (!this.isLoggedIn) {
+        return
+      }
+      this.messagePollTimer = window.setInterval(() => {
+        this.loadMessageCount()
+      }, 15000)
+    },
+    stopMessagePolling() {
+      if (this.messagePollTimer) {
+        window.clearInterval(this.messagePollTimer)
+        this.messagePollTimer = null
+      }
+    },
     loadMessageCount() {
       if (!this.isLoggedIn) {
         this.friendCount = 0
         this.chatCount = 0
         return
       }
-      Promise.allSettled([
-        this.$http({ url: '/haoyoushenqing/inboxCount', method: 'get' }),
-        this.$http({ url: '/siliao/unreadSummary', method: 'get' })
-      ]).then(results => {
-        const friendRes = results[0].status === 'fulfilled' ? results[0].value : null
-        const chatRes = results[1].status === 'fulfilled' ? results[1].value : null
-        const friendData = friendRes && friendRes.data ? friendRes.data : {}
-        const chatData = chatRes && chatRes.data ? chatRes.data : {}
-        this.friendCount = friendData && friendData.code === 0 ? Number(friendData.data || 0) : 0
-        this.chatCount = chatData && chatData.code === 0 ? Number((chatData.data || {}).chatUnreadCount || 0) : 0
+      this.$http({ url: '/siliao/messageSummary', method: 'get' }).then(({ data }) => {
+        const summary = data && data.code === 0 ? (data.data || {}) : {}
+        this.friendCount = Number(summary.friendUnreadCount || 0)
+        this.chatCount = Number(summary.chatUnreadCount || 0)
       }).catch(() => {
         this.friendCount = 0
         this.chatCount = 0
       })
+    },
+    goMessageCenter() {
+      if (!this.requireLogin('请先登录后查看消息')) {
+        return
+      }
+      const tab = this.friendCount > 0 ? 'friend' : (this.chatCount > 0 ? 'chat' : 'friend')
+      this.goFront(`/front/center?tab=${tab}`)
     },
     goCenter() {
       if (!this.requireLogin('请先登录后访问个人中心')) {
@@ -233,6 +256,12 @@ export default {
   color: #1f6fff;
   background: #eef5ff;
   border-color: #cddfff;
+}
+
+:deep(.front-message-badge .el-badge__content) {
+  border: 0;
+  background: linear-gradient(135deg, #ff7a6c, #ff4d4f);
+  box-shadow: 0 6px 14px rgba(255, 77, 79, 0.28);
 }
 
 .avatar-box {

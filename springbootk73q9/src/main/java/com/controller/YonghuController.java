@@ -138,8 +138,9 @@ public class YonghuController {
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params,YonghuEntity yonghu,
 		HttpServletRequest request){
-        EntityWrapper<YonghuEntity> ew = new EntityWrapper<YonghuEntity>();
-		PageUtils page = yonghuService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, yonghu), params), params));
+        Map<String, Object> queryParams = normalizePageParams(params);
+        Wrapper<YonghuEntity> ew = new EntityWrapper<YonghuEntity>();
+		PageUtils page = yonghuService.queryPage(queryParams, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, yonghu), queryParams), queryParams));
 
         return R.ok().put("data", page);
     }
@@ -151,9 +152,38 @@ public class YonghuController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,YonghuEntity yonghu, 
 		HttpServletRequest request){
-        EntityWrapper<YonghuEntity> ew = new EntityWrapper<YonghuEntity>();
-		PageUtils page = yonghuService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, yonghu), params), params));
+        Map<String, Object> queryParams = normalizePageParams(params);
+        Wrapper<YonghuEntity> ew = new EntityWrapper<YonghuEntity>();
+		PageUtils page = yonghuService.queryPage(queryParams, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, yonghu), queryParams), queryParams));
         return R.ok().put("data", page);
+    }
+
+    private Map<String, Object> normalizePageParams(Map<String, Object> params) {
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        if (params != null) {
+            queryParams.putAll(params);
+        }
+        queryParams.put("page", parsePositiveInt(queryParams.get("page"), 1));
+        queryParams.put("limit", parsePositiveInt(queryParams.get("limit"), 10));
+        if (StringUtils.isBlank(String.valueOf(queryParams.get("sort")))) {
+            queryParams.put("sort", "id");
+        }
+        if (StringUtils.isBlank(String.valueOf(queryParams.get("order")))) {
+            queryParams.put("order", "asc");
+        }
+        return queryParams;
+    }
+
+    private String parsePositiveInt(Object value, int defaultValue) {
+        if (value == null) {
+            return String.valueOf(defaultValue);
+        }
+        try {
+            int parsed = Integer.parseInt(String.valueOf(value).trim());
+            return String.valueOf(parsed > 0 ? parsed : defaultValue);
+        } catch (Exception e) {
+            return String.valueOf(defaultValue);
+        }
     }
 
 	/**

@@ -114,7 +114,7 @@ const rules = {
 }
 
 const getRedirectPath = (role, tableName) => {
-  return tableName === 'users' || role === '管理员' || role === 'admin' ? '/index' : '/front'
+  return tableName === 'users' || role === '管理员' || role === 'admin' ? '/index' : '/front/home'
 }
 
 const goRegister = () => {

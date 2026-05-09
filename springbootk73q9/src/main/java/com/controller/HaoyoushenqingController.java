@@ -1,6 +1,9 @@
 package com.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,12 +17,19 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 
 import com.entity.HaoyoushenqingEntity;
 import com.entity.HaoyouEntity;
+import com.entity.JiaoyouxinxiEntity;
+import com.entity.SiliaoHuihuaEntity;
+import com.entity.SiliaoXiaoxiEntity;
 import com.entity.YonghuEntity;
 import com.service.HaoyoushenqingService;
 import com.service.HaoyouService;
+import com.service.JiaoyouxinxiService;
+import com.service.SiliaoHuihuaService;
+import com.service.SiliaoXiaoxiService;
 import com.service.YonghuService;
 import com.utils.PageUtils;
 import com.utils.R;
+import com.baomidou.mybatisplus.plugins.Page;
 
 @RestController
 @RequestMapping("/haoyoushenqing")
@@ -33,6 +43,15 @@ public class HaoyoushenqingController {
 
     @Autowired
     private YonghuService yonghuService;
+
+    @Autowired
+    private SiliaoHuihuaService siliaoHuihuaService;
+
+    @Autowired
+    private SiliaoXiaoxiService siliaoXiaoxiService;
+
+    @Autowired
+    private JiaoyouxinxiService jiaoyouxinxiService;
 
     @RequestMapping("/send")
     public R send(@RequestBody Map<String, Object> body, HttpServletRequest request) {
@@ -112,6 +131,96 @@ public class HaoyoushenqingController {
         return R.ok().put("data", page);
     }
 
+    @RequestMapping("/friendList")
+    public R friendList(@RequestParam Map<String, Object> params, HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");
+        if (userId == null) {
+            return R.error("未登录");
+        }
+        int pageNum = params.get("page") == null ? 1 : Integer.parseInt(params.get("page").toString());
+        int limit = params.get("limit") == null ? 10 : Integer.parseInt(params.get("limit").toString());
+        if (pageNum <= 0) {
+            pageNum = 1;
+        }
+        if (limit <= 0) {
+            limit = 10;
+        }
+        Page<HaoyouEntity> page = new Page<HaoyouEntity>(pageNum, limit);
+        List<HaoyouEntity> records = haoyouService.selectPage(
+                page,
+                new EntityWrapper<HaoyouEntity>().eq("userid", userId).orderBy("addtime", false)
+        ).getRecords();
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Date now = new Date();
+        for (HaoyouEntity relation : records) {
+            if (relation == null || relation.getFriendUserid() == null) {
+                continue;
+            }
+            Long friendUserId = relation.getFriendUserid();
+            YonghuEntity friendUser = yonghuService.selectById(friendUserId);
+            if (friendUser == null) {
+                continue;
+            }
+
+            int unreadCount = siliaoXiaoxiService.selectCount(
+                    new EntityWrapper<SiliaoXiaoxiEntity>()
+                            .eq("from_userid", friendUserId)
+                            .eq("to_userid", userId)
+                            .eq("is_read", 0)
+            );
+
+            Long user1Id = userId < friendUserId ? userId : friendUserId;
+            Long user2Id = userId < friendUserId ? friendUserId : userId;
+            SiliaoHuihuaEntity<?> session = siliaoHuihuaService.selectOne(
+                    new EntityWrapper<SiliaoHuihuaEntity>()
+                            .eq("user1_id", user1Id)
+                            .eq("user2_id", user2Id)
+            );
+
+            JiaoyouxinxiEntity latestJiaoyou = jiaoyouxinxiService.selectOne(
+                    new EntityWrapper<JiaoyouxinxiEntity>()
+                            .eq("zhanghao", friendUser.getZhanghao())
+                            .orderBy("addtime", false)
+                            .last("limit 1")
+            );
+
+            String onlineStatus = "离线";
+            if (session != null && session.getLastTime() != null) {
+                long diff = now.getTime() - session.getLastTime().getTime();
+                if (diff >= 0 && diff <= 10 * 60 * 1000L) {
+                    onlineStatus = "在线";
+                }
+            }
+
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", friendUser.getId());
+            item.put("relationId", relation.getId());
+            item.put("friendUserId", friendUserId);
+            item.put("zhanghao", friendUser.getZhanghao());
+            item.put("xingming", friendUser.getXingming());
+            item.put("xingbie", friendUser.getXingbie());
+            item.put("nianling", friendUser.getNianling());
+            item.put("shouji", friendUser.getShouji());
+            item.put("touxiang", friendUser.getTouxiang());
+            item.put("onlineStatus", onlineStatus);
+            item.put("unreadCount", unreadCount);
+            item.put("sessionId", session == null ? null : session.getId());
+            item.put("lastTime", session == null ? null : session.getLastTime());
+            item.put("lastMsg", session == null ? null : session.getLastMsg());
+            item.put("jiaoyouxinxiId", latestJiaoyou == null ? null : latestJiaoyou.getId());
+            item.put("jiaoyoumude", latestJiaoyou == null ? null : latestJiaoyou.getJiaoyoumude());
+            item.put("gerenjianjie", latestJiaoyou == null ? null : latestJiaoyou.getGerenjianjie());
+            item.put("friendAddtime", relation.getAddtime());
+            list.add(item);
+        }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("list", list);
+        data.put("total", page.getTotal());
+        return R.ok().put("data", data);
+    }
+
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids, HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");
@@ -127,6 +236,21 @@ public class HaoyoushenqingController {
                 haoyoushenqingService.deleteById(id);
             }
         }
+        return R.ok();
+    }
+
+    @RequestMapping("/friendDelete")
+    public R friendDelete(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");
+        if (userId == null) {
+            return R.error("未登录");
+        }
+        Long friendUserId = body.get("friendUserId") == null ? null : Long.valueOf(body.get("friendUserId").toString());
+        if (friendUserId == null) {
+            return R.error("缺少好友信息");
+        }
+        haoyouService.delete(new EntityWrapper<HaoyouEntity>().eq("userid", userId).eq("friend_userid", friendUserId));
+        haoyouService.delete(new EntityWrapper<HaoyouEntity>().eq("userid", friendUserId).eq("friend_userid", userId));
         return R.ok();
     }
 
@@ -173,4 +297,3 @@ public class HaoyoushenqingController {
         return R.ok();
     }
 }
-

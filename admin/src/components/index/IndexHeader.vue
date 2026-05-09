@@ -5,7 +5,7 @@
 			<div class="title-name" :style="{color:heads.headFontColor,fontSize:heads.headFontSize}">{{this.$project.projectName}}</div>
 		</div>
 		<div class="right-menu">
-			<el-badge v-if="this.$storage.get('adminName')!='admin' && messageCount>0" :value="messageCount" class="message-badge">
+			<el-badge v-if="this.$storage.get('adminName')!='admin' && messageCount>0" :value="messageCount" :max="99" class="message-badge">
 				<i class="el-icon-bell message-icon" @click="openMessageDialog"></i>
 			</el-badge>
 			<i v-else-if="this.$storage.get('adminName')!='admin'" class="el-icon-bell message-icon" @click="openMessageDialog"></i>
@@ -69,6 +69,7 @@
 				messageCount: 0,
 				friendCount: 0,
 				chatUnreadCount: 0,
+				messagePollTimer: null,
 				messageDialogVisible: false,
 				activeMsgTab: 'friend',
 				messageList: [],
@@ -80,8 +81,12 @@
 		},
 		created() {
 			this.setHeaderStyle()
-			this.loadMessageCount()
+			this.startMessagePolling()
 			window.addEventListener('refresh-message-count', this.loadMessageCount)
+		},
+		beforeUnmount() {
+			this.stopMessagePolling()
+			window.removeEventListener('refresh-message-count', this.loadMessageCount)
 		},
 		mounted() {
 			let sessionTable = this.$storage.get("sessionTable") || 'users'
@@ -109,6 +114,22 @@
 			goToFront() {
 				this.$router.push('/front/home')
 			},
+			startMessagePolling() {
+				this.stopMessagePolling()
+				this.loadMessageCount()
+				if (this.$storage.get('adminName')=='admin') {
+					return
+				}
+				this.messagePollTimer = window.setInterval(() => {
+					this.loadMessageCount()
+				}, 15000)
+			},
+			stopMessagePolling() {
+				if (this.messagePollTimer) {
+					window.clearInterval(this.messagePollTimer)
+					this.messagePollTimer = null
+				}
+			},
 			loadMessageCount() {
 				if (this.$storage.get('adminName')=='admin') {
 					this.messageCount = 0
@@ -116,15 +137,11 @@
 					this.chatUnreadCount = 0
 					return
 				}
-				Promise.all([
-					this.$http({ url: '/haoyoushenqing/inboxCount', method: 'get' }),
-					this.$http({ url: '/siliao/unreadCount', method: 'get' })
-				]).then(([a, b]) => {
-					const da = a && a.data
-					const db = b && b.data
-					this.friendCount = da && da.code === 0 ? (da.count || 0) : 0
-					this.chatUnreadCount = db && db.code === 0 ? (db.count || 0) : 0
-					this.messageCount = this.friendCount + this.chatUnreadCount
+				this.$http({ url: '/siliao/messageSummary', method: 'get' }).then(({ data }) => {
+					const summary = data && data.code === 0 ? (data.data || {}) : {}
+					this.friendCount = Number(summary.friendUnreadCount || 0)
+					this.chatUnreadCount = Number(summary.chatUnreadCount || 0)
+					this.messageCount = Number(summary.totalUnreadCount || 0)
 				}).catch(() => {
 					this.friendCount = 0
 					this.chatUnreadCount = 0
@@ -147,15 +164,8 @@
 				})
 			},
 			openMessageDialog() {
-				this.messageDialogVisible = true
-				this.page = 1
-				this.activeMsgTab = this.friendCount > 0 ? 'friend' : 'chat'
-				this.loadMessageList()
-				this.$nextTick(() => {
-					if (this.activeMsgTab === 'chat' && this.$refs.siliaoPanel) {
-						this.$refs.siliaoPanel.open()
-					}
-				})
+				const tab = this.friendCount > 0 ? 'friend' : (this.chatUnreadCount > 0 ? 'chat' : 'friend')
+				this.$router.push({ path: '/front/center', query: { tab } }).catch(() => {})
 			},
 			handlePageChange(p) {
 				this.page = p

@@ -1,63 +1,63 @@
 <template>
   <div class="main-content">
-    <!-- 列表页 -->
+    <!-- 闁告帗顨夐妴鍐┿亜?-->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
-                <el-form-item :label="contents.inputTitle == 1 ? '账号' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.zhanghao" placeholder="账号" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.zhanghao" placeholder="账号" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.zhanghao" placeholder="账号" clearable></el-input>
+                <el-form-item :label="contents.inputTitle == 1 ? '璐﹀彿' : ''">
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.zhanghao" placeholder="璐﹀彿" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.zhanghao" placeholder="璐﹀彿" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.zhanghao" placeholder="璐﹀彿" clearable></el-input>
                 </el-form-item>
-                <el-form-item :label="contents.inputTitle == 1 ? '姓名' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
+                <el-form-item :label="contents.inputTitle == 1 ? '濮撳悕' : ''">
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
                 </el-form-item>
           <el-form-item>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 2" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}<i class="el-icon-search el-icon--right"/></el-button>
-            <el-button v-if="contents.searchBtnIcon == 0" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
+            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}</el-button>
+            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 2" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}<i class="el-icon-search el-icon--right"/></el-button>
+            <el-button v-if="contents.searchBtnIcon == 0" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}</el-button>
           </el-form-item>
         </el-row>
 
         <el-row class="ad" :style="{justifyContent:contents.btnAdAllBoxPosition=='1'?'flex-start':contents.btnAdAllBoxPosition=='2'?'center':'flex-end'}">
           <el-form-item>
             <el-button
-              v-if="isAuth('yonghu','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1"
+              v-if="isAuth('yonghu','鏂板') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1"
               type="success"
               icon="el-icon-plus"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'新增':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}</el-button>
             <el-button
-              v-if="isAuth('yonghu','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2"
+              v-if="isAuth('yonghu','鏂板') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2"
               type="success"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'新增':'' }}<i class="el-icon-plus el-icon--right" /></el-button>
+            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}<i class="el-icon-plus el-icon--right" /></el-button>
             <el-button
-              v-if="isAuth('yonghu','新增') && contents.btnAdAllIcon == 0"
+              v-if="isAuth('yonghu','鏂板') && contents.btnAdAllIcon == 0"
               type="success"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'新增':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}</el-button>
             <el-button
-              v-if="isAuth('yonghu','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1 && contents.tableSelection"
+              v-if="isAuth('yonghu','鍒犻櫎') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               icon="el-icon-delete"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'删除':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}</el-button>
             <el-button
-              v-if="isAuth('yonghu','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2 && contents.tableSelection"
+              v-if="isAuth('yonghu','鍒犻櫎') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
             <el-button
-              v-if="isAuth('yonghu','删除') && contents.btnAdAllIcon == 0 && contents.tableSelection"
+              v-if="isAuth('yonghu','鍒犻櫎') && contents.btnAdAllIcon == 0 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'删除':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}</el-button>
 
 
 
@@ -73,7 +73,7 @@
             :fit="contents.tableFit"
             :stripe="contents.tableStripe"
             :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
-            v-if="isAuth('yonghu','查看')"
+            v-if="isAuth('yonghu','鏌ョ湅')"
             :data="dataList"
             v-loading="dataListLoading"
             @selection-change="selectionChangeHandler">
@@ -83,11 +83,11 @@
                 align="center"
                 width="50">
             </el-table-column>
-            <el-table-column label="索引" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
+            <el-table-column label="搴忓彿" :align="contents.tableAlign" v-if="contents.tableIndex" type="index" width="50" />
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="zhanghao"
                    :header-align="contents.tableAlign"
-		    label="账号">
+		    label="璐﹀彿">
 		     <template #default="scope">
                        {{ getScopeField(scope, 'zhanghao') }}
                      </template>
@@ -95,7 +95,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingming"
                    :header-align="contents.tableAlign"
-		    label="姓名">
+		    label="濮撳悕">
 		     <template #default="scope">
                        {{ getScopeField(scope, 'xingming') }}
                      </template>
@@ -103,7 +103,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingbie"
                    :header-align="contents.tableAlign"
-		    label="性别">
+		    label="鎬у埆">
 		     <template #default="scope">
                        {{ getScopeField(scope, 'xingbie') }}
                      </template>
@@ -111,7 +111,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="nianling"
                    :header-align="contents.tableAlign"
-		    label="年龄">
+		    label="骞撮緞">
 		     <template #default="scope">
                        {{ getScopeField(scope, 'nianling') }}
                      </template>
@@ -119,7 +119,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="shouji"
                    :header-align="contents.tableAlign"
-		    label="手机">
+		    label="鎵嬫満">
 		     <template #default="scope">
                        {{ getScopeField(scope, 'shouji') }}
                      </template>
@@ -127,31 +127,31 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="touxiang"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="头像">
+                    label="澶村儚">
                     <template #default="scope">
                       <div v-if="getAvatarUrl(scope)">
                         <img :src="getAvatarUrl(scope)" width="100" height="100">
                       </div>
-                      <div v-else>无图片</div>
+                      <div v-else>鏆傛棤鍥剧墖</div>
                     </template>
                   </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
-                label="操作">
+                label="鎿嶄綔">
                 <template #default="scope">
-                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','鏌ョ湅') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','鏌ョ湅') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="isAuth('yonghu','鏌ョ湅') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
+                <el-button v-if=" isAuth('yonghu','淇敼') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
+                <el-button v-if=" isAuth('yonghu','淇敼') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'淇敼':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if=" isAuth('yonghu','淇敼') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
 
 
 
 
-                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
-                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','鍒犻櫎') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','鍒犻櫎') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+                <el-button v-if="isAuth('yonghu','鍒犻櫎') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -171,7 +171,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
+    <!-- 婵烇綀顕ф慨?濞ｅ浂鍠楅弫鍏笺亜閻㈠憡妗? 閻忓繐妫涢崺妤冪磼閸曨亝顐介柣銊ュearch闁哄倽顫夌涵鑸靛閻樼儵鍋撻幒鏃傝埗閻庢稒鍔楃划宥嗙?-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
@@ -243,10 +243,10 @@ export default {
           el.style.lineHeight = this.contents.inputHeight
           el.style.color = this.contents.inputFontColor
           el.style.fontSize = this.contents.inputFontSize
-          el.style.borderWidth = this.contents.inputBorderWidth
-          el.style.borderStyle = this.contents.inputBorderStyle
-          el.style.borderColor = this.contents.inputBorderColor
-          el.style.borderRadius = this.contents.inputBorderRadius
+          el.style.borderWidth = '1px'
+          el.style.borderStyle = 'solid'
+          el.style.borderColor = '#dcdfe6'
+          el.style.borderRadius = '4px'
           el.style.backgroundColor = this.contents.inputBgColor
         })
         if(this.contents.inputTitle) {
@@ -272,7 +272,7 @@ export default {
 
       })
     },
-    // 搜索按钮
+    // 闁瑰吋绮庨崒銊╁箰婢舵劖灏?
     contentSearchBtnStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .slt .el-button--success').forEach(el=>{
@@ -287,7 +287,7 @@ export default {
         })
       })
     },
-    // 新增、批量删除
+    // 闁哄倹婢橀·鍐Υ娴ｇ懓顥楅梺鎻掔箰閸ㄥ綊姊?
     contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
@@ -322,7 +322,7 @@ export default {
         })
       })
     },
-    // 表格
+    // 閻炴稏鍔嶉悧?
     // rowStyle({ row, rowIndex}) {
     //   if (rowIndex % 2 == 1) {
     //     if(this.contents.tableStripe) {
@@ -347,7 +347,7 @@ export default {
     headerCellStyle({ row, rowIndex}){
       return {backgroundColor: this.contents.tableHeaderBgColor}
     },
-    // 表格按钮
+    // 閻炴稏鍔嶉悧鎼佸箰婢舵劖灏?
     contentTableBtnStyleChange(){
       // this.$nextTick(()=>{
       //   setTimeout(()=>{
@@ -385,7 +385,7 @@ export default {
       //   }, 50)
       // })
     },
-    // 分页
+    // 闁告帒妫濋妴?
     contentPageStyleChange(){
       let arr = []
 
@@ -423,7 +423,7 @@ export default {
       return touxiang ? this.$base.url + String(touxiang).split(',')[0] : '';
     },
 
-    // 获取数据列表
+    // 闁兼儳鍢茶ぐ鍥极閻楀牆绁﹂柛鎺擃殙閵?
     getDataList() {
       this.dataListLoading = true;
       let params = {
@@ -450,24 +450,28 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
+      }).catch(() => {
+        this.dataList = [];
+        this.totalPage = 0;
+        this.dataListLoading = false;
       });
     },
-    // 每页数
+    // 婵絽绻橀妴澶愬极?
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前页
+    // 鐟滅増鎸告晶鐘炽亜?
     currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多选
+    // 濠㈣埖宀搁埀?
     selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
-    // 添加/修改
+    // 婵烇綀顕ф慨?濞ｅ浂鍠楅弫?
     addOrUpdateHandler(id,type) {
       this.showFlag = false;
       this.addOrUpdateFlag = true;
@@ -479,19 +483,19 @@ export default {
         this.$refs.addOrUpdate.init(id,type);
       });
     },
-    // 查看评论
-    // 下载
+    // 闁哄被鍎冲﹢鍛嫚閸曨噮鍟?
+    // 濞戞挸顑堝ù?
     download(file){
       window.open(`${file}`)
     },
-    // 删除
+    // 闁告帞濞€濞?
     deleteHandler(id) {
       var ids = id
         ? [Number(id)]
         : this.dataListSelections.map(item => {
             return Number(item.id);
           });
-      this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+      this.$confirm(`是否确认${id ? '删除' : '批量删除'}选中的用户记录？`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -503,7 +507,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作成功",
+              message: "删除成功",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -610,3 +614,6 @@ export default {
 	   	 }
 	 
 </style>
+
+
+

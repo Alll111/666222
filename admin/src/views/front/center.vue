@@ -176,8 +176,133 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane label="交友信息" name="jiaoyou">
+          <div class="section-card">
+            <div class="section-head">
+              <div>
+                <h3>已添加好友</h3>
+                <p>查看好友近况、未读消息并快速发起私聊</p>
+              </div>
+            </div>
+            <el-table :data="addedFriendList" border empty-text="暂无已添加好友">
+              <el-table-column label="头像" width="88">
+                <template #default="scope">
+                  <el-avatar v-if="getImageUrl(scope?.row?.touxiang)" :src="getImageUrl(scope?.row?.touxiang)" />
+                  <el-avatar v-else>{{ getAvatarText(scope?.row) }}</el-avatar>
+                </template>
+              </el-table-column>
+              <el-table-column prop="zhanghao" label="账号" width="120" />
+              <el-table-column prop="xingming" label="姓名" width="120" />
+              <el-table-column prop="xingbie" label="性别" width="90" />
+              <el-table-column label="在线状态" width="120">
+                <template #default="scope">
+                  <el-tag :type="getOnlineStatus(scope?.row) === '在线' ? 'success' : 'info'">
+                    {{ getOnlineStatus(scope?.row) }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="未读消息" width="110">
+                <template #default="scope">
+                  <el-badge :value="getUnreadCount(scope?.row)" :hidden="getUnreadCount(scope?.row) <= 0">
+                    <span class="minor-text">{{ getUnreadCount(scope?.row) > 0 ? '有新消息' : '暂无未读' }}</span>
+                  </el-badge>
+                </template>
+              </el-table-column>
+              <el-table-column label="最近互动" min-width="180">
+                <template #default="scope">
+                  {{ formatDate(scope?.row?.lastTime || scope?.row?.friendAddtime) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" min-width="250">
+                <template #default="scope">
+                  <el-button size="small" type="primary" @click="openFriendChat(scope?.row)">私聊</el-button>
+                  <el-button size="small" @click="openFriendDetail(scope?.row)">详情</el-button>
+                  <el-button size="small" type="danger" @click="deleteAddedFriend(scope?.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="pager">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                v-model:current-page="addedFriendPage"
+                :page-size="limit"
+                :total="addedFriendTotal"
+                @current-change="loadAddedFriendList"
+              />
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-head section-head-wrap">
+              <div>
+                <h3>我发布的交友信息</h3>
+                <p>支持按审核状态筛选、查看详情、修改、查看评论和删除</p>
+              </div>
+              <div class="section-actions">
+                <el-select v-model="myJiaoyouStatus" clearable placeholder="全部状态" style="width: 150px;" @change="handleMyJiaoyouFilterChange">
+                  <el-option label="待审核" value="待审核" />
+                  <el-option label="是" value="是" />
+                  <el-option label="否" value="否" />
+                </el-select>
+                <el-button type="primary" @click="goAddJiaoyou">发布交友信息</el-button>
+              </div>
+            </div>
+            <el-table :data="myJiaoyouList" border empty-text="你还没有发布交友信息，快去发布一条吧">
+              <el-table-column label="配图" width="92">
+                <template #default="scope">
+                  <el-avatar v-if="getImageUrl(scope?.row?.jiaoyoutupian)" shape="square" :size="52" :src="getImageUrl(scope?.row?.jiaoyoutupian)" />
+                  <el-avatar v-else shape="square" :size="52">图</el-avatar>
+                </template>
+              </el-table-column>
+              <el-table-column prop="jiaoyoumude" label="标题/目的" min-width="180" show-overflow-tooltip />
+              <el-table-column label="描述" min-width="220" show-overflow-tooltip>
+                <template #default="scope">
+                  {{ getIntroSummary(scope?.row) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="审核状态" width="110">
+                <template #default="scope">
+                  <el-tag :type="getReviewStatusType(scope?.row)">
+                    {{ getReviewStatus(scope?.row) }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="发布时间" width="180">
+                <template #default="scope">
+                  {{ formatDate(scope?.row?.addtime) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="拒绝原因" min-width="180" show-overflow-tooltip>
+                <template #default="scope">
+                  {{ getRejectReason(scope?.row) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" min-width="320">
+                <template #default="scope">
+                  <el-button size="small" @click="openMyJiaoyouDetail(scope?.row)">详情</el-button>
+                  <el-button size="small" type="primary" @click="editMyJiaoyou(scope?.row)">修改</el-button>
+                  <el-button size="small" @click="openMyJiaoyouComments(scope?.row)">查看评论</el-button>
+                  <el-button size="small" type="danger" @click="deleteMyJiaoyou(scope?.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="pager">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                v-model:current-page="myJiaoyouPage"
+                :page-size="limit"
+                :total="myJiaoyouTotal"
+                @current-change="loadMyJiaoyouList"
+              />
+            </div>
+          </div>
+          <siliao-dialog ref="siliaoDialog" />
+        </el-tab-pane>
+
         <el-tab-pane label="私聊消息" name="chat">
-          <siliao-panel ref="siliaoPanel" />
+          <siliao-panel ref="siliaoPanel" @refreshCount="refreshMessageBadge" />
         </el-tab-pane>
       </el-tabs>
     </section>
@@ -187,10 +312,11 @@
 <script>
 import frontMixin from './front-mixin'
 import SiliaoPanel from '@/components/common/SiliaoPanel'
+import SiliaoDialog from '@/components/common/SiliaoDialog'
 
 export default {
   name: 'FrontCenter',
-  components: { SiliaoPanel },
+  components: { SiliaoPanel, SiliaoDialog },
   mixins: [frontMixin],
   data() {
     return {
@@ -223,7 +349,14 @@ export default {
       postTotal: 0,
       friendList: [],
       friendPage: 1,
-      friendTotal: 0
+      friendTotal: 0,
+      addedFriendList: [],
+      addedFriendPage: 1,
+      addedFriendTotal: 0,
+      myJiaoyouList: [],
+      myJiaoyouPage: 1,
+      myJiaoyouTotal: 0,
+      myJiaoyouStatus: ''
     }
   },
   created() {
@@ -250,6 +383,42 @@ export default {
     getFriendStatus(row) {
       return row && row.status ? row.status : ''
     },
+    getAvatarText(row) {
+      const text = (row && (row.xingming || row.zhanghao)) || '友'
+      return String(text).slice(0, 1)
+    },
+    getOnlineStatus(row) {
+      return row && row.onlineStatus ? row.onlineStatus : '离线'
+    },
+    getUnreadCount(row) {
+      return Number((row && row.unreadCount) || 0)
+    },
+    getReviewStatus(row) {
+      return row && row.sfsh ? row.sfsh : '待审核'
+    },
+    getReviewStatusType(row) {
+      const status = this.getReviewStatus(row)
+      if (status === '是') {
+        return 'success'
+      }
+      if (status === '否') {
+        return 'danger'
+      }
+      return 'warning'
+    },
+    getRejectReason(row) {
+      if (!row) {
+        return '暂无'
+      }
+      if (this.getReviewStatus(row) !== '否') {
+        return row.shhf || '暂无'
+      }
+      return row.shhf || '未填写'
+    },
+    getIntroSummary(row) {
+      const text = this.stripHtml(row && row.gerenjianjie ? row.gerenjianjie : '')
+      return text ? text.slice(0, 50) : '暂无简介'
+    },
     canAuditFriend(row) {
       return this.getFriendStatus(row) === '待处理'
     },
@@ -267,6 +436,9 @@ export default {
       }
       this.goFront(`/front/forum/add?id=${id}`)
     },
+    refreshMessageBadge() {
+      window.dispatchEvent(new Event('refresh-message-count'))
+    },
     handleTabChange() {
       this.loadByTab(this.activeTab)
       this.$router.replace({ path: '/front/center', query: { tab: this.activeTab } }).catch(() => {})
@@ -280,6 +452,9 @@ export default {
         this.loadPosts()
       } else if (tab === 'friend') {
         this.loadFriendList()
+      } else if (tab === 'jiaoyou') {
+        this.loadAddedFriendList()
+        this.loadMyJiaoyouList()
       } else if (tab === 'chat') {
         this.$nextTick(() => {
           if (this.$refs.siliaoPanel) {
@@ -417,6 +592,145 @@ export default {
         this.friendTotal = 0
       })
     },
+    loadAddedFriendList() {
+      this.$http({
+        url: 'haoyoushenqing/friendList',
+        method: 'get',
+        params: {
+          page: this.addedFriendPage,
+          limit: this.limit
+        }
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.addedFriendList = ((data.data || {}).list) || []
+          this.addedFriendTotal = Number((data.data || {}).total || 0)
+        } else {
+          this.addedFriendList = []
+          this.addedFriendTotal = 0
+        }
+      }).catch(() => {
+        this.addedFriendList = []
+        this.addedFriendTotal = 0
+      })
+    },
+    openFriendChat(row) {
+      if (!row || !row.zhanghao) {
+        this.$message.warning('未找到好友账号')
+        return
+      }
+      this.$nextTick(() => {
+        if (this.$refs.siliaoDialog) {
+          this.$refs.siliaoDialog.openByZhanghao(row.zhanghao)
+        }
+      })
+    },
+    openFriendDetail(row) {
+      const id = row && row.jiaoyouxinxiId
+      if (!id) {
+        this.$message.warning('该好友暂未发布交友信息')
+        return
+      }
+      this.goFront(`/front/jiaoyouxinxi/${id}`)
+    },
+    deleteAddedFriend(row) {
+      const friendUserId = row && row.friendUserId
+      if (!friendUserId) {
+        this.$message.warning('未找到好友信息')
+        return
+      }
+      this.$confirm('确定删除该好友吗？删除后双方好友关系都会解除。', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: 'haoyoushenqing/friendDelete',
+          method: 'post',
+          data: { friendUserId }
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('删除成功')
+            this.loadAddedFriendList()
+          } else {
+            this.$message.error((data && data.msg) || '删除失败')
+          }
+        })
+      }).catch(() => {})
+    },
+    handleMyJiaoyouFilterChange() {
+      this.myJiaoyouPage = 1
+      this.loadMyJiaoyouList()
+    },
+    goAddJiaoyou() {
+      this.goFront('/front/jiaoyouxinxi/add')
+    },
+    loadMyJiaoyouList() {
+      const params = {
+        page: this.myJiaoyouPage,
+        limit: this.limit
+      }
+      if (this.myJiaoyouStatus) {
+        params.sfsh = this.myJiaoyouStatus
+      }
+      this.$http({
+        url: 'jiaoyouxinxi/myPage',
+        method: 'get',
+        params
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.myJiaoyouList = ((data.data || {}).list) || []
+          this.myJiaoyouTotal = Number((data.data || {}).total || 0)
+        } else {
+          this.myJiaoyouList = []
+          this.myJiaoyouTotal = 0
+        }
+      }).catch(() => {
+        this.myJiaoyouList = []
+        this.myJiaoyouTotal = 0
+      })
+    },
+    openMyJiaoyouDetail(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/jiaoyouxinxi/${id}`)
+    },
+    editMyJiaoyou(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/jiaoyouxinxi/add?id=${id}`)
+    },
+    openMyJiaoyouComments(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/jiaoyouxinxi/${id}?tab=comment`)
+    },
+    deleteMyJiaoyou(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        this.$message.warning('未找到交友信息')
+        return
+      }
+      this.$confirm('确定删除这条交友信息吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: 'jiaoyouxinxi/myDelete',
+          method: 'post',
+          data: [id]
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('删除成功')
+            this.loadMyJiaoyouList()
+          } else {
+            this.$message.error((data && data.msg) || '删除失败')
+          }
+        })
+      }).catch(() => {})
+    },
     handleAudit(row, status) {
       const id = this.getRowId(row)
       if (!id) {
@@ -439,6 +753,7 @@ export default {
           if (data && data.code === 0) {
             this.$message.success('处理成功')
             this.loadFriendList()
+            this.refreshMessageBadge()
           } else {
             this.$message.error((data && data.msg) || '处理失败')
           }
@@ -462,6 +777,7 @@ export default {
           if (data && data.code === 0) {
             this.$message.success('删除成功')
             this.loadFriendList()
+            this.refreshMessageBadge()
           }
         })
       }).catch(() => {})
@@ -563,6 +879,54 @@ export default {
   margin-top: 22px;
 }
 
+.section-card {
+  margin-bottom: 22px;
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid #e6efff;
+  background: #fbfdff;
+}
+
+.section-card:last-child {
+  margin-bottom: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-head h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #101828;
+}
+
+.section-head p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.section-head-wrap {
+  flex-wrap: wrap;
+}
+
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.minor-text {
+  color: #667085;
+  font-size: 13px;
+}
+
 .empty-card {
   min-height: 160px;
   display: flex;
@@ -580,6 +944,11 @@ export default {
 @media (max-width: 768px) {
   .list-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-head,
+  .section-actions {
+    align-items: flex-start;
   }
 }
 </style>

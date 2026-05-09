@@ -1,18 +1,18 @@
-<template>
+﻿<template>
   <div class="main-content">
-    <!-- 列表页 -->
+    <!-- 閸掓銆冩い?-->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
                 <el-form-item :label="contents.inputTitle == 1 ? '活动名称' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
                 </el-form-item>
                 <el-form-item :label="contents.inputTitle == 1 ? '活动类型' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
                 </el-form-item>
           <el-form-item>
             <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
@@ -87,7 +87,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongmingcheng"
                    :header-align="contents.tableAlign"
-		    label="活动名称">
+		    label="濞茶濮╅崥宥囆?">
 		     <template #default="scope">
                        {{ scope?.row?.huodongmingcheng || '' }}
                      </template>
@@ -95,7 +95,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongleixing"
                    :header-align="contents.tableAlign"
-		    label="活动类型">
+		    label="濞茶濮╃猾璇茬€?">
 		     <template #default="scope">
                        {{ scope?.row?.huodongleixing || '' }}
                      </template>
@@ -103,7 +103,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongdidian"
                    :header-align="contents.tableAlign"
-		    label="活动地点">
+		    label="濞茶濮╅崷鎵仯">
 		     <template #default="scope">
                        {{ scope?.row?.huodongdidian || '' }}
                      </template>
@@ -111,7 +111,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongshijian"
                    :header-align="contents.tableAlign"
-		    label="活动时间">
+		    label="濞茶濮╅弮鍫曟？">
 		     <template #default="scope">
                        {{ scope?.row?.huodongshijian || '' }}
                      </template>
@@ -119,7 +119,7 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="huodongtupian"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="活动图片">
+                    label="濞茶濮╅崶鍓у">
                     <template #default="scope">
                       <div v-if="scope?.row?.huodongtupian">
                         <img :src="$base.url + String(scope?.row?.huodongtupian || '').split(',')[0]" width="100" height="100">
@@ -142,9 +142,9 @@
                 <el-button v-if=" isAuth('xianxiahuodong','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
-                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
-                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
+                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}</el-button>
+                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}</el-button>
 
 
                 <el-button v-if="isAuth('xianxiahuodong','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
@@ -169,7 +169,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 添加/修改页面  将父组件的search方法传递给子组件-->
+    <!-- 濞ｈ濮?娣囶喗鏁兼い鐢告桨  鐏忓棛鍩楃紒鍕閻ㄥ墕earch閺傝纭舵导鐘烩偓鎺旂舶鐎涙劗绮嶆禒?-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
     <huodongbaoming-cross-add-or-update v-if="huodongbaomingCrossAddOrUpdateFlag" :parent="this" ref="huodongbaomingCrossaddOrUpdate"></huodongbaoming-cross-add-or-update>
@@ -245,10 +245,10 @@ export default {
           el.style.lineHeight = this.contents.inputHeight
           el.style.color = this.contents.inputFontColor
           el.style.fontSize = this.contents.inputFontSize
-          el.style.borderWidth = this.contents.inputBorderWidth
-          el.style.borderStyle = this.contents.inputBorderStyle
-          el.style.borderColor = this.contents.inputBorderColor
-          el.style.borderRadius = this.contents.inputBorderRadius
+          el.style.borderWidth = '1px'
+          el.style.borderStyle = 'solid'
+          el.style.borderColor = '#dcdfe6'
+          el.style.borderRadius = '4px'
           el.style.backgroundColor = this.contents.inputBgColor
         })
         if(this.contents.inputTitle) {
@@ -274,7 +274,7 @@ export default {
 
       })
     },
-    // 搜索按钮
+    // 閹兼粎鍌ㄩ幐澶愭尦
     contentSearchBtnStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .slt .el-button--success').forEach(el=>{
@@ -289,7 +289,7 @@ export default {
         })
       })
     },
-    // 新增、批量删除
+    // 閺傛澘顤冮妴浣瑰闁插繐鍨归梽?
     contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
@@ -324,7 +324,7 @@ export default {
         })
       })
     },
-    // 表格
+    // 鐞涖劍鐗?
     // rowStyle({ row, rowIndex}) {
     //   if (rowIndex % 2 == 1) {
     //     if(this.contents.tableStripe) {
@@ -349,7 +349,7 @@ export default {
     headerCellStyle({ row, rowIndex}){
       return {backgroundColor: this.contents.tableHeaderBgColor}
     },
-    // 表格按钮
+    // 鐞涖劍鐗搁幐澶愭尦
     contentTableBtnStyleChange(){
       // this.$nextTick(()=>{
       //   setTimeout(()=>{
@@ -387,7 +387,7 @@ export default {
       //   }, 50)
       // })
     },
-    // 分页
+    // 閸掑棝銆?
     contentPageStyleChange(){
       let arr = []
 
@@ -441,7 +441,7 @@ export default {
       this.getDataList();
     },
 
-    // 获取数据列表
+    // 閼惧嘲褰囬弫鐗堝祦閸掓銆?
     getDataList() {
       this.dataListLoading = true;
       let params = {
@@ -470,22 +470,22 @@ export default {
         this.dataListLoading = false;
       });
     },
-    // 每页数
+    // 濮ｅ繘銆夐弫?
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
       this.getDataList();
     },
-    // 当前页
+    // 瑜版挸澧犳い?
     currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
     },
-    // 多选
+    // 婢舵岸鈧?
     selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
-    // 添加/修改
+    // 濞ｈ濮?娣囶喗鏁?
     addOrUpdateHandler(id,type) {
       this.showFlag = false;
       this.addOrUpdateFlag = true;
@@ -497,22 +497,22 @@ export default {
         this.$refs.addOrUpdate.init(id,type);
       });
     },
-    // 查看评论
+    // 閺屻儳婀呯拠鍕啈
     disscussListHandler(id,type) {
 	this.$router.push({path:'/discussxianxiahuodong',query:{refid:id}});
     },
-    // 下载
+    // 娑撳娴?
     download(file){
       window.open(`${file}`)
     },
-    // 删除
+    // 閸掔娀娅?
     deleteHandler(id) {
       var ids = id
         ? [Number(id)]
         : this.dataListSelections.map(item => {
             return Number(item.id);
           });
-      this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+      this.$confirm(`是否确认${id ? '删除' : '批量删除'}选中的线下活动记录？`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -524,7 +524,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作成功",
+              message: "删除成功",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -631,3 +631,7 @@ export default {
 	   	 }
 	 
 </style>
+
+
+
+

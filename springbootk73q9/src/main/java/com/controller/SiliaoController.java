@@ -229,6 +229,16 @@ public class SiliaoController {
                 .put("totalUnreadCount", friendUnreadCount + chatUnreadCount);
     }
 
+    @RequestMapping({"/messageSummary", "/unreadTotal"})
+    public R messageSummary(HttpServletRequest request) {
+        Long me = (Long) request.getSession().getAttribute("userId");
+        if (me == null) {
+            return R.error("未登录");
+        }
+        Map<String, Object> data = buildUnreadSummary(me);
+        return R.ok().put("data", data);
+    }
+
     @RequestMapping("/unreadList")
     public R unreadList(@RequestParam Map<String, Object> params, HttpServletRequest request) {
         Long me = (Long) request.getSession().getAttribute("userId");
@@ -286,5 +296,17 @@ public class SiliaoController {
         data.put("friendList", friendList);
         data.put("chatList", chatList);
         return R.ok().put("data", data);
+    }
+
+    private Map<String, Object> buildUnreadSummary(Long userId) {
+        int friendUnreadCount = haoyoushenqingService.selectCount(
+                new EntityWrapper<HaoyoushenqingEntity>().eq("to_userid", userId).eq("status", "待处理"));
+        int chatUnreadCount = siliaoXiaoxiService.selectCount(
+                new EntityWrapper<SiliaoXiaoxiEntity>().eq("to_userid", userId).eq("is_read", 0));
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("friendUnreadCount", friendUnreadCount);
+        data.put("chatUnreadCount", chatUnreadCount);
+        data.put("totalUnreadCount", friendUnreadCount + chatUnreadCount);
+        return data;
     }
 }

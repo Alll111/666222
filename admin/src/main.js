@@ -18,7 +18,7 @@ import { registerLegacyElIcons } from '@/icons/legacy-el-icons'
 
 const app = createApp(App)
 app.use(router)
-app.use(ElementPlus, { size: 'medium', zIndex: 3000 })
+app.use(ElementPlus, { size: 'default', zIndex: 3000 })
 
 app.config.globalProperties.$validate = validate
 app.config.globalProperties.$http = http

@@ -150,11 +150,11 @@
         </div>
       </div>
 
-      <el-tabs class="detail-tabs">
-        <el-tab-pane label="个人简介">
+      <el-tabs class="detail-tabs" v-model="detailTab">
+        <el-tab-pane label="个人简介" name="intro">
           <div class="rich-text" v-html="getFriendIntro(detail)" />
         </el-tab-pane>
-        <el-tab-pane label="评论">
+        <el-tab-pane label="评论" name="comment">
           <div class="comment-form">
             <el-input
               type="textarea"
@@ -217,6 +217,7 @@ export default {
       commentPage: 1,
       commentLimit: 10,
       commentTotal: 0,
+      detailTab: 'intro',
       form: {
         id: '',
         zhanghao: '',
@@ -288,6 +289,7 @@ export default {
       } else if (this.mode === 'add') {
         this.prepareForm()
       } else {
+        this.detailTab = this.$route.query.tab === 'comment' ? 'comment' : 'intro'
         this.loadDetail()
       }
     },
@@ -348,12 +350,15 @@ export default {
         const editId = this.$route.query.id
         if (editId) {
           this.$http({
-            url: `jiaoyouxinxi/info/${editId}`,
+            url: `jiaoyouxinxi/myInfo/${editId}`,
             method: 'get'
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.form = Object.assign({}, this.form, data.data || {})
               this.form.gerenjianjie = this.normalizeRichText(this.form.gerenjianjie)
+            } else {
+              this.$message.error((data && data.msg) || '无法加载当前记录')
+              this.goFront('/front/center?tab=jiaoyou')
             }
           })
         }
@@ -371,13 +376,13 @@ export default {
           jiaoyoutupian: this.normalizeUploadPath(this.form.jiaoyoutupian)
         })
         this.$http({
-          url: `jiaoyouxinxi/${payload.id ? 'update' : 'add'}`,
+          url: `jiaoyouxinxi/${payload.id ? 'myUpdate' : 'add'}`,
           method: 'post',
           data: payload
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message.success(payload.id ? '更新成功' : '发布成功')
-            this.goFront('/front/jiaoyouxinxi')
+            this.goFront('/front/center?tab=jiaoyou')
           } else {
             this.$message.error((data && data.msg) || '提交失败')
           }

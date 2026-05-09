@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <!-- 图片上传组件辅助-->
+  <div class="editor-wrap">
     <el-upload
+      ref="uploadRef"
       class="avatar-uploader"
       :action="getActionUrl"
       name="file"
@@ -12,18 +12,24 @@
       :before-upload="beforeUpload"
     ></el-upload>
 
-    <quill-editor
+    <QuillEditor
       class="editor"
-      v-model="content"
       ref="myQuillEditor"
+      theme="snow"
+      contentType="html"
+      :content="content"
       :options="editorOption"
-      @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)"
-      @change="onEditorChange($event)"
-    ></quill-editor>
+      @ready="onEditorReady"
+      @blur="onEditorBlur"
+      @focus="onEditorFocus"
+      @update:content="onEditorChange"
+    />
   </div>
 </template>
 <script>
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
   ["blockquote", "code-block"],
@@ -39,11 +45,6 @@ const toolbarOptions = [
   ["clean"],
   ["link", "image", "video"]
 ];
-
-import { quillEditor } from "vue-quill-editor";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
 
 export default {
   props: {
@@ -64,12 +65,13 @@ export default {
   },
 
   components: {
-    quillEditor
+    QuillEditor
   },
 
   data() {
     return {
       content: this.modelValue || this.value || "",
+      quill: null,
       quillUpdateImg: false,
       editorOption: {
         placeholder: "",
@@ -78,13 +80,7 @@ export default {
           toolbar: {
             container: toolbarOptions,
             handlers: {
-              image: function(value) {
-                if (value) {
-                  document.querySelector(".avatar-uploader input").click();
-                } else {
-                  this.quill.format("image", false);
-                }
-              }
+              image: () => this.triggerImageUpload()
             }
           }
         }
@@ -107,6 +103,13 @@ export default {
     }
   },
   methods: {
+    triggerImageUpload() {
+      const uploadEl = this.$refs.uploadRef && this.$refs.uploadRef.$el
+      const input = uploadEl ? uploadEl.querySelector("input[type='file']") : null
+      if (input) {
+        input.click()
+      }
+    },
     normalizeStoredUrl(url) {
       let normalized = String(url || "").split("?")[0].trim();
       if (!normalized) {
@@ -142,18 +145,29 @@ export default {
     },
     onEditorBlur() {},
     onEditorFocus() {},
-    onEditorChange() {
+    onEditorReady(quill) {
+      this.quill = quill
+    },
+    onEditorChange(value) {
+      this.content = value || ""
       this.$emit("input", this.content);
       this.$emit("update:modelValue", this.content);
     },
-    beforeUpload() {
+    beforeUpload(file) {
+      const isLtMax = file.size / 1024 <= this.maxSize
+      if (!isLtMax) {
+        this.$message.error(`上传图片大小不能超过 ${this.maxSize}KB`)
+        return false
+      }
       this.quillUpdateImg = true;
+      return true
     },
 
-    uploadSuccess(res, file) {
-      let quill = this.$refs.myQuillEditor.quill;
-      if (res.code === 0) {
-        let length = quill.getSelection().index;
+    uploadSuccess(res) {
+      const quill = this.quill;
+      if (res && res.code === 0 && quill) {
+        const selection = quill.getSelection(true)
+        const length = selection ? selection.index : quill.getLength()
         quill.insertEmbed(length, "image", this.buildAccessUrl(this.resolveUploadPath(res)));
         quill.setSelection(length + 1);
       } else {
@@ -183,6 +197,14 @@ export default {
 </script>
 
 <style>
+.editor-wrap {
+  width: 100%;
+}
+
+.avatar-uploader {
+  display: none;
+}
+
 .editor {
   line-height: normal !important;
 }
