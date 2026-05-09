@@ -2,7 +2,7 @@
   <div class="siliao-wrap">
     <div class="siliao-left">
       <div class="siliao-left-head">
-        <el-input size="mini" v-model="kw" placeholder="搜索"></el-input>
+        <el-input size="small" v-model="kw" placeholder="搜索"></el-input>
       </div>
       <div class="siliao-sessions">
         <div

@@ -91,24 +91,24 @@
                     prop="title"
                    :header-align="contents.tableAlign"
 		    label="帖子标题">
-		     <template slot-scope="scope">
-                       {{scope.row.title}}
+		     <template #default="scope">
+                       {{ scope?.row?.title || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column v-if="forumChild"  :sortable="contents.tableSortable" :align="contents.tableAlign"
                         prop="content"
                        :header-align="contents.tableAlign"
                 label="内容">
-                         <template slot-scope="scope">
-                           {{scope.row.content}}
+                         <template #default="scope">
+                           {{ scope?.row?.content || '' }}
                          </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="username"
                    :header-align="contents.tableAlign"
 		    label="用户名">
-		     <template slot-scope="scope">
-                       {{scope.row.username}}
+		     <template #default="scope">
+                       {{ scope?.row?.username || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -116,30 +116,30 @@
                     prop="isdone"
                    :header-align="contents.tableAlign"
 		    label="状态">
-		     <template slot-scope="scope">
-                       {{scope.row.isdone}}
+		     <template #default="scope">
+                       {{ scope?.row?.isdone || '' }}
                      </template>
                 </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
                 label="操作">
-                <template slot-scope="scope">
-                <el-button v-if="!forumChild && isAuth('forum','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="!forumChild && isAuth('forum','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="!forumChild && isAuth('forum','查看') && contents.tableBtnIcon == 0" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="!forumChild &&  isAuth('forum','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if="!forumChild &&  isAuth('forum','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if="!forumChild &&  isAuth('forum','修改') && contents.tableBtnIcon == 0" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <template #default="scope">
+                <el-button v-if="!forumChild && isAuth('forum','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if="!forumChild && isAuth('forum','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="!forumChild && isAuth('forum','查看') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if="!forumChild &&  isAuth('forum','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if="!forumChild &&  isAuth('forum','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if="!forumChild &&  isAuth('forum','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
-                <el-button v-if="!forumChild && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="mini" @click="search(scope.row.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
-                <el-button v-if="!forumChild && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="mini" @click="search(scope.row.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="!forumChild && contents.tableBtnIcon == 0" type="success" size="mini" @click="search(scope.row.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
+                <el-button v-if="!forumChild && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="search(scope?.row?.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
+                <el-button v-if="!forumChild && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="search(scope?.row?.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="!forumChild && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="search(scope?.row?.id,'child')">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
 
 
-                <el-button v-if="isAuth('forum','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
-                <el-button v-if="isAuth('forum','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('forum','删除') && contents.tableBtnIcon == 0" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('forum','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('forum','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+                <el-button v-if="isAuth('forum','删除') && scope?.row?.id && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -509,8 +509,8 @@ export default {
   }
 
   .pages {
-    & ::v-deep el-pagination__sizes{
-      & ::v-deep el-input__inner {
+    :deep(.el-pagination__sizes){
+      :deep(.el-input__inner) {
         height: 22px;
         line-height: 22px;
       }
@@ -523,7 +523,7 @@ export default {
   } 
 
   .tables {
-	& ::v-deep .el-button--success {
+	:deep(.el-button--success) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -534,7 +534,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--primary {
+	:deep(.el-button--primary) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -545,7 +545,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--danger {
+	:deep(.el-button--danger) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -556,7 +556,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 
-    & ::v-deep .el-button {
+    :deep(.el-button) {
       margin: 4px;
     }
   }
@@ -567,19 +567,19 @@ export default {
 		background: transparent;
 	}
 	
-	.tables ::v-deep .el-table__body tr {
+	:deep(.el-table__body tr) {
 				background-color: rgba(255, 255, 255, 1) !important;
 				color: rgba(0, 0, 0, 1) !important;
 	 }
-	.tables ::v-deep .el-table__body tr.el-table__row--striped td {
+	:deep(.el-table__body tr.el-table__row--striped td) {
 	    background: transparent;
 	}
-	.tables ::v-deep .el-table__body tr.el-table__row--striped {
+	:deep(.el-table__body tr.el-table__row--striped) {
 		background-color: rgba(119, 197, 227, 0.8) !important;
 		color: rgba(0, 0, 0, 1) !important;
 	}
 	
-	 .tables ::v-deep .el-table__body tr:hover>td {
+	 :deep(.el-table__body tr:hover>td) {
 	   	   background-color: rgba(119, 197, 227, 0.8) !important;
 	   	   	   color: #333 !important;
 	   	 }

@@ -23,10 +23,10 @@
       </el-form>
 
       <div class="forum-list">
-        <article v-for="item in list" :key="item.id" class="forum-item" @click="goFront(`/front/forum/${item.id}`)">
-          <h3>{{ item.title }}</h3>
-          <div class="forum-meta">发布人：{{ item.username || '匿名用户' }}</div>
-          <div class="forum-meta">时间：{{ formatDate(item.addtime) }}</div>
+        <article v-for="item in list" :key="item.id" class="forum-item" @click="openForumDetail(item)">
+          <h3>{{ getForumTitle(item) }}</h3>
+          <div class="forum-meta">发布人：{{ getForumUserName(item) }}</div>
+          <div class="forum-meta">时间：{{ formatDate(item && item.addtime) }}</div>
         </article>
         <div v-if="!list.length" class="empty-card">暂无论坛帖子</div>
       </div>
@@ -35,7 +35,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :current-page.sync="page"
+          v-model:current-page="page"
           :page-size="limit"
           :total="total"
           @current-change="loadList"
@@ -49,17 +49,17 @@
           <div class="page-tag">Mine</div>
           <h2>我的发布</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/forum')">返回论坛</el-button>
+        <el-button link @click="goFront('/front/forum')">返回论坛</el-button>
       </div>
 
       <el-table :data="list" border>
         <el-table-column prop="title" label="标题" min-width="260" />
         <el-table-column prop="addtime" label="发布时间" width="180" />
         <el-table-column label="操作" width="220">
-          <template slot-scope="{ row }">
-            <el-button size="mini" @click="goFront(`/front/forum/${row.id}`)">详情</el-button>
-            <el-button size="mini" type="primary" @click="goFront(`/front/forum/add?id=${row.id}`)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="removePost(row.id)">删除</el-button>
+          <template #default="scope">
+            <el-button size="small" @click="openForumDetail(scope?.row)">详情</el-button>
+            <el-button size="small" type="primary" @click="editForumPost(scope?.row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="removeForumPost(scope?.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +68,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :current-page.sync="page"
+          v-model:current-page="page"
           :page-size="limit"
           :total="total"
           @current-change="loadMyPosts"
@@ -82,7 +82,7 @@
           <div class="page-tag">Publish</div>
           <h2>{{ form.id ? '编辑帖子' : '发布帖子' }}</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/forum')">返回论坛</el-button>
+        <el-button link @click="goFront('/front/forum')">返回论坛</el-button>
       </div>
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" class="publish-form">
@@ -107,12 +107,12 @@
 
     <section v-else class="page-card">
       <div class="page-head">
-        <el-button type="text" @click="goFront('/front/forum')">返回论坛</el-button>
+        <el-button link @click="goFront('/front/forum')">返回论坛</el-button>
       </div>
       <article class="forum-detail">
-        <h1>{{ detail.title }}</h1>
-        <div class="forum-meta">发布人：{{ detail.username || '匿名用户' }} | 时间：{{ formatDate(detail.addtime) }}</div>
-        <div class="rich-text" v-html="detail.content" />
+        <h1>{{ getForumTitle(detail) }}</h1>
+        <div class="forum-meta">发布人：{{ getForumUserName(detail) }} | 时间：{{ formatDate(detail && detail.addtime) }}</div>
+        <div class="rich-text" v-html="getForumContent(detail)" />
       </article>
 
       <div class="comment-card">
@@ -127,8 +127,8 @@
         </div>
         <div class="comment-list">
           <article v-for="item in comments" :key="item.id" class="comment-item">
-            <div class="comment-user">{{ item.username || '匿名用户' }}</div>
-            <div class="comment-content">{{ item.content }}</div>
+            <div class="comment-user">{{ getForumUserName(item) }}</div>
+            <div class="comment-content">{{ item && item.content ? item.content : '' }}</div>
           </article>
           <div v-if="!comments.length" class="empty-card">暂无评论信息</div>
         </div>
@@ -194,6 +194,39 @@ export default {
     }
   },
   methods: {
+    getForumRowId(row) {
+      return row && row.id ? row.id : ''
+    },
+    getForumTitle(item) {
+      return item && item.title ? item.title : '未命名帖子'
+    },
+    getForumUserName(item) {
+      return item && item.username ? item.username : '匿名用户'
+    },
+    getForumContent(item) {
+      return item && item.content ? item.content : ''
+    },
+    openForumDetail(row) {
+      const id = this.getForumRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/forum/${id}`)
+    },
+    editForumPost(row) {
+      const id = this.getForumRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/forum/add?id=${id}`)
+    },
+    removeForumPost(row) {
+      const id = this.getForumRowId(row)
+      if (!id) {
+        return
+      }
+      this.removePost(id)
+    },
     initPage() {
       if (this.mode === 'list') {
         this.loadList()

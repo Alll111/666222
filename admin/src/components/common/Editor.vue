@@ -14,7 +14,7 @@
 
     <quill-editor
       class="editor"
-      v-model="value"
+      v-model="content"
       ref="myQuillEditor"
       :options="editorOption"
       @blur="onEditorBlur($event)"
@@ -47,6 +47,10 @@ import "quill/dist/quill.bubble.css";
 
 export default {
   props: {
+    modelValue: {
+      type: String,
+      default: ""
+    },
     value: {
       type: String
     },
@@ -65,7 +69,7 @@ export default {
 
   data() {
     return {
-      content: this.value,
+      content: this.modelValue || this.value || "",
       quillUpdateImg: false,
       editorOption: {
         placeholder: "",
@@ -92,15 +96,55 @@ export default {
   },
   computed: {
     getActionUrl: function() {
-      return `/api/${this.action}`;
+      const action = String(this.action || "").trim();
+      if (!action) {
+        return this.$base.url;
+      }
+      if (/^https?:\/\//.test(action) || action.startsWith("/api/")) {
+        return action;
+      }
+      return `${this.$base.url.replace(/\/+$/, "")}/${action.replace(/^\/+/, "")}`;
     }
   },
   methods: {
+    normalizeStoredUrl(url) {
+      let normalized = String(url || "").split("?")[0].trim();
+      if (!normalized) {
+        return "";
+      }
+      normalized = normalized.replace(/^https?:\/\/[^/]+/i, "");
+      normalized = normalized.replace(/^\/+api(?=\/)/i, "");
+      normalized = normalized.replace(/^\/+/, "");
+      if (normalized.startsWith("upload/")) {
+        return normalized;
+      }
+      return `upload/${normalized}`;
+    },
+    buildAccessUrl(url) {
+      const normalized = this.normalizeStoredUrl(url);
+      if (!normalized) {
+        return "";
+      }
+      return `${this.$base.url.replace(/\/+$/, "")}/${normalized}`;
+    },
+    resolveUploadPath(res) {
+      if (!res) {
+        return "";
+      }
+      const raw = res.url || res.file || res.path || "";
+      if (!raw) {
+        return "";
+      }
+      if (/^https?:\/\//.test(raw) || raw.startsWith("/upload/") || raw.startsWith("upload/")) {
+        return this.normalizeStoredUrl(raw);
+      }
+      return this.normalizeStoredUrl(`upload/${raw}`);
+    },
     onEditorBlur() {},
     onEditorFocus() {},
     onEditorChange() {
-      console.log(this.value);
-      this.$emit("input", this.value);
+      this.$emit("input", this.content);
+      this.$emit("update:modelValue", this.content);
     },
     beforeUpload() {
       this.quillUpdateImg = true;
@@ -110,7 +154,7 @@ export default {
       let quill = this.$refs.myQuillEditor.quill;
       if (res.code === 0) {
         let length = quill.getSelection().index;
-        quill.insertEmbed(length, "image", this.$base.url+ "upload/" +res.file);
+        quill.insertEmbed(length, "image", this.buildAccessUrl(this.resolveUploadPath(res)));
         quill.setSelection(length + 1);
       } else {
         this.$message.error("图片插入失败");
@@ -120,6 +164,19 @@ export default {
     uploadError() {
       this.quillUpdateImg = false;
       this.$message.error("图片插入失败");
+    }
+  }
+  ,
+  watch: {
+    value(v) {
+      if (v !== this.content) {
+        this.content = v || ""
+      }
+    },
+    modelValue(v) {
+      if (v !== this.content) {
+        this.content = v || ""
+      }
     }
   }
 };

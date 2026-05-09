@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
-import router from '@/router'
+import { ElMessage } from 'element-plus'
+import { clearLoginState, redirectToLogin } from '@/utils/auth'
 
 const request = axios.create({
   baseURL: '/api',
@@ -25,12 +25,9 @@ request.interceptors.response.use(
   response => {
     const data = response.data || {}
     if (data.code === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('Token')
-      if (router.currentRoute.name !== 'login') {
-        router.replace({ path: '/login' }).catch(() => {})
-      }
-      Message.error(data.message || data.msg || '登录已过期，请重新登录')
+      clearLoginState()
+      redirectToLogin()
+      ElMessage.error(data.message || data.msg || '登录已过期，请重新登录')
     }
     return response
   },
@@ -41,13 +38,10 @@ request.interceptors.response.use(
       error.message ||
       '请求失败'
     if (status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('Token')
-      if (router.currentRoute.name !== 'login') {
-        router.replace({ path: '/login' }).catch(() => {})
-      }
+      clearLoginState()
+      redirectToLogin()
     }
-    Message.error(message)
+    ElMessage.error(message)
     return Promise.reject(error)
   }
 )

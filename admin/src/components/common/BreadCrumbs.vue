@@ -102,18 +102,18 @@ export default {
     cursor: text;
   }
 
-  ::v-deep .el-breadcrumb__separator {
+  :deep(.el-breadcrumb__separator){
     margin: 0 10px;
     color: #9ab1d8 !important;
   }
 
-  ::v-deep .el-breadcrumb__inner,
-  ::v-deep .el-breadcrumb__inner a {
+  :deep(.el-breadcrumb__inner,
+  .el-breadcrumb__inner a){
     color: #3f5f93 !important;
     font-weight: 600;
   }
 
-  ::v-deep .el-breadcrumb__item:last-child .el-breadcrumb__inner {
+  :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner){
     color: #1f6fff !important;
   }
 }

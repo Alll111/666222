@@ -1,9 +1,9 @@
 <template>
-  <el-dialog title="私聊" :visible.sync="visible" width="900px" :modal="false">
+  <el-dialog v-model="visible" title="私聊" width="900px" :modal="false">
     <div class="siliao-wrap">
       <div class="siliao-left">
         <div class="siliao-left-head">
-          <el-input size="mini" v-model="kw" placeholder="搜索"></el-input>
+          <el-input size="small" v-model="kw" placeholder="搜索"></el-input>
         </div>
         <div class="siliao-sessions">
           <div

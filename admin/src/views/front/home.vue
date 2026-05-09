@@ -5,7 +5,7 @@
         <div class="hero-tag">WELCOME</div>
         <h1>校友社交系统前台首页</h1>
         <p>
-          新前台页面已经接入原项目的活动、交友、论坛和个人中心能力，保持原有接口和业务链路不变，
+          系统提供线下活动、交友信息、交流论坛和公告信息等核心功能，
           支持数据正常加载、列表浏览、详情查看和登录后互动操作。
         </p>
         <div class="hero-actions">
@@ -38,7 +38,7 @@
           <div class="section-tag">Activities</div>
           <h2>线下活动</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/xianxiahuodong')">查看更多</el-button>
+        <el-button link @click="goFront('/front/xianxiahuodong')">查看更多</el-button>
       </div>
       <div class="card-grid">
         <article v-for="item in activityList" :key="item.id" class="card-item" @click="goFront(`/front/xianxiahuodong/${item.id}`)">
@@ -60,7 +60,7 @@
           <div class="section-tag">Recommend</div>
           <h2>交友信息推荐</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/jiaoyouxinxi')">查看更多</el-button>
+        <el-button link @click="goFront('/front/jiaoyouxinxi')">查看更多</el-button>
       </div>
       <div class="card-grid">
         <article v-for="item in recommendList" :key="item.id" class="card-item" @click="goFront(`/front/jiaoyouxinxi/${item.id}`)">
@@ -82,7 +82,7 @@
           <div class="section-tag">Forum</div>
           <h2>交流论坛</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/forum')">查看更多</el-button>
+        <el-button link @click="goFront('/front/forum')">查看更多</el-button>
       </div>
       <div class="forum-list">
         <article v-for="item in forumList" :key="item.id" class="forum-item" @click="goFront(`/front/forum/${item.id}`)">
@@ -143,7 +143,7 @@ export default {
         { name: '线下活动', path: '/front/xianxiahuodong', icon: '活', desc: '查看活动详情并在线报名' },
         { name: '交友信息', path: '/front/jiaoyouxinxi', icon: '友', desc: '浏览推荐、收藏互动、发布信息' },
         { name: '交流论坛', path: '/front/forum', icon: '论', desc: '查看帖子、发布交流内容和评论' },
-        { name: '个人中心', path: '/front/center', icon: '我', desc: '维护资料、查看收藏和报名记录' }
+        { name: '公告信息', path: '/front/news', icon: '告', desc: '查看系统公告、通知和最新资讯' }
       ]
     }
   },

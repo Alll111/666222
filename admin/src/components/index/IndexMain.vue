@@ -33,7 +33,7 @@
 				})
 			},
 			menuHandler(menu) {
-				if (this.$router.currentRoute.name !== menu.tableName) {
+				if (this.$router.currentRoute.value.name !== menu.tableName) {
 					this.$router.push({
 						name: menu.tableName
 					});
@@ -49,7 +49,7 @@
 				this.itemMenu = [];
 				this.title = ""
 				this.currentIndex = index
-				if (this.$router.currentRoute.name !== 'index') {
+				if (this.$router.currentRoute.value.name !== 'index') {
 					this.$router.push({
 						name: 'index'
 					});
@@ -67,7 +67,7 @@
 				}];
 				this.title = ""
 				this.currentIndex = index
-				if (this.$router.currentRoute.name !== 'index') {
+				if (this.$router.currentRoute.value.name !== 'index') {
 					this.$router.push({
 						name: 'index'
 					});

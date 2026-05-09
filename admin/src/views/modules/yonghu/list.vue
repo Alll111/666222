@@ -88,49 +88,49 @@
                     prop="zhanghao"
                    :header-align="contents.tableAlign"
 		    label="账号">
-		     <template slot-scope="scope">
-                       {{scope.row.zhanghao}}
+		     <template #default="scope">
+                       {{ getScopeField(scope, 'zhanghao') }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingming"
                    :header-align="contents.tableAlign"
 		    label="姓名">
-		     <template slot-scope="scope">
-                       {{scope.row.xingming}}
+		     <template #default="scope">
+                       {{ getScopeField(scope, 'xingming') }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingbie"
                    :header-align="contents.tableAlign"
 		    label="性别">
-		     <template slot-scope="scope">
-                       {{scope.row.xingbie}}
+		     <template #default="scope">
+                       {{ getScopeField(scope, 'xingbie') }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="nianling"
                    :header-align="contents.tableAlign"
 		    label="年龄">
-		     <template slot-scope="scope">
-                       {{scope.row.nianling}}
+		     <template #default="scope">
+                       {{ getScopeField(scope, 'nianling') }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="shouji"
                    :header-align="contents.tableAlign"
 		    label="手机">
-		     <template slot-scope="scope">
-                       {{scope.row.shouji}}
+		     <template #default="scope">
+                       {{ getScopeField(scope, 'shouji') }}
                      </template>
                 </el-table-column>
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="touxiang"
                    :header-align="contents.tableAlign"
                     width="200"
                     label="头像">
-                    <template slot-scope="scope">
-                      <div v-if="scope.row.touxiang">
-                        <img :src="$base.url+scope.row.touxiang.split(',')[0]" width="100" height="100">
+                    <template #default="scope">
+                      <div v-if="getAvatarUrl(scope)">
+                        <img :src="getAvatarUrl(scope)" width="100" height="100">
                       </div>
                       <div v-else>无图片</div>
                     </template>
@@ -138,20 +138,20 @@
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
                 label="操作">
-                <template slot-scope="scope">
-                <el-button v-if="isAuth('yonghu','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="isAuth('yonghu','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="isAuth('yonghu','查看') && contents.tableBtnIcon == 0" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('yonghu','修改') && contents.tableBtnIcon == 0" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <template #default="scope">
+                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="isAuth('yonghu','查看') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(getScopeRowId(scope),'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if=" isAuth('yonghu','修改') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
 
 
-                <el-button v-if="isAuth('yonghu','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
-                <el-button v-if="isAuth('yonghu','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('yonghu','删除') && contents.tableBtnIcon == 0" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+                <el-button v-if="isAuth('yonghu','删除') && getScopeRowId(scope) && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(getScopeRowId(scope))">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -407,6 +407,21 @@ export default {
       this.pageIndex = 1;
       this.getDataList();
     },
+    getScopeRow(scope) {
+      return scope && scope.row ? scope.row : null;
+    },
+    getScopeField(scope, field) {
+      const row = this.getScopeRow(scope);
+      return row && row[field] !== undefined && row[field] !== null ? row[field] : '';
+    },
+    getScopeRowId(scope) {
+      const row = this.getScopeRow(scope);
+      return row && row.id ? row.id : '';
+    },
+    getAvatarUrl(scope) {
+      const touxiang = this.getScopeField(scope, 'touxiang');
+      return touxiang ? this.$base.url + String(touxiang).split(',')[0] : '';
+    },
 
     // 获取数据列表
     getDataList() {
@@ -519,8 +534,8 @@ export default {
   }
 
   .pages {
-    & ::v-deep el-pagination__sizes{
-      & ::v-deep el-input__inner {
+    :deep(.el-pagination__sizes) {
+      :deep(.el-input__inner) {
         height: 22px;
         line-height: 22px;
       }
@@ -533,7 +548,7 @@ export default {
   } 
 
   .tables {
-	& ::v-deep .el-button--success {
+	:deep(.el-button--success) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -544,7 +559,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--primary {
+	:deep(.el-button--primary) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -555,7 +570,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--danger {
+	:deep(.el-button--danger) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -566,7 +581,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 
-    & ::v-deep .el-button {
+    :deep(.el-button) {
       margin: 4px;
     }
   }
@@ -577,19 +592,19 @@ export default {
 		background: transparent;
 	}
 	
-	.tables ::v-deep .el-table__body tr {
+	:deep(.el-table__body tr) {
 				background-color: rgba(255, 255, 255, 1) !important;
 				color: rgba(0, 0, 0, 1) !important;
 	 }
-	.tables ::v-deep .el-table__body tr.el-table__row--striped td {
+	:deep(.el-table__body tr.el-table__row--striped td) {
 	    background: transparent;
 	}
-	.tables ::v-deep .el-table__body tr.el-table__row--striped {
+	:deep(.el-table__body tr.el-table__row--striped) {
 		background-color: rgba(119, 197, 227, 0.8) !important;
 		color: rgba(0, 0, 0, 1) !important;
 	}
 	
-	 .tables ::v-deep .el-table__body tr:hover>td {
+	 :deep(.el-table__body tr:hover>td) {
 	   	   background-color: rgba(119, 197, 227, 0.8) !important;
 	   	   	   color: #333 !important;
 	   	 }

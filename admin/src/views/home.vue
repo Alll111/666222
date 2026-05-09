@@ -4,7 +4,6 @@
 	</div>
 </template>
 <script>
-import router from '@/router/router-static'
 export default {
 	data() {
 		return {
@@ -17,7 +16,7 @@ export default {
   methods:{
     init(){
         const gotoLogin = () => {
-          if (this.$router.currentRoute.name !== 'login') {
+          if (this.$router.currentRoute.value.name !== 'login') {
             this.$router.push({ name: 'login' }).catch(() => {})
           }
         }

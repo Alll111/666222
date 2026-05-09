@@ -474,7 +474,7 @@ var objcross = this.$storage.getObj('crossObj');
 .editor{
   height: 500px;
   
-  & ::v-deep .ql-container {
+  & :deep(.ql-container){
 	  height: 310px;
   }
 }

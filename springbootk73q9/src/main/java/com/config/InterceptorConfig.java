@@ -24,7 +24,6 @@ public class InterceptorConfig implements WebMvcConfigurer{
                         "/error",
                         "/static/**",
                         "/upload/**",
-                        "/front/**",
                         "/admin/**",
                         "/admin/dist/**",
                         "/admin/login",

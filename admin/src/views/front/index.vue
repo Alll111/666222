@@ -4,11 +4,19 @@
       <div class="header-top">
         <div class="brand" @click="goFront('/front/home')">{{ projectName }}</div>
         <div class="header-actions">
-          <button class="text-btn" @click="goFront('/front/forum')">交流论坛</button>
-          <button class="text-btn" @click="goCenter">个人中心</button>
           <button v-if="!isLoggedIn" class="text-btn" @click="goFront('/login')">登录</button>
           <button v-if="!isLoggedIn" class="text-btn" @click="goFront('/register')">注册</button>
           <button v-if="isAdmin" class="text-btn" @click="goAdmin">后台管理</button>
+          <button v-if="isLoggedIn" class="icon-btn" @click="goCenter" aria-label="消息通知">
+            <el-badge :hidden="!totalUnread" :value="totalUnread" :max="99">
+              <el-icon><Bell /></el-icon>
+            </el-badge>
+          </button>
+          <div v-if="isLoggedIn" class="avatar-box" @click="goCenter">
+            <img v-if="avatarUrl" :src="avatarUrl" alt="用户头像" class="avatar-image">
+            <span v-else class="avatar-fallback">{{ avatarText }}</span>
+          </div>
+          <button v-if="isLoggedIn" class="text-btn" @click="goCenter">个人中心</button>
           <button v-if="isLoggedIn" class="primary-btn" @click="logoutFront">退出登录</button>
         </div>
       </div>
@@ -37,26 +45,84 @@
 </template>
 
 <script>
+import { Bell } from '@element-plus/icons-vue'
 import frontMixin from './front-mixin'
 
 export default {
   name: 'FrontIndex',
   mixins: [frontMixin],
+  components: { Bell },
   data() {
     return {
       projectName: '校友社交系统',
+      friendCount: 0,
+      chatCount: 0,
+      userInfo: null,
       navItems: [
         { name: '首页', path: '/front/home', match: '/front/home' },
         { name: '线下活动', path: '/front/xianxiahuodong', match: '/front/xianxiahuodong' },
         { name: '交友信息', path: '/front/jiaoyouxinxi', match: '/front/jiaoyouxinxi' },
         { name: '交流论坛', path: '/front/forum', match: '/front/forum' },
-        { name: '个人中心', path: '/front/center', match: '/front/center' }
+        { name: '公告信息', path: '/front/news', match: '/front/news' }
       ]
+    }
+  },
+  computed: {
+    totalUnread() {
+      return Number(this.friendCount || 0) + Number(this.chatCount || 0)
+    },
+    avatarUrl() {
+      const touxiang = this.userInfo && this.userInfo.touxiang ? this.userInfo.touxiang : ''
+      return this.getImageUrl(touxiang)
+    },
+    avatarText() {
+      const name = (this.userInfo && (this.userInfo.xingming || this.userInfo.zhanghao || this.userInfo.username)) || this.currentUserName || '校友'
+      return String(name).trim().slice(0, 1) || '校'
+    }
+  },
+  created() {
+    this.syncFrontUserInfo()
+    this.loadMessageCount()
+  },
+  watch: {
+    '$route.fullPath'() {
+      this.syncFrontUserInfo()
+      this.loadMessageCount()
     }
   },
   methods: {
     isActive(item) {
       return this.$route.path === item.path || this.$route.path.startsWith(`${item.match}/`)
+    },
+    syncFrontUserInfo() {
+      const cache = localStorage.getItem('frontUserInfo')
+      this.userInfo = cache ? JSON.parse(cache) : null
+      if (this.isLoggedIn) {
+        this.fetchCurrentUser().then(user => {
+          this.userInfo = user || this.userInfo
+        }).catch(() => {})
+      }
+    },
+    loadMessageCount() {
+      if (!this.isLoggedIn) {
+        this.friendCount = 0
+        this.chatCount = 0
+        return
+      }
+      Promise.allSettled([
+        this.$http({ url: '/haoyoushenqing/inboxCount', method: 'get' }),
+        this.$http({ url: '/siliao/unreadSummary', method: 'get' })
+      ]).then(results => {
+        const friendRes = results[0].status === 'fulfilled' ? results[0].value : null
+        const chatRes = results[1].status === 'fulfilled' ? results[1].value : null
+        const friendData = friendRes && friendRes.data ? friendRes.data : {}
+        const chatData = chatRes && chatRes.data ? chatRes.data : {}
+        this.friendCount = friendData && friendData.code === 0 ? Number(friendData.data || 0) : 0
+        this.chatCount = chatData && chatData.code === 0 ? Number((chatData.data || {}).chatUnreadCount || 0) : 0
+      }).catch(() => {
+        this.friendCount = 0
+        this.chatCount = 0
+      })
     },
     goCenter() {
       if (!this.requireLogin('请先登录后访问个人中心')) {
@@ -124,6 +190,7 @@ export default {
 
 .nav-item,
 .text-btn,
+.icon-btn,
 .primary-btn {
   border: 0;
   cursor: pointer;
@@ -147,6 +214,51 @@ export default {
   color: #1f6fff;
   background: #eef5ff;
   border-color: #cddfff;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f5f9ff;
+  color: #48658f;
+  border: 1px solid #dbe7ff;
+  font-size: 18px;
+}
+
+.icon-btn:hover {
+  color: #1f6fff;
+  background: #eef5ff;
+  border-color: #cddfff;
+}
+
+.avatar-box {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #dbe7ff;
+  background: #eef5ff;
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  color: #1f6fff;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .primary-btn {
@@ -199,6 +311,10 @@ export default {
     padding: 14px 0;
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
   }
 }
 </style>

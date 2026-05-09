@@ -68,10 +68,10 @@
         <el-tab-pane label="我的收藏" name="storeup">
           <div class="list-grid">
             <article v-for="item in storeupList" :key="item.id" class="entry-card" @click="openStoreup(item)">
-              <img class="entry-cover" :src="getImageUrl(item.picture)" :alt="item.name">
+              <img class="entry-cover" :src="getImageUrl(item && item.picture)" :alt="getStoreupName(item)">
               <div class="entry-body">
-                <h3>{{ item.name }}</h3>
-                <p>{{ item.tablename }}</p>
+                <h3>{{ getStoreupName(item) }}</h3>
+                <p>{{ getStoreupTableName(item) }}</p>
               </div>
             </article>
             <div v-if="!storeupList.length" class="empty-card">暂无收藏内容</div>
@@ -80,7 +80,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :current-page.sync="storeupPage"
+              v-model:current-page="storeupPage"
               :page-size="limit"
               :total="storeupTotal"
               @current-change="loadStoreups"
@@ -99,7 +99,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :current-page.sync="signupPage"
+              v-model:current-page="signupPage"
               :page-size="limit"
               :total="signupTotal"
               @current-change="loadSignups"
@@ -113,9 +113,9 @@
             <el-table-column prop="isdone" label="类型" width="100" />
             <el-table-column prop="addtime" label="发布时间" width="180" />
             <el-table-column label="操作" width="180">
-              <template slot-scope="{ row }">
-                <el-button size="mini" @click="goFront(`/front/forum/${row.id}`)">查看</el-button>
-                <el-button size="mini" type="primary" @click="goFront(`/front/forum/add?id=${row.id}`)">编辑</el-button>
+              <template #default="scope">
+                <el-button size="small" @click="openPost(scope?.row)">查看</el-button>
+                <el-button size="small" type="primary" @click="editPost(scope?.row)">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -123,7 +123,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :current-page.sync="postPage"
+              v-model:current-page="postPage"
               :page-size="limit"
               :total="postTotal"
               @current-change="loadPosts"
@@ -136,13 +136,31 @@
             <el-table-column prop="fromZhanghao" label="账号" width="120" />
             <el-table-column prop="fromXingming" label="姓名" width="120" />
             <el-table-column prop="addtime" label="时间" width="180" />
-            <el-table-column prop="status" label="状态" width="100" />
+            <el-table-column label="状态" width="100">
+              <template #default="scope">
+                {{ getFriendStatus(scope?.row) }}
+              </template>
+            </el-table-column>
             <el-table-column prop="reply" label="回复" min-width="220" />
             <el-table-column label="操作" width="240">
-              <template slot-scope="{ row }">
-                <el-button v-if="row.status === '待处理'" size="mini" type="primary" @click="handleAudit(row, '同意')">同意</el-button>
-                <el-button v-if="row.status === '待处理'" size="mini" type="danger" @click="handleAudit(row, '拒绝')">拒绝</el-button>
-                <el-button size="mini" @click="deleteFriendReq(row)">删除</el-button>
+              <template #default="scope">
+                <el-button
+                  v-if="canAuditFriend(scope?.row)"
+                  size="small"
+                  type="primary"
+                  @click="handleAudit(scope?.row, '同意')"
+                >
+                  同意
+                </el-button>
+                <el-button
+                  v-if="canAuditFriend(scope?.row)"
+                  size="small"
+                  type="danger"
+                  @click="handleAudit(scope?.row, '拒绝')"
+                >
+                  拒绝
+                </el-button>
+                <el-button size="small" @click="deleteFriendReq(scope?.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -150,7 +168,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :current-page.sync="friendPage"
+              v-model:current-page="friendPage"
               :page-size="limit"
               :total="friendTotal"
               @current-change="loadFriendList"
@@ -217,6 +235,38 @@ export default {
     this.loadByTab(this.activeTab)
   },
   methods: {
+    getRowId(row) {
+      return row && row.id ? row.id : ''
+    },
+    getStoreupRefId(item) {
+      return item && item.refid ? item.refid : ''
+    },
+    getStoreupTableName(item) {
+      return item && item.tablename ? item.tablename : ''
+    },
+    getStoreupName(item) {
+      return item && item.name ? item.name : '未命名内容'
+    },
+    getFriendStatus(row) {
+      return row && row.status ? row.status : ''
+    },
+    canAuditFriend(row) {
+      return this.getFriendStatus(row) === '待处理'
+    },
+    openPost(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/forum/${id}`)
+    },
+    editPost(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/forum/add?id=${id}`)
+    },
     handleTabChange() {
       this.loadByTab(this.activeTab)
       this.$router.replace({ path: '/front/center', query: { tab: this.activeTab } }).catch(() => {})
@@ -294,12 +344,14 @@ export default {
       })
     },
     openStoreup(item) {
+      const refId = this.getStoreupRefId(item)
+      const tableName = this.getStoreupTableName(item)
       const pathMap = {
-        xianxiahuodong: `/front/xianxiahuodong/${item.refid}`,
-        jiaoyouxinxi: `/front/jiaoyouxinxi/${item.refid}`
+        xianxiahuodong: `/front/xianxiahuodong/${refId}`,
+        jiaoyouxinxi: `/front/jiaoyouxinxi/${refId}`
       }
-      if (pathMap[item.tablename]) {
-        this.goFront(pathMap[item.tablename])
+      if (refId && pathMap[tableName]) {
+        this.goFront(pathMap[tableName])
       }
     },
     loadSignups() {
@@ -366,6 +418,11 @@ export default {
       })
     },
     handleAudit(row, status) {
+      const id = this.getRowId(row)
+      if (!id) {
+        this.$message.warning('未找到申请记录')
+        return
+      }
       this.$prompt('请输入审核回复', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -374,7 +431,7 @@ export default {
           url: 'haoyoushenqing/audit',
           method: 'post',
           data: {
-            id: row.id,
+            id,
             status,
             reply: value
           }
@@ -389,13 +446,18 @@ export default {
       }).catch(() => {})
     },
     deleteFriendReq(row) {
+      const id = this.getRowId(row)
+      if (!id) {
+        this.$message.warning('未找到申请记录')
+        return
+      }
       this.$confirm('确定删除该申请记录？', '提示', {
         type: 'warning'
       }).then(() => {
         this.$http({
           url: 'haoyoushenqing/delete',
           method: 'post',
-          data: [row.id]
+          data: [id]
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message.success('删除成功')

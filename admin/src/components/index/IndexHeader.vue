@@ -22,7 +22,7 @@
 				<span>退出登录</span>
 			</div>
 		</div>
-		<el-dialog title="消息" :visible.sync="messageDialogVisible" width="900px" :modal="false">
+		<el-dialog v-model="messageDialogVisible" title="消息" width="900px" :modal="false">
 			<el-tabs v-model="activeMsgTab">
 				<el-tab-pane label="好友申请" name="friend">
 					<el-table :data="messageList" border style="width: 100%">
@@ -32,10 +32,10 @@
 						<el-table-column prop="status" label="状态" width="90"></el-table-column>
 						<el-table-column prop="reply" label="回复"></el-table-column>
 						<el-table-column label="操作" width="220">
-							<template slot-scope="scope">
-								<el-button v-if="scope.row.status==='待处理'" size="mini" type="primary" @click="handleAudit(scope.row,'同意')">同意</el-button>
-								<el-button v-if="scope.row.status==='待处理'" size="mini" type="danger" @click="handleAudit(scope.row,'拒绝')">拒绝</el-button>
-								<el-button size="mini" @click="deleteFriendReq(scope.row)">删除申请记录</el-button>
+							<template #default="scope">
+								<el-button v-if="scope?.row?.status === '待处理'" size="small" type="primary" @click="handleAudit(scope?.row,'同意')">同意</el-button>
+								<el-button v-if="scope?.row?.status === '待处理'" size="small" type="danger" @click="handleAudit(scope?.row,'拒绝')">拒绝</el-button>
+								<el-button size="small" @click="deleteFriendReq(scope?.row)">删除申请记录</el-button>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -162,6 +162,10 @@
 				this.loadMessageList()
 			},
 			handleAudit(row, status) {
+				if (!row || !row.id) {
+					this.$message.warning('未找到申请记录')
+					return
+				}
 				this.$prompt('请输入审核回复', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消'
@@ -184,6 +188,10 @@
 				}).catch(() => {});
 			},
 			deleteFriendReq(row) {
+				if (!row || !row.id) {
+					this.$message.warning('未找到申请记录')
+					return
+				}
 				this.$confirm('确定删除该申请记录？', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -323,7 +331,7 @@
 				margin-right: -2px;
 			}
 
-			::v-deep .message-badge .el-badge__content {
+			:deep(.message-badge .el-badge__content) {
 				top: 6px;
 				right: 4px;
 				border: 0;

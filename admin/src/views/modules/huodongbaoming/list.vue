@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="main-content">
     <!-- 列表页 -->
     <div v-if="showFlag">
@@ -88,48 +88,48 @@
                     prop="huodongmingcheng"
                    :header-align="contents.tableAlign"
 		    label="活动名称">
-		     <template slot-scope="scope">
-                       {{scope.row.huodongmingcheng}}
+		     <template #default="scope">
+                       {{ scope?.row?.huodongmingcheng || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongleixing"
                    :header-align="contents.tableAlign"
 		    label="活动类型">
-		     <template slot-scope="scope">
-                       {{scope.row.huodongleixing}}
+		     <template #default="scope">
+                       {{ scope?.row?.huodongleixing || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="baomingshijian"
                    :header-align="contents.tableAlign"
 		    label="报名时间">
-		     <template slot-scope="scope">
-                       {{scope.row.baomingshijian}}
+		     <template #default="scope">
+                       {{ scope?.row?.baomingshijian || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="baomingshuoming"
                    :header-align="contents.tableAlign"
 		    label="报名说明">
-		     <template slot-scope="scope">
-                       {{scope.row.baomingshuoming}}
+		     <template #default="scope">
+                       {{ scope?.row?.baomingshuoming || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="zhanghao"
                    :header-align="contents.tableAlign"
 		    label="账号">
-		     <template slot-scope="scope">
-                       {{scope.row.zhanghao}}
+		     <template #default="scope">
+                       {{ scope?.row?.zhanghao || '' }}
                      </template>
                 </el-table-column>
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingming"
                    :header-align="contents.tableAlign"
 		    label="姓名">
-		     <template slot-scope="scope">
-                       {{scope.row.xingming}}
+		     <template #default="scope">
+                       {{ scope?.row?.xingming || '' }}
                      </template>
                 </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -141,8 +141,8 @@
                   prop="sfsh"
                  :header-align="contents.tableAlign"
                   label="审核状态">
-                  <template slot-scope="scope">
-                    <span style="margin-right:10px">{{scope.row.sfsh=='是'?'通过':'未通过'}}</span>
+                  <template #default="scope">
+                    <span style="margin-right:10px">{{ scope?.row?.sfsh == '是' ? '通过' : '未通过' }}</span>
                   </template>
               </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
@@ -150,27 +150,27 @@
                   prop="sfsh"
                  :header-align="contents.tableAlign"
                   label="审核">
-                  <template slot-scope="scope">
-                    <el-button  type="text" icon="el-icon-edit" size="small" @click="shDialog(scope.row)">审核</el-button>
+                  <template #default="scope">
+                    <el-button v-if="scope?.row" link icon="el-icon-edit" size="small" @click="shDialog(scope?.row)">审核</el-button>
                   </template>
               </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
                 label="操作">
-                <template slot-scope="scope">
-                <el-button v-if="isAuth('huodongbaoming','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if="isAuth('huodongbaoming','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="isAuth('huodongbaoming','查看') && contents.tableBtnIcon == 0" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
-                <el-button v-if=" isAuth('huodongbaoming','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if=" isAuth('huodongbaoming','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('huodongbaoming','修改') && contents.tableBtnIcon == 0" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <template #default="scope">
+                <el-button v-if="isAuth('huodongbaoming','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if="isAuth('huodongbaoming','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="isAuth('huodongbaoming','查看') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if=" isAuth('huodongbaoming','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if=" isAuth('huodongbaoming','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if=" isAuth('huodongbaoming','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
 
 
-                <el-button v-if="isAuth('huodongbaoming','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
-                <el-button v-if="isAuth('huodongbaoming','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('huodongbaoming','删除') && contents.tableBtnIcon == 0" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('huodongbaoming','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('huodongbaoming','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+                <el-button v-if="isAuth('huodongbaoming','删除') && scope?.row?.id && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -196,7 +196,7 @@
 
     <el-dialog
       title="审核"
-      :visible.sync="sfshVisiable"
+      v-model="sfshVisiable"
       width="50%">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="审核状态">
@@ -209,10 +209,10 @@
           <el-input type="textarea" :rows="8" v-model="shForm.shhf"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="shDialog">取 消</el-button>
         <el-button type="primary" @click="shHandler">确 定</el-button>
-      </span>
+      </template>
     </el-dialog>
 
 
@@ -603,8 +603,8 @@ export default {
   }
 
   .pages {
-    & ::v-deep el-pagination__sizes{
-      & ::v-deep el-input__inner {
+    :deep(.el-pagination__sizes) {
+      :deep(.el-input__inner) {
         height: 22px;
         line-height: 22px;
       }
@@ -617,7 +617,7 @@ export default {
   } 
 
   .tables {
-	& ::v-deep .el-button--success {
+	:deep(.el-button--success) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -628,7 +628,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--primary {
+	:deep(.el-button--primary) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -639,7 +639,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 	
-	& ::v-deep .el-button--danger {
+	:deep(.el-button--danger) {
 		height: 40px;
 		color: rgba(0, 0, 0, 1);
 		font-size: 14px;
@@ -650,7 +650,7 @@ export default {
 		background-color: rgba(56, 182, 230, 1);
 	}
 
-    & ::v-deep .el-button {
+    :deep(.el-button) {
       margin: 4px;
     }
   }
@@ -661,19 +661,19 @@ export default {
 		background: transparent;
 	}
 	
-	.tables ::v-deep .el-table__body tr {
+	:deep(.el-table__body tr) {
 				background-color: rgba(255, 255, 255, 1) !important;
 				color: rgba(0, 0, 0, 1) !important;
 	 }
-	.tables ::v-deep .el-table__body tr.el-table__row--striped td {
+	:deep(.el-table__body tr.el-table__row--striped td) {
 	    background: transparent;
 	}
-	.tables ::v-deep .el-table__body tr.el-table__row--striped {
+	:deep(.el-table__body tr.el-table__row--striped) {
 		background-color: rgba(119, 197, 227, 0.8) !important;
 		color: rgba(0, 0, 0, 1) !important;
 	}
 	
-	 .tables ::v-deep .el-table__body tr:hover>td {
+	 :deep(.el-table__body tr:hover>td) {
 	   	   background-color: rgba(119, 197, 227, 0.8) !important;
 	   	   	   color: #333 !important;
 	   	 }

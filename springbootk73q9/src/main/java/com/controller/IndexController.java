@@ -1,21 +1,23 @@
 package com.controller;
 
-import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.annotation.IgnoreAuth;
 
-@Controller
+@RestController
 public class IndexController {
 
     @IgnoreAuth
-    @RequestMapping("/")
-    public void index(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(request.getContextPath() + "/front/pages/login/login.html");
+    @GetMapping("/")
+    public Map<String, Object> index() {
+        Map<String, Object> res = new LinkedHashMap<String, Object>();
+        res.put("code", 0);
+        res.put("msg", "API 服务运行中");
+        res.put("frontend", "请通过 Vue 前端 admin 项目访问系统");
+        return res;
     }
 }

@@ -26,14 +26,14 @@
           v-for="item in list"
           :key="item.id"
           class="card-item"
-          @click="goFront(`/front/xianxiahuodong/${item.id}`)"
+          @click="openActivity(item)"
         >
-          <img class="card-cover" :src="getImageUrl(item.huodongtupian)" :alt="item.huodongmingcheng">
+          <img class="card-cover" :src="getImageUrl(item && item.huodongtupian)" :alt="getActivityName(item)">
           <div class="card-body">
-            <h3>{{ item.huodongmingcheng }}</h3>
-            <p>{{ item.huodongleixing || '未填写活动类型' }}</p>
-            <div class="meta-item">地点：{{ item.huodongdidian || '未填写' }}</div>
-            <div class="meta-item">时间：{{ formatDate(item.huodongshijian) }}</div>
+            <h3>{{ getActivityName(item) }}</h3>
+            <p>{{ getActivityType(item) }}</p>
+            <div class="meta-item">地点：{{ getActivityAddress(item) }}</div>
+            <div class="meta-item">时间：{{ formatDate(item && item.huodongshijian) }}</div>
           </div>
         </article>
         <div v-if="!list.length" class="empty-card">暂无活动信息</div>
@@ -43,7 +43,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :current-page.sync="page"
+          v-model:current-page="page"
           :page-size="limit"
           :total="total"
           @current-change="loadList"
@@ -54,7 +54,7 @@
     <div v-else class="detail-layout">
       <section class="detail-card">
         <div class="detail-header">
-          <el-button type="text" @click="goFront('/front/xianxiahuodong')">返回列表</el-button>
+          <el-button link @click="goFront('/front/xianxiahuodong')">返回列表</el-button>
           <div class="detail-actions">
             <el-button type="primary" @click="openSignupDialog">报名活动</el-button>
             <el-button @click="toggleStoreup">{{ storeupFlag ? '取消收藏' : '点我收藏' }}</el-button>
@@ -65,22 +65,22 @@
           <div class="detail-gallery">
             <el-carousel v-if="swiperList.length" height="360px" arrow="always">
               <el-carousel-item v-for="(item, index) in swiperList" :key="index">
-                <img class="detail-image" :src="getImageUrl(item)" :alt="detail.huodongmingcheng">
+                <img class="detail-image" :src="getImageUrl(item)" :alt="getActivityName(detail)">
               </el-carousel-item>
             </el-carousel>
             <div v-else class="hero-empty">暂无活动图片</div>
           </div>
           <div class="detail-info">
-            <h1>{{ detail.huodongmingcheng }}</h1>
-            <div class="info-item"><span>活动类型：</span>{{ detail.huodongleixing || '未填写' }}</div>
-            <div class="info-item"><span>活动地点：</span>{{ detail.huodongdidian || '未填写' }}</div>
-            <div class="info-item"><span>活动时间：</span>{{ formatDate(detail.huodongshijian) }}</div>
+            <h1>{{ getActivityName(detail) }}</h1>
+            <div class="info-item"><span>活动类型：</span>{{ getActivityType(detail) }}</div>
+            <div class="info-item"><span>活动地点：</span>{{ getActivityAddress(detail) }}</div>
+            <div class="info-item"><span>活动时间：</span>{{ formatDate(detail && detail.huodongshijian) }}</div>
           </div>
         </div>
 
         <el-tabs class="detail-tabs">
           <el-tab-pane label="活动内容">
-            <div class="rich-text" v-html="detail.huodongneirong" />
+            <div class="rich-text" v-html="getActivityContent(detail)" />
           </el-tab-pane>
           <el-tab-pane label="评论">
             <div class="comment-form">
@@ -96,8 +96,8 @@
             </div>
             <div class="comment-list">
               <article v-for="item in comments" :key="item.id" class="comment-item">
-                <div class="comment-user">{{ item.nickname || '匿名用户' }}</div>
-                <div class="comment-content">{{ item.content }}</div>
+                <div class="comment-user">{{ item && item.nickname ? item.nickname : '匿名用户' }}</div>
+                <div class="comment-content">{{ item && item.content ? item.content : '' }}</div>
                 <div v-if="item.reply" class="comment-reply">回复：{{ item.reply }}</div>
               </article>
               <div v-if="!comments.length" class="empty-card">暂无评论信息</div>
@@ -106,7 +106,7 @@
               <el-pagination
                 background
                 layout="prev, pager, next"
-                :current-page.sync="commentPage"
+                v-model:current-page="commentPage"
                 :page-size="commentLimit"
                 :total="commentTotal"
                 @current-change="loadComments"
@@ -117,7 +117,7 @@
       </section>
     </div>
 
-    <el-dialog title="活动报名" :visible.sync="signupVisible" width="640px">
+    <el-dialog v-model="signupVisible" title="活动报名" width="640px">
       <el-form ref="signupForm" :model="signupForm" label-width="96px">
         <el-form-item label="活动名称">
           <el-input v-model="signupForm.huodongmingcheng" readonly />
@@ -144,10 +144,10 @@
           <el-input v-model="signupForm.xingming" readonly />
         </el-form-item>
       </el-form>
-      <span slot="footer">
+      <template #footer>
         <el-button @click="signupVisible = false">取消</el-button>
         <el-button type="primary" @click="submitSignup">提交报名</el-button>
-      </span>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -203,6 +203,28 @@ export default {
     }
   },
   methods: {
+    getActivityId(item) {
+      return item && item.id ? item.id : ''
+    },
+    getActivityName(item) {
+      return item && item.huodongmingcheng ? item.huodongmingcheng : '未命名活动'
+    },
+    getActivityType(item) {
+      return item && item.huodongleixing ? item.huodongleixing : '未填写'
+    },
+    getActivityAddress(item) {
+      return item && item.huodongdidian ? item.huodongdidian : '未填写'
+    },
+    getActivityContent(item) {
+      return item && item.huodongneirong ? item.huodongneirong : ''
+    },
+    openActivity(item) {
+      const id = this.getActivityId(item)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/xianxiahuodong/${id}`)
+    },
     initPage() {
       if (this.detailMode) {
         this.loadDetail()

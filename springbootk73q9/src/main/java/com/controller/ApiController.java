@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,30 @@ public class ApiController {
         res.put("code", 200);
         res.put("data", menu);
         res.put("message", "成功");
+        return res;
+    }
+
+    @IgnoreAuth
+    @GetMapping("/logout")
+    public Map<String, Object> logout(HttpServletRequest request) {
+        Map<String, Object> res = new HashMap<String, Object>();
+        String token = request.getHeader("Token");
+        if (StringUtils.isBlank(token)) {
+            String authorization = request.getHeader("Authorization");
+            if (StringUtils.isNotBlank(authorization) && authorization.startsWith("Bearer ")) {
+                token = authorization.substring(7);
+            }
+        }
+        if (StringUtils.isNotBlank(token)) {
+            TokenEntity tokenEntity = tokenService.getTokenEntity(token);
+            if (tokenEntity != null) {
+                tokenEntity.setExpiratedtime(new Date());
+                tokenService.updateById(tokenEntity);
+            }
+        }
+        request.getSession().invalidate();
+        res.put("code", 200);
+        res.put("message", "退出成功");
         return res;
     }
 

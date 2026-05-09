@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.entity.SiliaoHuihuaEntity;
 import com.entity.SiliaoXiaoxiEntity;
+import com.entity.HaoyoushenqingEntity;
 import com.entity.YonghuEntity;
+import com.service.HaoyoushenqingService;
 import com.service.SiliaoHuihuaService;
 import com.service.SiliaoXiaoxiService;
 import com.service.YonghuService;
@@ -35,6 +37,9 @@ public class SiliaoController {
 
     @Autowired
     private YonghuService yonghuService;
+
+    @Autowired
+    private HaoyoushenqingService haoyoushenqingService;
 
     private long idGen() {
         return new Date().getTime() + (long) Math.floor(Math.random() * 1000);
@@ -204,5 +209,82 @@ public class SiliaoController {
         }
         return R.ok();
     }
-}
 
+    @RequestMapping("/unreadSummary")
+    public R unreadSummary(HttpServletRequest request) {
+        Long me = (Long) request.getSession().getAttribute("userId");
+        if (me == null) {
+            return R.ok()
+                    .put("friendUnreadCount", 0)
+                    .put("chatUnreadCount", 0)
+                    .put("totalUnreadCount", 0);
+        }
+        int friendUnreadCount = haoyoushenqingService.selectCount(
+                new EntityWrapper<HaoyoushenqingEntity>().eq("to_userid", me).eq("status", "待处理"));
+        int chatUnreadCount = siliaoXiaoxiService.selectCount(
+                new EntityWrapper<SiliaoXiaoxiEntity>().eq("to_userid", me).eq("is_read", 0));
+        return R.ok()
+                .put("friendUnreadCount", friendUnreadCount)
+                .put("chatUnreadCount", chatUnreadCount)
+                .put("totalUnreadCount", friendUnreadCount + chatUnreadCount);
+    }
+
+    @RequestMapping("/unreadList")
+    public R unreadList(@RequestParam Map<String, Object> params, HttpServletRequest request) {
+        Long me = (Long) request.getSession().getAttribute("userId");
+        if (me == null) {
+            return R.error("未登录");
+        }
+        int limit = params.get("limit") == null ? 10 : Integer.parseInt(params.get("limit").toString());
+        if (limit <= 0) {
+            limit = 10;
+        }
+        if (limit > 50) {
+            limit = 50;
+        }
+
+        List<HaoyoushenqingEntity> friendRawList = haoyoushenqingService.selectList(
+                new EntityWrapper<HaoyoushenqingEntity>()
+                        .eq("to_userid", me)
+                        .eq("status", "待处理")
+                        .orderBy("addtime", false)
+                        .last("limit " + limit));
+        List<Map<String, Object>> friendList = new ArrayList<Map<String, Object>>();
+        for (HaoyoushenqingEntity req : friendRawList) {
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", req.getId());
+            item.put("fromUserid", req.getFromUserid());
+            item.put("fromZhanghao", req.getFromZhanghao());
+            item.put("fromXingming", req.getFromXingming());
+            item.put("addtime", req.getAddtime());
+            item.put("status", req.getStatus());
+            friendList.add(item);
+        }
+
+        List<SiliaoXiaoxiEntity> chatRawList = siliaoXiaoxiService.selectList(
+                new EntityWrapper<SiliaoXiaoxiEntity>()
+                        .eq("to_userid", me)
+                        .eq("is_read", 0)
+                        .orderBy("addtime", false)
+                        .last("limit " + limit));
+        List<Map<String, Object>> chatList = new ArrayList<Map<String, Object>>();
+        for (SiliaoXiaoxiEntity msg : chatRawList) {
+            YonghuEntity<?> sender = yonghuService.selectById(msg.getFromUserid());
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", msg.getId());
+            item.put("sessionId", msg.getSessionId());
+            item.put("fromUserid", msg.getFromUserid());
+            item.put("fromZhanghao", sender == null ? null : sender.getZhanghao());
+            item.put("fromXingming", sender == null ? null : sender.getXingming());
+            item.put("fromTouxiang", sender == null ? null : sender.getTouxiang());
+            item.put("content", msg.getContent());
+            item.put("addtime", msg.getAddtime());
+            chatList.add(item);
+        }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("friendList", friendList);
+        data.put("chatList", chatList);
+        return R.ok().put("data", data);
+    }
+}

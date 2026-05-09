@@ -44,9 +44,9 @@
         <el-form-item v-if="flag=='yonghu'" label="头像" prop="touxiang">
           <file-upload
           tip="点击上传头像"
-          action="file/upload"
-          :limit="3"
-          :multiple="true"
+          action="upload/avatar"
+          :limit="1"
+          :multiple="false"
           :fileUrls="ruleForm.touxiang?ruleForm.touxiang:''"
           @change="yonghutouxiangUploadChange"
           ></file-upload>

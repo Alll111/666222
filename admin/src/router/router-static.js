@@ -1,7 +1,4 @@
-import Vue from 'vue';
-//配置路由
-import VueRouter from 'vue-router'
-Vue.use(VueRouter);
+import { createRouter, createWebHashHistory } from 'vue-router'
 //1.创建组件
 import Index from '@/views/index'
 import Home from '@/views/home'
@@ -16,6 +13,7 @@ import FrontHome from '@/views/front/home'
 import FrontXianxiahuodong from '@/views/front/xianxiahuodong'
 import FrontJiaoyouxinxi from '@/views/front/jiaoyouxinxi'
 import FrontForum from '@/views/front/forum'
+import FrontNews from '@/views/front/news'
 import FrontCenter from '@/views/front/center'
     import forum from '@/views/modules/forum/list'
     import news from '@/views/modules/news/list'
@@ -201,6 +199,18 @@ const routes = [{
         meta: { icon: '', title: '帖子详情' }
       },
       {
+        path: 'news',
+        name: 'frontNews',
+        component: FrontNews,
+        meta: { icon: '', title: '公告信息' }
+      },
+      {
+        path: 'news/:id',
+        name: 'frontNewsDetail',
+        component: FrontNews,
+        meta: { icon: '', title: '公告详情' }
+      },
+      {
         path: 'center',
         name: 'frontCenter',
         component: FrontCenter,
@@ -225,16 +235,15 @@ const routes = [{
     redirect: '/index'
   }, /*默认跳转路由*/
   {
-    path: '*',
+    path: '/:pathMatch(.*)*',
     name: '404',
     component: NotFound
   }
 ]
 //3.实例化VueRouter  注意：名字
-const router = new VueRouter({
-  mode: 'hash',
-  /*hash模式改为history*/
-  routes // （缩写）相当于 routes: routes
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
 })
 
 export default router;

@@ -16,24 +16,28 @@
       :on-error="handleUploadErr"
       :before-upload="handleBeforeUpload"
     >
-      <i class="el-icon-plus"></i>
-      <div slot="tip" class="el-upload__tip" style="color:#838fa1;">{{tip}}</div>
+      <el-icon><Plus /></el-icon>
+      <template #tip>
+        <div class="el-upload__tip" style="color:#838fa1;">{{tip}}</div>
+      </template>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible" width="800px" append-to-body>
+    <el-dialog v-model="dialogVisible" width="800px" append-to-body>
       <img width="100%" :src="dialogImageUrl" alt>
     </el-dialog>
   </div>
 </template>
 <script>
 import storage from "@/utils/storage";
+import { Plus } from '@element-plus/icons-vue'
 export default {
+  components: { Plus },
   data() {
     return {
       // 查看大图
       dialogVisible: false,
       // 查看大图
       dialogImageUrl: "",
-      // 组件渲染图片的数组字段，有特殊格式要�?
+      // 组件渲染图片使用的文件列表
       fileList: [],
       fileUrlList: [],
       myHeaders:{}
@@ -55,11 +59,51 @@ export default {
   computed: {
     // 计算属性的 getter
     getActionUrl: function() {
-      return `/api/${this.action}`;
+      const action = String(this.action || "").trim();
+      if (!action) {
+        return this.$base.url;
+      }
+      if (/^https?:\/\//.test(action) || action.startsWith("/api/")) {
+        return action;
+      }
+      return `${this.$base.url.replace(/\/+$/, "")}/${action.replace(/^\/+/, "")}`;
     }
   },
   methods: {
-    // 初始�?
+    normalizeStoredUrl(url) {
+      let normalized = String(url || "").split("?")[0].trim();
+      if (!normalized) {
+        return "";
+      }
+      normalized = normalized.replace(/^https?:\/\/[^/]+/i, "");
+      normalized = normalized.replace(/^\/+api(?=\/)/i, "");
+      normalized = normalized.replace(/^\/+/, "");
+      if (normalized.startsWith("upload/")) {
+        return normalized;
+      }
+      return `upload/${normalized}`;
+    },
+    buildAccessUrl(url) {
+      const normalized = this.normalizeStoredUrl(url);
+      if (!normalized) {
+        return "";
+      }
+      return `${this.$base.url.replace(/\/+$/, "")}/${normalized}`;
+    },
+    resolveUploadPath(res) {
+      if (!res) {
+        return "";
+      }
+      const raw = res.url || res.file || res.path || "";
+      if (!raw) {
+        return "";
+      }
+      if (/^https?:\/\//.test(raw) || raw.startsWith("/upload/") || raw.startsWith("upload/")) {
+        return this.normalizeStoredUrl(raw);
+      }
+      return this.normalizeStoredUrl(`upload/${raw}`);
+    },
+    // 初始化文件列表
     init() {
       //   console.log(this.fileUrls);
       if (this.fileUrls) {
@@ -75,15 +119,18 @@ export default {
           fileArray.push(file);
         });
         this.setFileList(fileArray);
+      } else {
+        this.fileList = [];
+        this.fileUrlList = [];
       }
     },
     handleBeforeUpload(file) {
 	
     },
-    // 上传文件成功后执�?
+    // 上传文件成功后执行
     handleUploadSuccess(res, file, fileList) {
       if (res && res.code === 0) {
-        fileList[fileList.length - 1]["url"] = "upload/" + file.response.file;
+        fileList[fileList.length - 1]["url"] = this.resolveUploadPath(res);
         this.setFileList(fileList);
         this.$emit("change", this.fileUrlList.join(","));
       } else {
@@ -106,27 +153,23 @@ export default {
     },
     // 限制图片数量
     handleExceed(files, fileList) {
-      this.$message.warning(`最多上�?{this.limit}张图片`);
+      this.$message.warning(`最多上传${this.limit}张图片`);
     },
-    // 重新对fileList进行赋�?
+    // 重新同步 fileList 和 fileUrlList
     setFileList(fileList) {
       var fileArray = [];
       var fileUrlArray = [];
-      // 有些图片不是公开的，所以需要携带token信息做权限校�?
-      var token = storage.get("token");
       let _this = this;
       fileList.forEach(function(item, index) {
-        var url = item.url.split("?")[0];
-	if(!url.startsWith("http")) {
-	  url = _this.$base.url+url
-	}
+        var storedUrl = _this.normalizeStoredUrl(item.url);
+        var url = _this.buildAccessUrl(storedUrl);
         var name = item.name;
         var file = {
           name: name,
-          url: url + "?token=" + token
+          url: url
         };
         fileArray.push(file);
-        fileUrlArray.push(url);
+        fileUrlArray.push(storedUrl);
       });
       this.fileList = fileArray;
       this.fileUrlList = fileUrlArray;

@@ -43,11 +43,15 @@ public class FileController{
     private ConfigService configService;
 
 	private File getUploadDirectory() {
-		File upload = new File("src/main/resources/static/upload").getAbsoluteFile();
+		File upload = new File(System.getProperty("user.dir"), "upload").getAbsoluteFile();
 		if(!upload.exists()) {
 			upload.mkdirs();
 		}
 		return upload;
+	}
+
+	private String buildUploadPath(String fileName) {
+		return "/upload/" + fileName;
 	}
 	/**
 	 * 上传文件
@@ -73,7 +77,11 @@ public class FileController{
 			}
 			configService.insertOrUpdate(configEntity);
 		}
-		return R.ok().put("file", fileName);
+		String filePath = buildUploadPath(fileName);
+		return R.ok()
+			.put("file", filePath)
+			.put("url", filePath)
+			.put("fileName", fileName);
 	}
 	
 	/**

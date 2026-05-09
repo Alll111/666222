@@ -24,14 +24,14 @@
           v-for="item in list"
           :key="item.id"
           class="card-item"
-          @click="goFront(`/front/jiaoyouxinxi/${item.id}`)"
+          @click="openFriendDetail(item)"
         >
-          <img class="card-cover" :src="getImageUrl(item.jiaoyoutupian)" :alt="item.zhanghao">
+          <img class="card-cover" :src="getImageUrl(item && item.jiaoyoutupian)" :alt="getFriendName(item)">
           <div class="card-body">
-            <h3>{{ item.zhanghao || '匿名用户' }}</h3>
-            <p>{{ item.xingming || '未填写姓名' }}</p>
-            <div class="meta-item">兴趣：{{ item.xingquaihao || '未填写' }}</div>
-            <div class="meta-item">目的：{{ item.jiaoyoumude || '未填写' }}</div>
+            <h3>{{ getFriendName(item) }}</h3>
+            <p>{{ item && item.xingming ? item.xingming : '未填写姓名' }}</p>
+            <div class="meta-item">兴趣：{{ getFriendField(item, 'xingquaihao') }}</div>
+            <div class="meta-item">目的：{{ getFriendField(item, 'jiaoyoumude') }}</div>
           </div>
         </article>
         <div v-if="!list.length" class="empty-card">暂无交友信息</div>
@@ -41,7 +41,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :current-page.sync="page"
+          v-model:current-page="page"
           :page-size="limit"
           :total="total"
           @current-change="loadList"
@@ -55,7 +55,7 @@
           <div class="page-tag">Publish</div>
           <h2>{{ form.id ? '编辑交友信息' : '发布交友信息' }}</h2>
         </div>
-        <el-button type="text" @click="goFront('/front/jiaoyouxinxi')">返回列表</el-button>
+        <el-button link @click="goFront('/front/jiaoyouxinxi')">返回列表</el-button>
       </div>
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="92px" class="publish-form">
@@ -117,7 +117,7 @@
 
     <section v-else class="detail-card">
       <div class="detail-header">
-        <el-button type="text" @click="goFront('/front/jiaoyouxinxi')">返回列表</el-button>
+        <el-button link @click="goFront('/front/jiaoyouxinxi')">返回列表</el-button>
         <div class="detail-actions">
           <el-button type="primary" @click="addFriend">添加好友</el-button>
           <el-button @click="toggleStoreup">{{ storeupFlag ? '取消收藏' : '点我收藏' }}</el-button>
@@ -128,31 +128,31 @@
         <div class="detail-gallery">
           <el-carousel v-if="swiperList.length" height="360px" arrow="always">
             <el-carousel-item v-for="(item, index) in swiperList" :key="index">
-              <img class="detail-image" :src="getImageUrl(item)" :alt="detail.zhanghao">
+              <img class="detail-image" :src="getImageUrl(item)" :alt="getFriendName(detail)">
             </el-carousel-item>
           </el-carousel>
           <div v-else class="hero-empty">暂无交友图片</div>
 
           <div class="tool-box">
-            <button class="tool-btn" @click="toggleThumb('21')">{{ thumbsupFlag ? '取消赞' : '赞一下' }} ({{ detail.thumbsupnum || 0 }})</button>
-            <button class="tool-btn" @click="toggleThumb('22')">{{ crazilyFlag ? '取消踩' : '踩一下' }} ({{ detail.crazilynum || 0 }})</button>
+            <button class="tool-btn" @click="toggleThumb('21')">{{ thumbsupFlag ? '取消赞' : '赞一下' }} ({{ getThumbsupCount(detail) }})</button>
+            <button class="tool-btn" @click="toggleThumb('22')">{{ crazilyFlag ? '取消踩' : '踩一下' }} ({{ getCrazilyCount(detail) }})</button>
           </div>
         </div>
 
         <div class="detail-info">
-          <h1>{{ detail.zhanghao }}</h1>
-          <div class="info-item"><span>姓名：</span>{{ detail.xingming || '未填写' }}</div>
-          <div class="info-item"><span>性别：</span>{{ detail.xingbie || '未填写' }}</div>
-          <div class="info-item"><span>年龄：</span>{{ detail.nianling || '未填写' }}</div>
-          <div class="info-item"><span>兴趣爱好：</span>{{ detail.xingquaihao || '未填写' }}</div>
-          <div class="info-item"><span>交友目的：</span>{{ detail.jiaoyoumude || '未填写' }}</div>
-          <div class="info-item"><span>点击次数：</span>{{ detail.clicknum || 0 }}</div>
+          <h1>{{ getFriendName(detail) }}</h1>
+          <div class="info-item"><span>姓名：</span>{{ getFriendField(detail, 'xingming') }}</div>
+          <div class="info-item"><span>性别：</span>{{ getFriendField(detail, 'xingbie') }}</div>
+          <div class="info-item"><span>年龄：</span>{{ getFriendField(detail, 'nianling') }}</div>
+          <div class="info-item"><span>兴趣爱好：</span>{{ getFriendField(detail, 'xingquaihao') }}</div>
+          <div class="info-item"><span>交友目的：</span>{{ getFriendField(detail, 'jiaoyoumude') }}</div>
+          <div class="info-item"><span>点击次数：</span>{{ getClickCount(detail) }}</div>
         </div>
       </div>
 
       <el-tabs class="detail-tabs">
         <el-tab-pane label="个人简介">
-          <div class="rich-text" v-html="detail.gerenjianjie" />
+          <div class="rich-text" v-html="getFriendIntro(detail)" />
         </el-tab-pane>
         <el-tab-pane label="评论">
           <div class="comment-form">
@@ -168,8 +168,8 @@
           </div>
           <div class="comment-list">
             <article v-for="item in comments" :key="item.id" class="comment-item">
-              <div class="comment-user">{{ item.nickname || '匿名用户' }}</div>
-              <div class="comment-content">{{ item.content }}</div>
+              <div class="comment-user">{{ item && item.nickname ? item.nickname : '匿名用户' }}</div>
+              <div class="comment-content">{{ item && item.content ? item.content : '' }}</div>
               <div v-if="item.reply" class="comment-reply">回复：{{ item.reply }}</div>
             </article>
             <div v-if="!comments.length" class="empty-card">暂无评论信息</div>
@@ -178,7 +178,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :current-page.sync="commentPage"
+              v-model:current-page="commentPage"
               :page-size="commentLimit"
               :total="commentTotal"
               @current-change="loadComments"
@@ -254,6 +254,34 @@ export default {
     }
   },
   methods: {
+    getFriendId(item) {
+      return item && item.id ? item.id : ''
+    },
+    getFriendName(item) {
+      return item && item.zhanghao ? item.zhanghao : '匿名用户'
+    },
+    getFriendField(item, field) {
+      return item && item[field] ? item[field] : '未填写'
+    },
+    getFriendIntro(item) {
+      return item && item.gerenjianjie ? item.gerenjianjie : ''
+    },
+    getThumbsupCount(item) {
+      return Number((item && item.thumbsupnum) || 0)
+    },
+    getCrazilyCount(item) {
+      return Number((item && item.crazilynum) || 0)
+    },
+    getClickCount(item) {
+      return Number((item && item.clicknum) || 0)
+    },
+    openFriendDetail(item) {
+      const id = this.getFriendId(item)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/jiaoyouxinxi/${id}`)
+    },
     initPage() {
       if (this.mode === 'list') {
         this.loadList()

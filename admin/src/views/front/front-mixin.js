@@ -1,3 +1,5 @@
+import { logoutAndRedirect } from '@/utils/auth'
+
 export default {
   computed: {
     isAdmin() {
@@ -19,24 +21,38 @@ export default {
     }
   },
   methods: {
-    getImageUrl(path) {
-      if (!path) {
-        return ''
-      }
-      const cleanPath = String(path).split(',')[0]
-      if (/^https?:\/\//.test(cleanPath)) {
-        return cleanPath
-      }
-      const normalized = cleanPath.startsWith('upload/')
-        ? cleanPath
-        : `upload/${cleanPath.replace(/^\/+/, '')}`
-      return `${this.$base.url}${normalized}`
-    },
     normalizeUploadPath(path) {
       if (!path) {
         return ''
       }
-      return String(path).replace(new RegExp(this.$base.url, 'g'), '')
+      return String(path)
+        .split(',')
+        .map(item => {
+          let cleanPath = String(item || '').trim()
+          if (!cleanPath) {
+            return ''
+          }
+          cleanPath = cleanPath.replace(/^https?:\/\/[^/]+/i, '')
+          cleanPath = cleanPath.replace(/^\/+api(?=\/)/i, '')
+          cleanPath = cleanPath.replace(/^\/+/, '')
+          if (cleanPath.startsWith('upload/')) {
+            return cleanPath
+          }
+          return `upload/${cleanPath}`
+        })
+        .filter(Boolean)
+        .join(',')
+    },
+    getImageUrl(path) {
+      if (!path) {
+        return ''
+      }
+      const rawPath = String(path).split(',')[0].trim()
+      if (/^https?:\/\//.test(rawPath)) {
+        return rawPath
+      }
+      const cleanPath = this.normalizeUploadPath(rawPath).split(',')[0]
+      return `${this.$base.url.replace(/\/+$/, '')}/${cleanPath}`
     },
     normalizeRichText(html) {
       if (!html) {
@@ -67,10 +83,17 @@ export default {
       return false
     },
     logoutFront() {
-      this.$storage.clear()
-      localStorage.removeItem('token')
-      localStorage.removeItem('Token')
-      this.$router.push('/front/home').catch(() => {})
+      this.$confirm('确定要退出当前登录账号吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        logoutAndRedirect({
+          onRequestError: () => {
+            this.$message.warning('登出接口请求失败，已清除本地登录状态')
+          }
+        })
+      }).catch(() => {})
     },
     goFront(path) {
       this.$router.push(path).catch(() => {})
@@ -96,6 +119,7 @@ export default {
     fetchCurrentUser() {
       const table = this.currentTable
       if (!table) {
+        localStorage.removeItem('frontUserInfo')
         return Promise.resolve(null)
       }
       return this.$http({
@@ -108,10 +132,15 @@ export default {
             this.$storage.set('userid', user.id)
             localStorage.setItem('userid', user.id)
           }
+          localStorage.setItem('frontUserInfo', JSON.stringify(user))
           return user
         }
+        localStorage.removeItem('frontUserInfo')
         return null
-      }).catch(() => null)
+      }).catch(() => {
+        localStorage.removeItem('frontUserInfo')
+        return null
+      })
     }
   }
 }
