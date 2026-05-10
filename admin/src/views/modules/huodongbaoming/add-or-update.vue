@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -36,7 +36,7 @@
       <el-col :span="12">
         <el-form-item class="date" v-if="type!='info'" label="报名时间" prop="baomingshijian">
             <el-date-picker
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="YYYY-MM-DD HH:mm:ss"
                 v-model="ruleForm.baomingshijian" 
                 type="datetime"
                 :readonly="ro.baomingshijian"

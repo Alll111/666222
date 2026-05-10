@@ -257,7 +257,7 @@ public class JiaoyouxinxiController {
             jiaoyouxinxi.setZhanghao(currentUser.getZhanghao());
             jiaoyouxinxi.setXingming(currentUser.getXingming());
             jiaoyouxinxi.setXingbie(currentUser.getXingbie());
-            jiaoyouxinxi.setNianling(currentUser.getNianling());
+            jiaoyouxinxi.setNianling(toIntegerAge(currentUser.getNianling()));
             jiaoyouxinxi.setSfsh("待审核");
             jiaoyouxinxi.setShhf("");
             if (jiaoyouxinxi.getThumbsupnum() == null) {
@@ -310,7 +310,7 @@ public class JiaoyouxinxiController {
         oldEntity.setZhanghao(currentUser.getZhanghao());
         oldEntity.setXingming(currentUser.getXingming());
         oldEntity.setXingbie(currentUser.getXingbie());
-        oldEntity.setNianling(currentUser.getNianling());
+        oldEntity.setNianling(toIntegerAge(currentUser.getNianling()));
         oldEntity.setXingquaihao(jiaoyouxinxi.getXingquaihao());
         oldEntity.setJiaoyoumude(jiaoyouxinxi.getJiaoyoumude());
         oldEntity.setGerenjianjie(jiaoyouxinxi.getGerenjianjie());
@@ -450,6 +450,10 @@ public class JiaoyouxinxiController {
         }
         YonghuEntity currentUser = getCurrentYonghu(request);
         return currentUser == null ? null : currentUser.getZhanghao();
+    }
+
+    private Integer toIntegerAge(Float age) {
+        return age == null ? null : age.intValue();
     }
 
 

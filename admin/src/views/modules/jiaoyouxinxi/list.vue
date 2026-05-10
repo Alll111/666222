@@ -139,12 +139,15 @@
                   v-if="isAuth('jiaoyouxinxi','审核')"
                   prop="sfsh"
                  :header-align="contents.tableAlign"
+                  width="100"
+                  class-name="audit-column"
                   label="审核">
                   <template #default="scope">
-                    <el-button v-if="scope?.row" link icon="el-icon-edit" size="small" @click="shDialog(scope?.row)">审核</el-button>
+                    <el-button v-if="scope?.row" class="audit-link" link icon="el-icon-edit" size="small" @click="shDialog(scope?.row)">审核</el-button>
                   </template>
               </el-table-column>
-            <el-table-column width="300" :align="contents.tableAlign" 
+            <el-table-column width="320" :align="contents.tableAlign" 
+               class-name="operation-column"
                :header-align="contents.tableAlign"
                 label="操作">
                 <template #default="scope">
@@ -193,7 +196,10 @@
     <el-dialog
       title="审核"
       v-model="sfshVisiable"
-      width="50%">
+      class="audit-dialog"
+      width="min(680px, 92vw)"
+      top="8vh"
+      append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="审核状态">
           <el-select v-model="shForm.sfsh" placeholder="审核状态">
@@ -487,7 +493,7 @@ export default {
         this.dataList = [];
         this.totalPage = 0;
         this.dataListLoading = false;
-        this.$message.error((error && error.message) || '鏁版嵁鍔犺浇澶辫触');
+        this.$message.error((error && error.message) || '数据加载失败');
       });
     },
     // 姣忛〉鏁?
@@ -544,8 +550,8 @@ export default {
     },
     // 审核
     shHandler(){
-      this.$confirm(`纭畾操作?`, "提示", {
-        confirmButtonText: "纭畾",
+      this.$confirm('确定执行审核操作吗？', '提示', {
+        confirmButtonText: '确定',
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
@@ -556,7 +562,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作鎴愬姛",
+              message: "操作成功",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -565,10 +571,10 @@ export default {
               }
             });
           } else {
-            this.$message.error((data && data.msg) || '操作澶辫触');
+            this.$message.error((data && data.msg) || '操作失败');
           }
         }).catch((error) => {
-          this.$message.error((error && error.message) || '操作澶辫触');
+          this.$message.error((error && error.message) || '操作失败');
         });
       }).catch(() => {});
     },
@@ -583,8 +589,8 @@ export default {
         : this.dataListSelections.map(item => {
             return Number(item.id);
           });
-      this.$confirm(`纭畾杩涜[${id ? "删除" : "鎵归噺删除"}]操作?`, "提示", {
-        confirmButtonText: "纭畾",
+      this.$confirm(`确定执行[${id ? "删除" : "批量删除"}]操作吗？`, "提示", {
+        confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
@@ -595,7 +601,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作鎴愬姛",
+              message: "操作成功",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -603,10 +609,10 @@ export default {
               }
             });
           } else {
-            this.$message.error((data && data.msg) || '删除澶辫触');
+            this.$message.error((data && data.msg) || '删除失败');
           }
         }).catch((error) => {
-          this.$message.error((error && error.message) || '删除澶辫触');
+          this.$message.error((error && error.message) || '删除失败');
         });
       }).catch(() => {});
     },
@@ -684,7 +690,54 @@ export default {
 	}
 	.table-content {
 		background: transparent;
+    position: relative;
+    overflow: visible;
+    padding-bottom: 20px;
 	}
+
+  .tables {
+    margin-bottom: 18px;
+  }
+
+  .pages {
+    position: relative;
+    z-index: 2;
+  }
+
+  .audit-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+  }
+
+  :deep(.audit-column .cell),
+  :deep(.operation-column .cell) {
+    overflow: visible;
+    white-space: normal;
+  }
+
+  :deep(.tables .el-table__body-wrapper) {
+    overflow: auto;
+  }
+
+  :deep(.tables td.el-table__cell) {
+    vertical-align: top;
+  }
+
+  :deep(.audit-dialog) {
+    max-width: 92vw;
+  }
+
+  :deep(.audit-dialog .el-dialog) {
+    margin: 0 auto;
+  }
+
+  :deep(.audit-dialog .el-dialog__body) {
+    max-height: calc(84vh - 140px);
+    overflow-y: auto;
+    padding-right: 18px;
+  }
 	
 	:deep(.el-table__body tr) {
 				background-color: rgba(255, 255, 255, 1) !important;

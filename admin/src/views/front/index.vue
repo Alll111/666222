@@ -39,7 +39,7 @@
 
     <footer class="front-footer">
       <div class="footer-title">{{ projectName }}</div>
-      <div class="footer-text">前台功能已迁移到新的 Vue 页面中，可直接完成浏览、发帖、报名、收藏和个人信息维护。</div>
+      <div class="footer-text">校友社交系统 · 连接你我，重温同窗时光</div>
     </footer>
   </div>
 </template>

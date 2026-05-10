@@ -143,14 +143,18 @@ const handleLogin = async () => {
   loading.value = true
 
   try {
+    const formData = new URLSearchParams()
+    formData.append('username', form.value.username)
+    formData.append('password', form.value.password)
+    formData.append('role', form.value.role)
+    formData.append('tableName', tableName)
+
     const { data } = await http({
       url: '/login',
       method: 'post',
-      params: {
-        username: form.value.username,
-        password: form.value.password,
-        role: form.value.role,
-        tableName
+      data: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       }
     })
 

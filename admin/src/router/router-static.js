@@ -200,12 +200,14 @@ const routes = [{
       },
       {
         path: 'news',
+        alias: 'gonggaoxinxi',
         name: 'frontNews',
         component: FrontNews,
         meta: { icon: '', title: '公告信息' }
       },
       {
         path: 'news/:id',
+        alias: 'gonggaoxinxi/:id',
         name: 'frontNewsDetail',
         component: FrontNews,
         meta: { icon: '', title: '公告详情' }

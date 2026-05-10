@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dao.TokenDao;
 import com.entity.TokenEntity;
-import com.entity.TokenEntity;
 import com.service.TokenService;
 import com.utils.CommonUtil;
 import com.utils.PageUtils;
@@ -53,7 +52,9 @@ public class TokenServiceImpl extends ServiceImpl<TokenDao, TokenEntity> impleme
 
 	@Override
 	public String generateToken(Long userid,String username, String tableName, String role) {
-		TokenEntity tokenEntity = this.selectOne(new EntityWrapper<TokenEntity>().eq("userid", userid).eq("role", role));
+		List<TokenEntity> tokenList = this.selectList(
+				new EntityWrapper<TokenEntity>().eq("userid", userid).eq("role", role).orderBy("id", false));
+		TokenEntity tokenEntity = tokenList != null && !tokenList.isEmpty() ? tokenList.get(0) : null;
 		String token = CommonUtil.getRandomString(32);
 		Calendar cal = Calendar.getInstance();   
     	cal.setTime(new Date());   
@@ -70,7 +71,9 @@ public class TokenServiceImpl extends ServiceImpl<TokenDao, TokenEntity> impleme
 
 	@Override
 	public TokenEntity getTokenEntity(String token) {
-		TokenEntity tokenEntity = this.selectOne(new EntityWrapper<TokenEntity>().eq("token", token));
+		List<TokenEntity> tokenList = this.selectList(
+				new EntityWrapper<TokenEntity>().eq("token", token).orderBy("id", false).last("limit 1"));
+		TokenEntity tokenEntity = tokenList != null && !tokenList.isEmpty() ? tokenList.get(0) : null;
 		if(tokenEntity == null || tokenEntity.getExpiratedtime().getTime()<new Date().getTime()) {
 			return null;
 		}

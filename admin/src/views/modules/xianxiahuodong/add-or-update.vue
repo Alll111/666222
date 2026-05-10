@@ -48,7 +48,7 @@
       <el-col :span="12">
         <el-form-item class="date" v-if="type!='info'" label="活动时间" prop="huodongshijian">
             <el-date-picker
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="YYYY-MM-DD HH:mm:ss"
                 v-model="ruleForm.huodongshijian" 
                 type="datetime"
                 :readonly="ro.huodongshijian"

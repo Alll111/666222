@@ -3,10 +3,10 @@
     <section class="hero-section">
       <div class="hero-left">
         <div class="hero-tag">WELCOME</div>
-        <h1>校友社交系统前台首页</h1>
+        <h1>欢迎使用校友社交系统</h1>
         <p>
-          系统提供线下活动、交友信息、交流论坛和公告信息等核心功能，
-          支持数据正常加载、列表浏览、详情查看和登录后互动操作。
+          在这里，你可以找到志同道合的校友，参与丰富的线下活动，
+          分享交流，重拾校园时光。
         </p>
         <div class="hero-actions">
           <button class="primary-btn" @click="goFront('/front/xianxiahuodong')">浏览线下活动</button>
@@ -100,26 +100,32 @@
           <div class="section-tag">News</div>
           <h2>公告信息</h2>
         </div>
+        <el-button link @click="goFront('/front/gonggaoxinxi')">查看更多</el-button>
       </div>
-      <div class="news-layout">
-        <article v-if="newsList.length" class="news-highlight">
-          <img class="news-highlight-cover" :src="getImageUrl(newsList[0].picture)" :alt="newsList[0].title">
-          <div class="news-highlight-body">
-            <div class="news-date">{{ formatDate(newsList[0].addtime) }}</div>
-            <h3>{{ newsList[0].title }}</h3>
-            <p>{{ newsList[0].introduction || '暂无公告简介。' }}</p>
-          </div>
-        </article>
-        <div class="news-list">
-          <article v-for="item in sideNewsList" :key="item.id" class="news-item">
+      <div class="news-list">
+        <article
+          v-for="item in newsList"
+          :key="item.id"
+          class="news-item"
+          :class="{ 'news-item-no-cover': !hasNewsImage(item) }"
+          @click="openNews(item)"
+        >
+          <img
+            v-if="hasNewsImage(item)"
+            class="news-item-cover"
+            :src="getNewsImageUrl(item)"
+            :alt="getNewsTitle(item)"
+            @error="handleNewsImageError(item)"
+          >
+          <div class="news-item-body">
             <div class="news-item-date">{{ formatDate(item.addtime) }}</div>
             <div class="news-item-content">
-              <h4>{{ item.title }}</h4>
-              <p>{{ item.introduction || '暂无简介。' }}</p>
+              <h4>{{ getNewsTitle(item) }}</h4>
+              <p>{{ getNewsIntroduction(item) }}</p>
             </div>
-          </article>
-          <div v-if="!newsList.length" class="empty-card">暂无公告信息</div>
-        </div>
+          </div>
+        </article>
+        <div v-if="!newsList.length" class="empty-card">暂无公告信息</div>
       </div>
     </section>
   </div>
@@ -137,6 +143,7 @@ export default {
       swiperList: [],
       recommendList: [],
       newsList: [],
+      newsImageErrorMap: {},
       forumList: [],
       activityList: [],
       quickEntries: [
@@ -148,9 +155,6 @@ export default {
     }
   },
   computed: {
-    sideNewsList() {
-      return this.newsList.slice(1, 5)
-    }
   },
   created() {
     this.loadHomeData()
@@ -216,12 +220,56 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.newsList = (data.data || {}).list || []
+          this.newsImageErrorMap = {}
         } else {
           this.newsList = []
+          this.newsImageErrorMap = {}
         }
       }).catch(() => {
         this.newsList = []
+        this.newsImageErrorMap = {}
       })
+    },
+    getNewsImageKey(item) {
+      if (!item) {
+        return ''
+      }
+      return String(item.id || item.title || item.addtime || '')
+    },
+    getNewsId(item) {
+      return item && item.id ? item.id : ''
+    },
+    getNewsImageUrl(item) {
+      return item && item.picture ? this.getImageUrl(item.picture) : ''
+    },
+    hasNewsImage(item) {
+      const key = this.getNewsImageKey(item)
+      if (!key || this.newsImageErrorMap[key]) {
+        return false
+      }
+      return !!this.getNewsImageUrl(item)
+    },
+    handleNewsImageError(item) {
+      const key = this.getNewsImageKey(item)
+      if (!key) {
+        return
+      }
+      this.newsImageErrorMap = Object.assign({}, this.newsImageErrorMap, {
+        [key]: true
+      })
+    },
+    openNews(item) {
+      const id = this.getNewsId(item)
+      if (!id) {
+        return
+      }
+      this.goFront(`/front/gonggaoxinxi/${id}`)
+    },
+    getNewsTitle(item) {
+      return item && item.title ? item.title : '未命名公告'
+    },
+    getNewsIntroduction(item) {
+      return item && item.introduction ? item.introduction : '暂无公告简介'
     }
   }
 }
@@ -452,33 +500,10 @@ export default {
   margin-bottom: 10px;
 }
 
-.news-layout {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 20px;
-}
-
-.news-highlight {
-  overflow: hidden;
-}
-
-.news-highlight-cover {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  background: #f5f7fb;
-}
-
-.news-highlight-body {
-  padding: 20px;
-}
-
-.news-highlight-body h3,
 .news-item-content h4 {
   margin: 0 0 10px;
 }
 
-.news-date,
 .news-item-date {
   color: #1f6fff;
   font-size: 13px;
@@ -486,7 +511,6 @@ export default {
   margin-bottom: 10px;
 }
 
-.news-highlight-body p,
 .news-item-content p {
   margin: 0;
   color: #667085;
@@ -500,7 +524,37 @@ export default {
 }
 
 .news-item {
-  padding: 18px;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.news-item-no-cover {
+  grid-template-columns: 1fr;
+}
+
+.news-item-cover {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f5f7fb;
+}
+
+.news-item-content h4 {
+  font-size: 18px;
+}
+
+.news-item-content {
+  min-width: 0;
+}
+
+.news-item-body {
+  min-width: 0;
 }
 
 .empty-card {
@@ -513,7 +567,6 @@ export default {
 
 @media (max-width: 992px) {
   .hero-section,
-  .news-layout,
   .card-grid,
   .entry-section,
   .forum-list {
@@ -522,6 +575,14 @@ export default {
 
   .hero-left h1 {
     font-size: 30px;
+  }
+
+  .news-item {
+    grid-template-columns: 1fr;
+  }
+
+  .news-item-cover {
+    height: 180px;
   }
 }
 </style>

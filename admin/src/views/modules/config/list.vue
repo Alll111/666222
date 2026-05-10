@@ -85,7 +85,7 @@
       </div>
     </div>
     <!-- 娣诲姞/修改椤甸潰  灏嗙埗缁勪欢鐨剆earch鏂规硶浼犻€掔粰瀛愮粍浠-->
-    <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
+    <add-or-update v-show="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
 
 
@@ -114,6 +114,8 @@ export default {
       shForm: {},
       chartVisiable: false,
       addOrUpdateFlag:false,
+      isUnmounted: false,
+      searchStyleTimer: null,
       contents:{"searchBtnFontColor":"rgba(0, 0, 0, 1)","pagePosition":"2","inputFontSize":"14px","inputBorderRadius":"20px","tableBtnDelFontColor":"rgba(0, 0, 0, 1)","tableBtnIconPosition":"1","searchBtnHeight":"42px","tableBgColor":"rgba(255, 255, 255, 1)","inputIconColor":"rgba(0, 0, 0, 1)","searchBtnBorderRadius":"20px","tableStripe":false,"btnAdAllWarnFontColor":"rgba(0, 0, 0, 1)","tableBtnDelBgColor":"rgba(56, 182, 230, 1)","searchBtnIcon":"1","tableSize":"medium","searchBtnBorderStyle":"double","text":{"padding":"0","boxShadow":"0 0 0px rgba(0,0,0,.1)","margin":"0 auto","borderColor":"rgba(0,0,0,.3)","backgroundColor":"rgba(247, 247, 247, 0)","color":"rgba(0, 0, 0, 1)","borderRadius":"0","borderWidth":"0","width":"650px","lineHeight":"50px","fontSize":"26px","borderStyle":"solid"},"tableSelection":true,"searchBtnBorderWidth":"5px 000","tableContentFontSize":"14px","searchBtnBgColor":"#fff","inputTitleSize":"15px","btnAdAllBorderColor":"rgba(56, 182, 230, 1)","pageJumper":true,"btnAdAllIconPosition":"1","searchBoxPosition":"2","tableBtnDetailFontColor":"rgba(0, 0, 0, 1)","tableBtnHeight":"40px","pagePager":true,"searchBtnBorderColor":"rgba(56, 182, 230, 1)","tableHeaderFontColor":"rgba(0, 1, 4, 1)","inputTitle":"1","tableBtnBorderRadius":"5px","btnAdAllFont":"1","btnAdAllDelFontColor":"rgba(0, 0, 0, 1)","tableBtnIcon":"1","btnAdAllHeight":"46px","btnAdAllWarnBgColor":"rgba(255, 255, 255, 1)","btnAdAllBorderWidth":"5px 000","tableStripeFontColor":"rgba(0, 0, 0, 1)","tableBtnBorderStyle":"double","inputHeight":"42px","btnAdAllBorderRadius":"20px","btnAdAllDelBgColor":"rgba(255, 255, 255, 1)","pagePrevNext":true,"btnAdAllAddBgColor":"rgba(255, 255, 255, 1)","searchBtnFont":"1","tableIndex":true,"btnAdAllIcon":"0","tableSortable":false,"pageSizes":true,"tableFit":true,"pageBtnBG":true,"searchBtnFontSize":"15px","tableBtnEditBgColor":"rgba(56, 182, 230, 1)","box":{"padding":"10px 20px","boxShadow":"0 0 6px rgba(0,0,0,0)","flag":1,"backgroundImage":"http://codegen.caihongy.cn/20211124/229bbb98f09a41bc83995f14c422a0a1.jpg","background":"#fff"},"inputBorderWidth":"5px 000","inputFontPosition":"1","inputFontColor":"rgba(0, 0, 0, 1)","pageEachNum":10,"tableHeaderBgColor":"rgba(119, 197, 227, 1)","inputTitleColor":"rgba(0, 0, 0, 1)","btnAdAllBoxPosition":"1","tableBtnDetailBgColor":"rgba(56, 182, 230, 1)","inputIcon":"1","searchBtnIconPosition":"2","btnAdAllFontSize":"14px","inputBorderStyle":"double","tableHoverFontColor":"#333","inputBgColor":"rgba(255, 255, 255, 1)","pageStyle":false,"pageTotal":true,"btnAdAllAddFontColor":"rgba(0, 0, 0, 1)","tableBtnFont":"1","tableContentFontColor":"rgba(0, 0, 0, 1)","inputBorderColor":"rgba(56, 182, 230, 1)","tableShowHeader":true,"tableHoverBgColor":"rgba(119, 197, 227, 0.8)","tableBtnFontSize":"14px","tableBtnBorderColor":"rgba(255, 255, 255, 1)","inputIconPosition":"2","tableBorder":true,"btnAdAllBorderStyle":"double","tableBtnBorderWidth":"5px","tableStripeBgColor":"rgba(119, 197, 227, 0.8)","tableBtnEditFontColor":"rgba(0, 0, 0, 1)","tableAlign":"center"},
       layouts: '',
 
@@ -127,6 +129,13 @@ export default {
   },
   mounted() {
 
+  },
+  beforeUnmount() {
+    this.isUnmounted = true;
+    if (this.searchStyleTimer) {
+      clearTimeout(this.searchStyleTimer);
+      this.searchStyleTimer = null;
+    }
   },
   filters: {
     htmlfilter: function (val) {
@@ -147,6 +156,9 @@ export default {
     },
     contentSearchStyleChange() {
       this.$nextTick(()=>{
+        if (this.isUnmounted) {
+          return;
+        }
         document.querySelectorAll('.form-content .slt .el-input__inner').forEach(el=>{
           let textAlign = 'left'
           if(this.contents.inputFontPosition == 2) textAlign = 'center'
@@ -169,7 +181,13 @@ export default {
             el.style.lineHeight = this.contents.inputHeight
           })
         }
-        setTimeout(()=>{
+        if (this.searchStyleTimer) {
+          clearTimeout(this.searchStyleTimer)
+        }
+        this.searchStyleTimer = setTimeout(()=>{
+          if (this.isUnmounted) {
+            return;
+          }
           document.querySelectorAll('.form-content .slt .el-input__prefix').forEach(el=>{
             el.style.color = this.contents.inputIconColor
             el.style.lineHeight = this.contents.inputHeight
@@ -335,6 +353,9 @@ export default {
         method: "get",
         params: params
       }).then(({ data }) => {
+        if (this.isUnmounted) {
+          return;
+        }
         if (data && data.code === 0) {
           this.dataList = data.data.list;
           this.totalPage = data.data.total;
@@ -342,6 +363,13 @@ export default {
           this.dataList = [];
           this.totalPage = 0;
         }
+        this.dataListLoading = false;
+      }).catch(() => {
+        if (this.isUnmounted) {
+          return;
+        }
+        this.dataList = [];
+        this.totalPage = 0;
         this.dataListLoading = false;
       });
     },
@@ -369,6 +397,9 @@ export default {
         type = 'else';
       }
       this.$nextTick(() => {
+        if (this.isUnmounted || !this.$refs.addOrUpdate || typeof this.$refs.addOrUpdate.init !== 'function') {
+          return;
+        }
         this.$refs.addOrUpdate.init(id,type);
       });
     },

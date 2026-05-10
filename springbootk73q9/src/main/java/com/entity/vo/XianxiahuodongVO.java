@@ -7,6 +7,8 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.utils.FlexibleDateDeserializer;
 import java.io.Serializable;
  
 
@@ -39,7 +41,8 @@ public class XianxiahuodongVO  implements Serializable {
 	 */
 		
 	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat 
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonDeserialize(using = FlexibleDateDeserializer.class)
 	private Date huodongshijian;
 		
 	/**

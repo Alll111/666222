@@ -7,6 +7,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.utils.FlexibleDateDeserializer;
 import java.lang.reflect.InvocationTargetException;
 
 import java.io.Serializable;
@@ -74,7 +76,8 @@ public class XianxiahuodongEntity<T> implements Serializable {
 	 */
 				
 	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat 		
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonDeserialize(using = FlexibleDateDeserializer.class)
 	private Date huodongshijian;
 	
 	/**

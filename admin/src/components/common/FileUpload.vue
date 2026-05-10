@@ -31,6 +31,7 @@ import storage from "@/utils/storage";
 import { Plus } from '@element-plus/icons-vue'
 export default {
   components: { Plus },
+  emits: ["change"],
   data() {
     return {
       // 查看大图
@@ -40,19 +41,54 @@ export default {
       // 组件渲染图片使用的文件列表
       fileList: [],
       fileUrlList: [],
-      myHeaders:{}
+      myHeaders:{},
+      isUnmounted: false
     };
   },
-  props: ["tip", "action", "limit", "multiple", "fileUrls"],
+  props: {
+    tip: {
+      type: String,
+      default: ""
+    },
+    action: {
+      type: String,
+      default: ""
+    },
+    limit: {
+      type: Number,
+      default: 1
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    fileUrls: {
+      type: [String, Array, Object, null],
+      default: ""
+    }
+  },
   mounted() {
     this.init();
     this.myHeaders= {
       'Token':storage.get("Token")
     }
   },
+  beforeUnmount() {
+    this.isUnmounted = true;
+    this.dialogVisible = false;
+    this.dialogImageUrl = "";
+    const upload = this.$refs.upload;
+    upload?.abort?.();
+    upload?.clearFiles?.();
+    this.fileList = [];
+    this.fileUrlList = [];
+  },
   watch: {
     fileUrls: function(val, oldVal) {
       //   console.log("new: %s, old: %s", val, oldVal);
+      if (this.isUnmounted) {
+        return;
+      }
       this.init();
     }
   },
@@ -70,6 +106,24 @@ export default {
     }
   },
   methods: {
+    normalizeFileUrls(value) {
+      if (typeof value === "string") {
+        return value.trim();
+      }
+      if (Array.isArray(value)) {
+        return value
+          .map(item => this.normalizeStoredUrl(item && item.url ? item.url : item))
+          .filter(Boolean)
+          .join(",");
+      }
+      if (value && typeof value === "object") {
+        if (typeof value.url === "string") {
+          return this.normalizeStoredUrl(value.url);
+        }
+        return "";
+      }
+      return "";
+    },
     normalizeStoredUrl(url) {
       let normalized = String(url || "").split("?")[0].trim();
       if (!normalized) {
@@ -105,9 +159,12 @@ export default {
     },
     // 初始化文件列表
     init() {
-      //   console.log(this.fileUrls);
-      if (this.fileUrls) {
-        this.fileUrlList = this.fileUrls.split(",");
+      if (this.isUnmounted) {
+        return;
+      }
+      const normalizedFileUrls = this.normalizeFileUrls(this.fileUrls);
+      if (normalizedFileUrls) {
+        this.fileUrlList = normalizedFileUrls.split(",").filter(Boolean);
         let fileArray = [];
         this.fileUrlList.forEach(function(item, index) {
           var url = item;
@@ -125,13 +182,24 @@ export default {
       }
     },
     handleBeforeUpload(file) {
-	
+      if (this.isUnmounted) {
+        return false;
+      }
     },
     // 上传文件成功后执行
     handleUploadSuccess(res, file, fileList) {
+      if (this.isUnmounted) {
+        return;
+      }
+      if (!Array.isArray(fileList) || fileList.length === 0) {
+        return;
+      }
       if (res && res.code === 0) {
         fileList[fileList.length - 1]["url"] = this.resolveUploadPath(res);
         this.setFileList(fileList);
+        if (this.isUnmounted) {
+          return;
+        }
         this.$emit("change", this.fileUrlList.join(","));
       } else {
         this.$message.error(res.msg);
@@ -139,15 +207,27 @@ export default {
     },
     // 图片上传失败
     handleUploadErr(err, file, fileList) {
+      if (this.isUnmounted) {
+        return;
+      }
       this.$message.error("文件上传失败");
     },
     // 移除图片
     handleRemove(file, fileList) {
+      if (this.isUnmounted) {
+        return;
+      }
       this.setFileList(fileList);
+      if (this.isUnmounted) {
+        return;
+      }
       this.$emit("change", this.fileUrlList.join(","));
     },
     // 查看大图
     handleUploadPreview(file) {
+      if (this.isUnmounted || !file) {
+        return;
+      }
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
@@ -157,11 +237,20 @@ export default {
     },
     // 重新同步 fileList 和 fileUrlList
     setFileList(fileList) {
+      if (this.isUnmounted) {
+        return;
+      }
       var fileArray = [];
       var fileUrlArray = [];
       let _this = this;
-      fileList.forEach(function(item, index) {
+      (Array.isArray(fileList) ? fileList : []).forEach(function(item, index) {
+        if (!item || !item.url) {
+          return;
+        }
         var storedUrl = _this.normalizeStoredUrl(item.url);
+        if (!storedUrl) {
+          return;
+        }
         var url = _this.buildAccessUrl(storedUrl);
         var name = item.name;
         var file = {

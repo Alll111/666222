@@ -129,7 +129,7 @@
           <el-date-picker
             v-model="signupForm.baomingshijian"
             type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="报名时间"
             style="width: 100%;"
           />

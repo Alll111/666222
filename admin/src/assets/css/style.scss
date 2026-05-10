@@ -164,40 +164,78 @@ body {
   font-weight: 600;
 }
 
-.el-input__inner,
-.el-textarea__inner,
-.el-input-number,
-.el-select .el-input__inner {
-  border-radius: var(--theme-radius);
+.el-input,
+.el-select,
+.el-date-editor,
+.el-input-number {
+  --el-input-hover-border-color: #b6ccff;
+  --el-input-focus-border-color: var(--theme-primary);
+}
+
+.el-input__wrapper,
+.el-select__wrapper,
+.el-date-editor .el-input__wrapper,
+.el-input-number .el-input__wrapper {
   border: 1px solid var(--theme-border);
+  border-radius: 12px;
   background: #f9fbff;
+  box-shadow: none !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.el-input__inner {
-  height: 40px;
-  line-height: 40px;
+.el-input__wrapper:hover,
+.el-select__wrapper:hover,
+.el-date-editor .el-input__wrapper:hover,
+.el-input-number .el-input__wrapper:hover,
+.el-textarea__inner:hover {
+  border-color: #b6ccff;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-date-editor .el-input__wrapper.is-focus,
+.el-input-number .el-input__wrapper.is-focus,
+.el-textarea__inner:focus,
+.el-textarea .el-textarea__inner:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px rgba(31, 111, 255, 0.12) !important;
+  background: #fff;
+}
+
+.el-input__inner,
+.el-select .el-input__inner,
+.el-date-editor .el-input__inner,
+.el-input-number .el-input__inner {
+  height: 100%;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.el-input__inner:hover,
+.el-input__inner:focus {
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .el-textarea__inner {
   min-height: 120px !important;
   padding-top: 12px;
   padding-bottom: 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: #f9fbff;
+  box-shadow: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.el-input__inner:hover,
-.el-textarea__inner:hover {
-  border-color: #b6ccff;
-}
-
-.el-input.is-focus .el-input__inner,
-.el-textarea.is-focus .el-textarea__inner,
-.el-select .el-input.is-focus .el-input__inner,
-.el-input__inner:focus,
-.el-textarea__inner:focus {
-  border-color: var(--theme-primary);
-  box-shadow: 0 0 0 3px rgba(31, 111, 255, 0.12);
-  background: #fff;
+.el-form-item.is-error .el-input__wrapper,
+.el-form-item.is-error .el-select__wrapper,
+.el-form-item.is-error .el-date-editor .el-input__wrapper,
+.el-form-item.is-error .el-input-number .el-input__wrapper,
+.el-form-item.is-error .el-textarea__inner {
+  box-shadow: none !important;
 }
 
 .el-input-group__append,

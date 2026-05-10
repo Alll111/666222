@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="addEdit-block">
     <el-form
       class="detail-form-content"
@@ -28,13 +28,13 @@
           action="file/upload"
           :limit="3"
           :multiple="true"
-          :fileUrls="ruleForm.value?ruleForm.value:''"
+          :fileUrls="normalizedValue"
           @change="valueUploadChange"
           ></file-upload>
         </el-form-item>
         <div v-else>
-          <el-form-item v-if="ruleForm.value" label="值" prop="value">
-            <img style="margin-right:20px;" v-bind:key="index" v-for="(item,index) in ruleForm.value.split(',')" :src="$base.url+item" width="100" height="100">
+          <el-form-item v-if="previewImages.length" label="值" prop="value">
+            <img style="margin-right:20px;" v-bind:key="index" v-for="(item,index) in previewImages" :src="$base.url+item" width="100" height="100">
           </el-form-item>
         </div>
       </el-col>
@@ -122,6 +122,8 @@ export default {
 	  addEditForm: {"btnSaveFontColor":"#fff","selectFontSize":"14px","btnCancelBorderColor":"#DCDFE6","inputBorderRadius":"4px","inputFontSize":"14px","textareaBgColor":"#fff","btnSaveFontSize":"14px","textareaBorderRadius":"4px","uploadBgColor":"#fff","textareaBorderStyle":"solid","btnCancelWidth":"88px","textareaHeight":"120px","dateBgColor":"#fff","btnSaveBorderRadius":"4px","uploadLableFontSize":"14px","textareaBorderWidth":"3px","inputLableColor":"rgba(0, 0, 0, 1)","addEditBoxColor":"rgba(255, 255, 255, 0)","dateIconFontSize":"14px","btnSaveBgColor":"rgba(64, 158, 255, 1)","uploadIconFontColor":"rgba(119, 197, 227, 1)","textareaBorderColor":"rgba(119, 197, 227, 1)","btnCancelBgColor":"rgba(64, 158, 255, 1)","selectLableColor":"rgba(0, 0, 0, 1)","btnSaveBorderStyle":"solid","dateBorderWidth":"3px","dateLableFontSize":"14px","dateBorderRadius":"4px","btnCancelBorderStyle":"solid","selectLableFontSize":"14px","selectBorderStyle":"solid","selectIconFontColor":"rgba(0, 0, 0, 1)","btnCancelHeight":"44px","inputHeight":"45px","btnCancelFontColor":"rgba(255, 255, 255, 1)","dateBorderColor":"rgba(119, 197, 227, 1)","dateIconFontColor":"rgba(0, 0, 0, 1)","uploadBorderStyle":"solid","dateBorderStyle":"solid","dateLableColor":"rgba(0, 4, 11, 1)","dateFontSize":"14px","inputBorderWidth":"3px","uploadIconFontSize":"28px","selectHeight":"40px","inputFontColor":"rgba(0, 0, 0, 1)","uploadHeight":"148px","textareaLableColor":"rgba(0, 0, 0, 1)","textareaLableFontSize":"14px","btnCancelFontSize":"14px","inputBorderStyle":"solid","btnCancelBorderRadius":"4px","inputBgColor":"#fff","inputLableFontSize":"14px","uploadLableColor":"rgba(0, 0, 0, 1)","uploadBorderRadius":"4px","btnSaveHeight":"44px","selectBgColor":"#fff","btnSaveWidth":"88px","selectIconFontSize":"14px","dateHeight":"45px","selectBorderColor":"rgba(119, 197, 227, 1)","inputBorderColor":"rgba(119, 197, 227, 1)","uploadBorderColor":"rgba(119, 197, 227, 1)","textareaFontColor":"rgba(0, 0, 0, 1)","selectBorderWidth":"3px","dateFontColor":"rgba(0, 1, 2, 1)","btnCancelBorderWidth":"0","uploadBorderWidth":"3px","textareaFontSize":"15px","selectBorderRadius":"4px","selectFontColor":"rgba(0, 0, 0, 1)","btnSaveBorderColor":"rgba(64, 158, 255, 1)","btnSaveBorderWidth":"0"},
       id: '',
       type: '',
+      isUnmounted: false,
+      uploadStyleTimer: null,
       ro:{
 	name : false,
 	value : false,
@@ -141,24 +143,84 @@ export default {
   },
   props: ["parent"],
   computed: {
-
-
-
+    normalizedValue() {
+      return this.normalizeUploadValue(this.ruleForm.value)
+    },
+    previewImages() {
+      return this.normalizedValue ? this.normalizedValue.split(',').filter(Boolean) : []
+    },
   },
   created() {
 	this.addEditStyleChange()
 	this.addEditUploadStyleChange()
+  },
+  beforeUnmount() {
+    this.isUnmounted = true
+    if (this.uploadStyleTimer) {
+      clearTimeout(this.uploadStyleTimer)
+      this.uploadStyleTimer = null
+    }
   },
   methods: {
     // 下载
     download(file){
       window.open(`${file}`)
     },
+    normalizeUploadValue(value) {
+      if (typeof value === 'string') {
+        return value.trim()
+      }
+      if (Array.isArray(value)) {
+        return value
+          .map(item => {
+            if (typeof item === 'string') {
+              return item.trim()
+            }
+            if (item && typeof item.url === 'string') {
+              return item.url.trim()
+            }
+            return ''
+          })
+          .filter(Boolean)
+          .join(',')
+      }
+      if (value && typeof value === 'object' && typeof value.url === 'string') {
+        return value.url.trim()
+      }
+      return ''
+    },
+    resetFormState() {
+      this.id = ''
+      this.type = ''
+      this.ro = {
+        name: false,
+        value: false,
+      }
+      this.ruleForm = {
+        name: '',
+        value: '',
+      }
+      this.$nextTick(() => {
+        this.$refs.ruleForm?.clearValidate?.()
+      })
+    },
+    closeEditor(shouldRefresh = false) {
+      this.parent.showFlag = true;
+      this.parent.addOrUpdateFlag = false;
+      this.parent.configCrossAddOrUpdateFlag = false;
+      if (shouldRefresh) {
+        this.parent.search();
+      }
+      this.parent.contentStyleChange();
+    },
     // 初始化
     init(id,type) {
+      this.resetFormState();
+      this.id = id || '';
+      this.type = type || '';
       if (id) {
         this.id = id;
-        this.type = type;
+        this.type = type || '';
       }
       if(this.type=='info'||this.type=='else'){
         this.info(id);
@@ -187,8 +249,14 @@ export default {
         url: `config/info/${id}`,
         method: "get"
       }).then(({ data }) => {
+        if (this.isUnmounted) {
+          return;
+        }
         if (data && data.code === 0) {
-        this.ruleForm = data.data;
+        this.ruleForm = {
+          ...data.data,
+          value: this.normalizeUploadValue(data?.data?.value)
+        };
 	//解决前台上传图片后台不显示的问题
 	let reg=new RegExp('../../../upload','g')//g代表全部
         } else {
@@ -204,7 +272,8 @@ export default {
 
 
 
-	if(this.ruleForm.value!=null) {
+	this.ruleForm.value = this.normalizeUploadValue(this.ruleForm.value)
+	if(this.ruleForm.value) {
 		this.ruleForm.value = this.ruleForm.value.replace(new RegExp(this.$base.url,"g"),"");
 	}
 
@@ -273,11 +342,7 @@ var objcross = this.$storage.getObj('crossObj');
 					       type: "success",
 					       duration: 1500,
 					       onClose: () => {
-						 this.parent.showFlag = true;
-						 this.parent.addOrUpdateFlag = false;
-						 this.parent.configCrossAddOrUpdateFlag = false;
-						 this.parent.search();
-						 this.parent.contentStyleChange();
+						 this.closeEditor(true);
 					       }
 					     });
 					   } else {
@@ -301,11 +366,7 @@ var objcross = this.$storage.getObj('crossObj');
 			       type: "success",
 			       duration: 1500,
 			       onClose: () => {
-				 this.parent.showFlag = true;
-				 this.parent.addOrUpdateFlag = false;
-				 this.parent.configCrossAddOrUpdateFlag = false;
-				 this.parent.search();
-				 this.parent.contentStyleChange();
+				 this.closeEditor(true);
 			       }
 			     });
 			   } else {
@@ -322,17 +383,17 @@ var objcross = this.$storage.getObj('crossObj');
     },
     // 返回
     back() {
-      this.parent.showFlag = true;
-      this.parent.addOrUpdateFlag = false;
-      this.parent.configCrossAddOrUpdateFlag = false;
-      this.parent.contentStyleChange();
+      this.closeEditor();
     },
     valueUploadChange(fileUrls) {
-	this.ruleForm.value = fileUrls;
+	this.ruleForm.value = this.normalizeUploadValue(fileUrls);
 	this.addEditUploadStyleChange()
     },
 	addEditStyleChange() {
 	  this.$nextTick(()=>{
+        if (this.isUnmounted) {
+          return
+        }
 	    // input
 	    document.querySelectorAll('.addEdit-block .input .el-input__inner').forEach(el=>{
 	      el.style.height = this.addEditForm.inputHeight
@@ -456,15 +517,26 @@ var objcross = this.$storage.getObj('crossObj');
 	},
 	addEditUploadStyleChange() {
 		this.$nextTick(()=>{
-		  document.querySelectorAll('.addEdit-block .upload .el-upload-list--picture-card .el-upload-list__item').forEach(el=>{
-			el.style.width = this.addEditForm.uploadHeight
-			el.style.height = this.addEditForm.uploadHeight
-			el.style.borderWidth = this.addEditForm.uploadBorderWidth
-			el.style.borderStyle = this.addEditForm.uploadBorderStyle
-			el.style.borderColor = this.addEditForm.uploadBorderColor
-			el.style.borderRadius = this.addEditForm.uploadBorderRadius
-			el.style.backgroundColor = this.addEditForm.uploadBgColor
-		  })
+          if (this.isUnmounted) {
+            return
+          }
+          if (this.uploadStyleTimer) {
+            clearTimeout(this.uploadStyleTimer)
+          }
+          this.uploadStyleTimer = setTimeout(() => {
+            if (this.isUnmounted) {
+              return
+            }
+		    document.querySelectorAll('.addEdit-block .upload .el-upload-list--picture-card .el-upload-list__item').forEach(el=>{
+			  el.style.width = this.addEditForm.uploadHeight
+			  el.style.height = this.addEditForm.uploadHeight
+			  el.style.borderWidth = this.addEditForm.uploadBorderWidth
+			  el.style.borderStyle = this.addEditForm.uploadBorderStyle
+			  el.style.borderColor = this.addEditForm.uploadBorderColor
+			  el.style.borderRadius = this.addEditForm.uploadBorderRadius
+			  el.style.backgroundColor = this.addEditForm.uploadBgColor
+		    })
+          }, 0)
 	  })
 	},
   }

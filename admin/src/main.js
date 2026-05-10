@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import '@/assets/css/element-variables.scss'
 import '@/assets/css/style.scss'
 import router from '@/router'
@@ -16,9 +17,23 @@ import * as validate from '@/utils/validate.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { registerLegacyElIcons } from '@/icons/legacy-el-icons'
 
+const locale = {
+  ...zhCn,
+  el: {
+    ...zhCn.el,
+    pagination: {
+      ...zhCn.el.pagination,
+      goto: '跳转到',
+      pagesize: '条/页',
+      total: '共 {total} 条',
+      pageClassifier: '页'
+    }
+  }
+}
+
 const app = createApp(App)
 app.use(router)
-app.use(ElementPlus, { size: 'default', zIndex: 3000 })
+app.use(ElementPlus, { locale, size: 'default', zIndex: 3000 })
 
 app.config.globalProperties.$validate = validate
 app.config.globalProperties.$http = http
