@@ -4,55 +4,55 @@
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
-                <el-form-item :label="contents.inputTitle == 1 ? '濮撳悕' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.xingming" placeholder="濮撳悕" clearable></el-input>
+                <el-form-item :label="contents.inputTitle == 1 ? '姓名' : ''">
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.xingming" placeholder="姓名" clearable></el-input>
                 </el-form-item>
           <el-form-item>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}</el-button>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 2" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}<i class="el-icon-search el-icon--right"/></el-button>
-            <el-button v-if="contents.searchBtnIcon == 0" type="success" @click="search()">{{ contents.searchBtnFont == 1?'鏌ヨ':'' }}</el-button>
+            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
+            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 2" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}<i class="el-icon-search el-icon--right"/></el-button>
+            <el-button v-if="contents.searchBtnIcon == 0" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
           </el-form-item>
         </el-row>
 
         <el-row class="ad" :style="{justifyContent:contents.btnAdAllBoxPosition=='1'?'flex-start':contents.btnAdAllBoxPosition=='2'?'center':'flex-end'}">
           <el-form-item>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鏂板') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1"
+              v-if="isAuth('jiaoyouxinxi','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1"
               type="success"
               icon="el-icon-plus"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'新增':'' }}</el-button>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鏂板') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2"
+              v-if="isAuth('jiaoyouxinxi','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2"
               type="success"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}<i class="el-icon-plus el-icon--right" /></el-button>
+            >{{ contents.btnAdAllFont == 1?'新增':'' }}<i class="el-icon-plus el-icon--right" /></el-button>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鏂板') && contents.btnAdAllIcon == 0"
+              v-if="isAuth('jiaoyouxinxi','新增') && contents.btnAdAllIcon == 0"
               type="success"
               @click="addOrUpdateHandler()"
-            >{{ contents.btnAdAllFont == 1?'鏂板':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'新增':'' }}</el-button>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1 && contents.tableSelection"
+              v-if="isAuth('jiaoyouxinxi','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               icon="el-icon-delete"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'删除':'' }}</el-button>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2 && contents.tableSelection"
+              v-if="isAuth('jiaoyouxinxi','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+            >{{ contents.btnAdAllFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
             <el-button
-              v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && contents.btnAdAllIcon == 0 && contents.tableSelection"
+              v-if="isAuth('jiaoyouxinxi','删除') && contents.btnAdAllIcon == 0 && contents.tableSelection"
               :disabled="dataListSelections.length <= 0"
               type="danger"
               @click="deleteHandler()"
-            >{{ contents.btnAdAllFont == 1?'鍒犻櫎':'' }}</el-button>
+            >{{ contents.btnAdAllFont == 1?'删除':'' }}</el-button>
 
 
 
@@ -68,7 +68,7 @@
             :fit="contents.tableFit"
             :stripe="contents.tableStripe"
             :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
-            v-if="isAuth('jiaoyouxinxi','鏌ョ湅')"
+            v-if="isAuth('jiaoyouxinxi','查看')"
             :data="dataList"
             v-loading="dataListLoading"
             @selection-change="selectionChangeHandler">
@@ -78,11 +78,11 @@
                 align="center"
                 width="50">
             </el-table-column>
-            <el-table-column label="绱㈠紩" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
+            <el-table-column label="索引" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="zhanghao"
                    :header-align="contents.tableAlign"
-		    label="璐﹀彿">
+		    label="账号">
 		     <template #default="scope">
                        {{ scope?.row?.zhanghao || '' }}
                      </template>
@@ -90,7 +90,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingming"
                    :header-align="contents.tableAlign"
-		    label="濮撳悕">
+		    label="姓名">
 		     <template #default="scope">
                        {{ scope?.row?.xingming || '' }}
                      </template>
@@ -98,7 +98,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="xingbie"
                    :header-align="contents.tableAlign"
-		    label="鎬у埆">
+		    label="性别">
 		     <template #default="scope">
                        {{ scope?.row?.xingbie || '' }}
                      </template>
@@ -106,7 +106,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="nianling"
                    :header-align="contents.tableAlign"
-		    label="骞撮緞">
+		    label="年龄">
 		     <template #default="scope">
                        {{ scope?.row?.nianling || '' }}
                      </template>
@@ -114,62 +114,62 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="jiaoyoutupian"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="浜ゅ弸鍥剧墖">
+                    label="交友图片">
                     <template #default="scope">
                       <div v-if="scope?.row?.jiaoyoutupian">
                         <img :src="$base.url + String(scope?.row?.jiaoyoutupian || '').split(',')[0]" width="100" height="100">
                       </div>
-                      <div v-else>鏃犲浘鐗?</div>
+                      <div v-else>无图片</div>
                     </template>
                   </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
                   prop="shhf"
                  :header-align="contents.tableAlign"
-                  label="瀹℃牳鍥炲">
+                  label="审核回复">
               </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
                   prop="sfsh"
                  :header-align="contents.tableAlign"
-                  label="瀹℃牳鐘舵€?">
+                  label="审核状态">
                   <template #default="scope">
                     <span style="margin-right:10px">{{ scope?.row?.sfsh == '是' ? '通过' : '未通过' }}</span>
                   </template>
               </el-table-column>
               <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" 
-                  v-if="isAuth('jiaoyouxinxi','瀹℃牳')"
+                  v-if="isAuth('jiaoyouxinxi','审核')"
                   prop="sfsh"
                  :header-align="contents.tableAlign"
-                  label="瀹℃牳">
+                  label="审核">
                   <template #default="scope">
-                    <el-button v-if="scope?.row" link icon="el-icon-edit" size="small" @click="shDialog(scope?.row)">瀹℃牳</el-button>
+                    <el-button v-if="scope?.row" link icon="el-icon-edit" size="small" @click="shDialog(scope?.row)">审核</el-button>
                   </template>
               </el-table-column>
             <el-table-column width="300" :align="contents.tableAlign" 
                :header-align="contents.tableAlign"
-                label="鎿嶄綔">
+                label="操作">
                 <template #default="scope">
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅') && scope?.row && scope?.row?.zhanghao != currentUserZhanghao && currentUserZhanghao != 'admin'" type="primary" icon="el-icon-chat-dot-round" size="small" @click="siliaoHandler(scope?.row)">{{ contents.tableBtnFont == 1?'绉佽亰':'' }}</el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'璇︽儏':'' }}</el-button>
-                <el-button v-if=" isAuth('jiaoyouxinxi','淇敼') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
-                <el-button v-if=" isAuth('jiaoyouxinxi','淇敼') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('jiaoyouxinxi','淇敼') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'淇敼':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看') && scope?.row && scope?.row?.zhanghao != currentUserZhanghao && currentUserZhanghao != 'admin'" type="primary" icon="el-icon-chat-dot-round" size="small" @click="siliaoHandler(scope?.row)">{{ contents.tableBtnFont == 1?'私聊':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="success" icon="el-icon-tickets" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}<i class="el-icon-tickets el-icon--right" /></el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看') && scope?.row?.id && contents.tableBtnIcon == 0" type="success" size="small" @click="addOrUpdateHandler(scope?.row?.id,'info')">{{ contents.tableBtnFont == 1?'详情':'' }}</el-button>
+                <el-button v-if=" isAuth('jiaoyouxinxi','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button v-if=" isAuth('jiaoyouxinxi','修改') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if=" isAuth('jiaoyouxinxi','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅璇勮') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鏌ョ湅璇勮':'' }}</el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅璇勮') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鏌ョ湅璇勮':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鏌ョ湅璇勮') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鏌ョ湅璇勮':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','查看评论') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
 
 
-                <el-button v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}</el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('jiaoyouxinxi','鍒犻櫎') && scope?.row?.id && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'鍒犻櫎':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
+                <el-button v-if="isAuth('jiaoyouxinxi','删除') && scope?.row?.id && contents.tableBtnIcon == 0" type="danger" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <el-pagination
-          clsss="pages"
+          class="pagination-content pages"
           :layout="layouts"
           @size-change="sizeChangeHandle"
           @current-change="currentChangeHandle"
@@ -178,20 +178,20 @@
           :page-size="Number(contents.pageEachNum)"
           :total="totalPage"
           :small="contents.pageStyle"
-          class="pagination-content"
+          
           :background="contents.pageBtnBG"
           :style="{textAlign:contents.pagePosition==1?'left':contents.pagePosition==2?'center':'right'}"
         ></el-pagination>
       </div>
     </div>
-    <!-- 娣诲姞/淇敼椤甸潰  灏嗙埗缁勪欢鐨剆earch鏂规硶浼犻€掔粰瀛愮粍浠-->
+    <!-- 娣诲姞/修改椤甸潰  灏嗙埗缁勪欢鐨剆earch鏂规硶浼犻€掔粰瀛愮粍浠-->
     <add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
     <siliao-dialog ref="siliaoDialog" @refreshCount="refreshHeaderCount"></siliao-dialog>
 
 
     <el-dialog
-      title="瀹℃牳"
+      title="审核"
       v-model="sfshVisiable"
       width="50%">
       <el-form ref="form" :model="form" label-width="80px">
@@ -338,7 +338,7 @@ export default {
         })
       })
     },
-    // 鏂板銆佹壒閲忓垹闄?
+    // 新增銆佹壒閲忓垹闄?
     contentBtnAdAllStyleChange() {
       this.$nextTick(()=>{
         document.querySelectorAll('.form-content .ad .el-button--success').forEach(el=>{
@@ -505,7 +505,7 @@ export default {
     selectionChangeHandler(val) {
       this.dataListSelections = val;
     },
-    // 娣诲姞/淇敼
+    // 娣诲姞/修改
     addOrUpdateHandler(id,type) {
       this.showFlag = false;
       this.addOrUpdateFlag = true;
@@ -517,11 +517,11 @@ export default {
         this.$refs.addOrUpdate.init(id,type);
       });
     },
-    // 鏌ョ湅璇勮
+    // 查看评论
     disscussListHandler(id,type) {
 	this.$router.push({path:'/discussjiaoyouxinxi',query:{refid:id}});
     },
-    // 瀹℃牳绐楀彛
+    // 审核绐楀彛
     shDialog(row){
       this.sfshVisiable = !this.sfshVisiable;
       if(row){
@@ -542,11 +542,11 @@ export default {
         }
       }
     },
-    // 瀹℃牳
+    // 审核
     shHandler(){
-      this.$confirm(`纭畾鎿嶄綔?`, "鎻愮ず", {
+      this.$confirm(`纭畾操作?`, "提示", {
         confirmButtonText: "纭畾",
-        cancelButtonText: "鍙栨秷",
+        cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
         this.$http({
@@ -556,7 +556,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "鎿嶄綔鎴愬姛",
+              message: "操作鎴愬姛",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -565,10 +565,10 @@ export default {
               }
             });
           } else {
-            this.$message.error((data && data.msg) || '鎿嶄綔澶辫触');
+            this.$message.error((data && data.msg) || '操作澶辫触');
           }
         }).catch((error) => {
-          this.$message.error((error && error.message) || '鎿嶄綔澶辫触');
+          this.$message.error((error && error.message) || '操作澶辫触');
         });
       }).catch(() => {});
     },
@@ -576,16 +576,16 @@ export default {
     download(file){
       window.open(`${file}`)
     },
-    // 鍒犻櫎
+    // 删除
     deleteHandler(id) {
       var ids = id
         ? [Number(id)]
         : this.dataListSelections.map(item => {
             return Number(item.id);
           });
-      this.$confirm(`纭畾杩涜[${id ? "鍒犻櫎" : "鎵归噺鍒犻櫎"}]鎿嶄綔?`, "鎻愮ず", {
+      this.$confirm(`纭畾杩涜[${id ? "删除" : "鎵归噺删除"}]操作?`, "提示", {
         confirmButtonText: "纭畾",
-        cancelButtonText: "鍙栨秷",
+        cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
         this.$http({
@@ -595,7 +595,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "鎿嶄綔鎴愬姛",
+              message: "操作鎴愬姛",
               type: "success",
               duration: 1500,
               onClose: () => {
@@ -603,10 +603,10 @@ export default {
               }
             });
           } else {
-            this.$message.error((data && data.msg) || '鍒犻櫎澶辫触');
+            this.$message.error((data && data.msg) || '删除澶辫触');
           }
         }).catch((error) => {
-          this.$message.error((error && error.message) || '鍒犻櫎澶辫触');
+          this.$message.error((error && error.message) || '删除澶辫触');
         });
       }).catch(() => {});
     },

@@ -5,14 +5,14 @@
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
                 <el-form-item :label="contents.inputTitle == 1 ? '活动名称' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongmingcheng" placeholder="濞茶濮╅崥宥囆?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongmingcheng" placeholder="活动名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item :label="contents.inputTitle == 1 ? '活动类型' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongleixing" placeholder="濞茶濮╃猾璇茬€?" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
+                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.huodongleixing" placeholder="活动类型" clearable></el-input>
                 </el-form-item>
           <el-form-item>
             <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search" type="success" @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
@@ -87,7 +87,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongmingcheng"
                    :header-align="contents.tableAlign"
-		    label="濞茶濮╅崥宥囆?">
+		    label="活动名称">
 		     <template #default="scope">
                        {{ scope?.row?.huodongmingcheng || '' }}
                      </template>
@@ -95,7 +95,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongleixing"
                    :header-align="contents.tableAlign"
-		    label="濞茶濮╃猾璇茬€?">
+		    label="活动类型">
 		     <template #default="scope">
                        {{ scope?.row?.huodongleixing || '' }}
                      </template>
@@ -103,7 +103,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongdidian"
                    :header-align="contents.tableAlign"
-		    label="濞茶濮╅崷鎵仯">
+		    label="活动地点">
 		     <template #default="scope">
                        {{ scope?.row?.huodongdidian || '' }}
                      </template>
@@ -111,7 +111,7 @@
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="huodongshijian"
                    :header-align="contents.tableAlign"
-		    label="濞茶濮╅弮鍫曟？">
+		    label="活动时间">
 		     <template #default="scope">
                        {{ scope?.row?.huodongshijian || '' }}
                      </template>
@@ -119,7 +119,7 @@
                   <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"  prop="huodongtupian"
                    :header-align="contents.tableAlign"
                     width="200"
-                    label="濞茶濮╅崶鍓у">
+                    label="活动图片">
                     <template #default="scope">
                       <div v-if="scope?.row?.huodongtupian">
                         <img :src="$base.url + String(scope?.row?.huodongtupian || '').split(',')[0]" width="100" height="100">
@@ -142,9 +142,9 @@
                 <el-button v-if=" isAuth('xianxiahuodong','修改') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="addOrUpdateHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
 
-                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}</el-button>
-                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if="isAuth('xianxiahuodong','閺屻儳婀呯拠鍕啈') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'閺屻儳婀呯拠鍕啈':'' }}</el-button>
+                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="primary" icon="el-icon-edit" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
+                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
+                <el-button v-if="isAuth('xianxiahuodong','查看评论') && scope?.row?.id && contents.tableBtnIcon == 0" type="primary" size="small" @click="disscussListHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'查看评论':'' }}</el-button>
 
 
                 <el-button v-if="isAuth('xianxiahuodong','删除') && scope?.row?.id && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="small" @click="deleteHandler(scope?.row?.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
@@ -154,7 +154,7 @@
             </el-table-column>
         </el-table>
         <el-pagination
-          clsss="pages"
+          class="pagination-content pages"
           :layout="layouts"
           @size-change="sizeChangeHandle"
           @current-change="currentChangeHandle"
@@ -163,7 +163,7 @@
           :page-size="Number(contents.pageEachNum)"
           :total="totalPage"
           :small="contents.pageStyle"
-          class="pagination-content"
+          
           :background="contents.pageBtnBG"
           :style="{textAlign:contents.pagePosition==1?'left':contents.pagePosition==2?'center':'right'}"
         ></el-pagination>
@@ -497,7 +497,7 @@ export default {
         this.$refs.addOrUpdate.init(id,type);
       });
     },
-    // 閺屻儳婀呯拠鍕啈
+    // 查看评论
     disscussListHandler(id,type) {
 	this.$router.push({path:'/discussxianxiahuodong',query:{refid:id}});
     },
